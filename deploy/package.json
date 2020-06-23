@@ -1,0 +1,39 @@
+{
+  "name": "react-enhanced-table",
+  "version": "1.1.1",
+  "description": "React DataTable built with Material UI.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.10.2",
+    "@material-ui/icons": "^4.9.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.12.47",
+    "core-js": "^3.6.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gammaalpha/react-enhanced-table.git"
+  },
+  "keywords": [
+    "React",
+    "DataTable",
+    "Material-UI",
+    "Sortable",
+    "Filterable"
+  ],
+  "author": "Faiq Malik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gammaalpha/react-enhanced-table/issues"
+  },
+  "homepage": "https://github.com/Gammaalpha/react-enhanced-table#readme"
+}

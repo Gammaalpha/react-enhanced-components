@@ -3,19 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.10.2",
+    "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.12.31",
+    "core-js": "3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "typescript": "~3.7.2"
+    "react-scripts": "3.4.1"
   },
   "scripts": {
+    "prepublish": "rm -rf build/ && tsc",
+    "publish": "webpack --mode production && sh deploy.sh",
+    "webpack:dev": "npx webpack --config webpack.config.js",
+    "build-wp": "webpack --mode production",
+    "watch": "webpack --config webpack.config.js --mode production --watch",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -35,5 +40,51 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "build/index.js",
+  "types": "build/TestComponent.d.ts",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/react": "^16.9.25",
+    "@types/react-dom": "^16.9.5",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.4.2",
+    "css-modules-typescript-loader": "^4.0.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "inline-source-map": "^0.6.2",
+    "mini-css-extract-plugin": "^0.9.0",
+    "postcss-loader": "^3.0.0",
+    "sass": "^1.26.3",
+    "sass-loader": "^8.0.2",
+    "source-map": "^0.7.3",
+    "source-map-loader": "^0.2.4",
+    "style-loader": "^1.1.3",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "url-loader": "^4.0.0",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "keywords": [
+    "React",
+    "Material UI",
+    "Data Table"
+  ],
+  "author": "Faiq Malik",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gammaalpha/react-enhanced-table.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gammaalpha/react-enhanced-table/issues"
   }
 }
