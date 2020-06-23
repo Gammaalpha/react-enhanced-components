@@ -22,14 +22,7 @@ module.exports = {
       {
         // Include ts, tsx, js, and jsx files.
         test: /\.(ts|js)x?$/,
-        exclude: [
-          /node_modules/,
-          "./src/App.test.tsx",
-          "./src/App.tsx",
-          "./src/index.tsx",
-          "./src/serviceWorker.ts",
-          "./src/setupTests.ts",
-        ],
+        exclude: [/node_modules/],
         loader: ["babel-loader", "ts-loader"],
       },
       {
@@ -51,7 +44,6 @@ module.exports = {
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
-        exclude: ["./src/App.css", "./src/index.css"],
       },
     ],
   },

@@ -29,6 +29,14 @@
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "build",
+    "**/*.spec.ts",
+    "src/App.tsx",
+    "src/App.css",
+    "src/App.test.tsx",
+    "src/index.css",
+    "src/index.tsx",
+    "src/serviceWorker.ts",
+    "src/setupTests.ts",
   ]
 }
