@@ -16,7 +16,6 @@ You can install the production version of this repository by using the following
 
 You can view a demo of this project [here](https://gammaalpha.github.io/react-table-demo/).
 
-
 ### Usage
 
 After including the repository into your project, you can import the component as follows:
@@ -45,7 +44,7 @@ After including the repository into your project, you can import the component a
 | order              | optional       | string            | Set either 'asc' or 'desc' for initial sort, works with orderBy prop filled.                 |
 | orderBy            | optional       | string            | The initial column to order by during render. Place the column key here.                     |
 | groupBy            | optional       | string            | Not implemented yet                                                                          |
-| customStyle        | optional       | TableStyle        | Custom styling to apply to table body cells.                                                 |
+| customStyle        | optional       | TableStyle        | Custom styling to apply to table body cells. Look at example below for more information      |
 | rowsPerPageOptions | optional       | number[]          | Pass an array of numbers to set pagination view selector. Default set to 5, 10 and 15.       |
 | rowsPerPage        | optional       | number            | How many rows per page should be visible. Default set at 10 per page.                        |
 | emptySpacing       | optional       | boolean           | Enable to turn on empty spacing when there is missing row items below. Default set to false. |
@@ -99,6 +98,22 @@ To render the component with minimal props, add it as follows:
     itemKey="id">
 </DataTable>
 
+```
+
+### Header and Body Styles
+
+Header and body cell styles can be modified by passing the styles prop an object below to modify the header row, header cells and body cells.
+
+Either className objects or string can be passed to customize the header and body styling as needed.
+
+All of the properties are optional and only non-empty props will be applied.
+
+```
+const customStyle = {
+  header: 'headerStyle1',
+  headerCell: "headerCellStyle1",
+  bodyCell: "bodyCellStyle1"
+}
 ```
 
 ### Column based styling

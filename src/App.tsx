@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { IHeader } from './core/DataTable/model/header';
 import { DataTable } from './core/DataTable/DataTable';
