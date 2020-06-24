@@ -2,13 +2,13 @@
 
 yarn build-wp
 
-rm -rf production
+# rm -rf production
 
-mkdir production
+# mkdir production
 
-cd production
+cd build
 
-cp ../build prod -r
+# cp ../build prod -r
 
 cp ../{.gitignore,.npmignore} ./
 
@@ -20,8 +20,8 @@ git add -A
 
 git commit -m "deploy"
 
-git push -f git@github.com:Gammaalpha/react-enhanced-table.git master:production
+git push -f git@github.com:Gammaalpha/react-enhanced-components.git master:production
 
 cd ..
 
-rm -rf production/
+# rm -rf production/
