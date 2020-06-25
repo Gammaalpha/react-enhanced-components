@@ -11,6 +11,7 @@
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.31",
     "core-js": "3",
+    "draft-js": "^0.11.6",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
@@ -53,6 +54,7 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
+    "@types/draft-js": "^0.10.41",
     "@types/react": "^16.9.25",
     "@types/react-dom": "^16.9.5",
     "babel-loader": "^8.1.0",
@@ -76,15 +78,16 @@
   "keywords": [
     "React",
     "Material UI",
-    "Data Table"
+    "Data Table",
+    "Rich Text Editor"
   ],
   "author": "Faiq Malik",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gammaalpha/react-enhanced-table.git"
+    "url": "git+https://github.com/Gammaalpha/react-enhanced-components.git"
   },
   "bugs": {
-    "url": "https://github.com/Gammaalpha/react-enhanced-table/issues"
+    "url": "https://github.com/Gammaalpha/react-enhanced-components/issues"
   }
 }

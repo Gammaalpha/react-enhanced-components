@@ -7,7 +7,7 @@
       "esnext"
     ],
     "outDir": "build",
-    "sourceMap": true,
+    "sourceMap": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "declaration": true,
@@ -20,7 +20,7 @@
     "isolatedModules": true,
     "jsx": "react",
     "allowJs": true,
-    "noEmit": false
+    "noEmit": true
   },
   "include": [
     "src/**/*",
@@ -37,6 +37,6 @@
     "src/index.css",
     "src/index.tsx",
     "src/serviceWorker.ts",
-    "src/setupTests.ts",
+    "src/setupTests.ts"
   ]
 }

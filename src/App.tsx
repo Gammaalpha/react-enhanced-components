@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
-import { IHeader } from './core/DataTable/model/header';
-import { DataTable } from './core/DataTable/DataTable';
-import { makeStyles } from '@material-ui/core';
-import Switch from '@material-ui/core/Switch';
-
-
+import { DataTable, IHeaderProps, RichTextEditor } from "./core/index";
+import { Switch, makeStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from '@material-ui/core';
 export interface IItem {
   id: number,
   department: string,
@@ -28,7 +24,7 @@ const useStyles = makeStyles({
 function App() {
   console.log("App...");
   const classes = useStyles();
-  const headers: IHeader[] = [
+  const headers: IHeaderProps[] = [
     {
       key: "id",
       text: "ID",
@@ -159,25 +155,59 @@ function App() {
         name="emptySpacing"
       />)
   }
+
+  const dataTableExpansionPanel = () => {
+    return (
+      <ExpansionPanel>
+        <ExpansionPanelSummary>
+          <Typography>Data Table</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <div>
+            <div className={'Spacing'}>
+              <div>
+                Checkbox: {renderCheckBoxSwitch()}
+              </div>
+              <div>
+                Multi-Sort: {renderMultiSortSwitch()}
+              </div>
+              <div>
+                Empty Spacing: {renderSpacingSwitch()}
+              </div>
+              <div>
+                Filter: {renderFilterSwitch()}
+              </div>
+            </div>
+            <DataTable multiSort={state.multiSort} headers={headers} customStyle={customStyle} dataSource={items} emit={(data: IItem) => handleIncomingData(data)} checkbox={state.checkbox} itemKey="id" filter={state.filter} emptySpacing={state.emptySpacing}></DataTable>
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    )
+  }
+
+  const richTextEditorExpansionPanel = () => {
+    return (
+      <ExpansionPanel>
+        <ExpansionPanelSummary>
+          <Typography>
+            Rich Text Editor
+        </Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <div>
+            <RichTextEditor></RichTextEditor>
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    )
+  }
   return (
 
     <div className={'Padding25px'}>
-      <div className={'Spacing'}>
-        <div>
-          Checkbox: {renderCheckBoxSwitch()}
-        </div>
-        <div>
-          Multi-Sort: {renderMultiSortSwitch()}
-        </div>
-        <div>
-          Empty Spacing: {renderSpacingSwitch()}
-        </div>
-        <div>
-          Filter: {renderFilterSwitch()}
-        </div>
-      </div>
-      <DataTable multiSort={state.multiSort} headers={headers} customStyle={customStyle} dataSource={items} emit={(data: IItem) => handleIncomingData(data)} checkbox={state.checkbox} itemKey="id" filter={state.filter} emptySpacing={state.emptySpacing}></DataTable>
+      {dataTableExpansionPanel()}
+      {richTextEditorExpansionPanel()}
     </div>
+
   );
 }
 
