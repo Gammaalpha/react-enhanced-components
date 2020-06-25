@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './App.css';
 import { DataTable, IHeaderProps, RichTextEditor } from "./core/index";
 import { Switch, makeStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 export interface IItem {
   id: number,
   department: string,
@@ -158,12 +160,12 @@ function App() {
 
   const dataTableExpansionPanel = () => {
     return (
-      <ExpansionPanel>
-        <ExpansionPanelSummary>
+      <ExpansionPanel >
+        <ExpansionPanelSummary className={'LightGrayB'} expandIcon={<ExpandMoreIcon />}>
           <Typography>Data Table</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <div>
+          <div className={'FullWidth'}>
             <div className={'Spacing'}>
               <div>
                 Checkbox: {renderCheckBoxSwitch()}
@@ -187,14 +189,14 @@ function App() {
 
   const richTextEditorExpansionPanel = () => {
     return (
-      <ExpansionPanel>
-        <ExpansionPanelSummary>
+      <ExpansionPanel expanded={true}>
+        <ExpansionPanelSummary className={'LightGrayB'} expandIcon={<ExpandMoreIcon />}>
           <Typography>
             Rich Text Editor
         </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <div>
+          <div className={'FullWidth'}>
             <RichTextEditor></RichTextEditor>
           </div>
         </ExpansionPanelDetails>
