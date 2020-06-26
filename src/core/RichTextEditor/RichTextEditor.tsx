@@ -134,7 +134,7 @@ export const RichTextEditor = (props: IRichText) => {
         {
             key: 'textAlign',
             icon: 'format_align_justify',
-            tooltip: 'Text Alignment',
+            tooltip: '',
             value: alignText,
             ariaLabel: 'Text Alignment',
             position: 'top',
