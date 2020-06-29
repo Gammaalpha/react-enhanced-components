@@ -80,52 +80,13 @@ export const RichTextEditor = (props: IRichText) => {
             children: [{ text: 'Type here to add your content.' }],
         },
     ]);
-
-    // const getLastPoint = (editor_: Editor & ReactEditor) => {
-    //     const children: any = editor_.children[editor_.children.length - 1].children;
-    //     const index = children[0].text.length;
-    //     return {
-    //         path: [editor_.children.length - 1, 0],
-    //         offset: index
-    //     }
-
-    // }
-
     function focusEditor() {
-        // console.log(slateEditor);
-        // let end = getLastPoint(slateEditor)
-        // const point = {
-        //     anchor: end,
-        //     focus: end
-        // }
         ReactEditor.focus(slateEditor)
-        // Transforms.select(slateEditor, point)
     }
 
 
 
-    const _onBoldClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
 
-    const _onItalicClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onUnderlineClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onCodeClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onLeftAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onCenterAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onRightAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
 
 
     const callbacks: any = {}
@@ -238,33 +199,24 @@ export const RichTextEditor = (props: IRichText) => {
         )
     }
 
-    // const handleKeyCommand = (cmd: string, editorState_: EditorState) => {
-    //     const newState = RichUtils.handleKeyCommand(editorState_, cmd);
-    //     if (newState) {
-    //         onChange(newState)
-    //         return 'handled'
-    //     }
-    //     return 'not-handled'
-    // }
-
     const CustomEditor = {
         isBoldMarkActive(editor: any) {
             const [match] = Editor.nodes(editor, {
-                match: n => n.bold === true,
+                match: (n: any) => n.bold === true,
                 universal: true,
             })
             return !!match
         },
         isItalicMarkActive(editor: any) {
             const [match] = Editor.nodes(editor, {
-                match: n => n.italic === true,
+                match: (n: any) => n.italic === true,
                 universal: true,
             })
             return !!match
         },
         isCodeBlockActive(editor: any) {
             const [match] = Editor.nodes(editor, {
-                match: n => n.type === 'code',
+                match: (n: any) => n.type === 'code',
             })
 
             return !!match
@@ -275,18 +227,19 @@ export const RichTextEditor = (props: IRichText) => {
                 editor,
                 { bold: isActive ? null : true },
                 {
-                    match: n => typeof n?.text === 'string'
+                    match: (n: any) => typeof n?.text === 'string'
                     , split: true
                 }
             )
         },
         toggleItalicMark(editor: any) {
+            debugger;
             const isActive = CustomEditor.isItalicMarkActive(editor)
             Transforms.setNodes(
                 editor,
                 { italic: isActive ? null : true },
                 {
-                    match: n => typeof n?.text === 'string'
+                    match: (n: any) => typeof n?.text === 'string'
                     , split: true
                 }
             )
@@ -296,28 +249,60 @@ export const RichTextEditor = (props: IRichText) => {
             Transforms.setNodes(
                 editor,
                 { type: isActive ? null : 'code' },
-                { match: n => Editor.isBlock(editor, n) }
+                { match: (n: any) => Editor.isBlock(editor, n) }
             )
         }
     }
+    const _onBoldClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        CustomEditor.toggleBoldMark(slateEditor);
+    }
 
+    const _onItalicClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        CustomEditor.toggleItalicMark(slateEditor);
+
+    }
+    const _onUnderlineClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+    }
+    const _onCodeClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        CustomEditor.toggleCodeBlock(slateEditor);
+
+    }
+    const _onLeftAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+    }
+    const _onCenterAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+    }
+    const _onRightAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+    }
     const handleKeyCommand = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (!event.ctrlKey) {
             return
         }
         switch (event.key) {
             case '`':
-                event.preventDefault()
-                CustomEditor.toggleCodeBlock(slateEditor)
-                break
+                {
+                    event.preventDefault()
+                    CustomEditor.toggleCodeBlock(slateEditor)
+                    break
+                }
             case 'b':
-                event.preventDefault()
-                CustomEditor.toggleBoldMark(slateEditor)
-                break
+                {
+                    event.preventDefault()
+                    CustomEditor.toggleBoldMark(slateEditor)
+                    break
+                }
             case 'i':
-                event.preventDefault()
-                CustomEditor.toggleItalicMark(slateEditor)
-                break
+                {
+                    event.preventDefault()
+                    CustomEditor.toggleItalicMark(slateEditor)
+                    break
+                }
             default:
                 break;
         }
@@ -330,6 +315,15 @@ export const RichTextEditor = (props: IRichText) => {
             </pre>
         )
     }
+
+    const ItalicElement = (props: any) => {
+        return (
+            <pre {...props.attributes}>
+                <em>{props.children}</em>
+            </pre>
+        )
+    }
+
 
     const DefaultElement = (props: any) => {
         return <p {...props.attributes}>{props.children}</p>
@@ -368,13 +362,13 @@ export const RichTextEditor = (props: IRichText) => {
                 {toolbar()}
                 <Slate editor={slateEditor}
                     value={value}
-                    onChange={newValue => setValue(newValue)}>
+                    onChange={(newValue: any) => setValue(newValue)}>
                     <Editable
                         className={classes.slateEditor}
                         id={editorId}
                         renderLeaf={renderLeaf}
                         renderElement={renderElement}
-                        onKeyDown={event => {
+                        onKeyDown={(event: any) => {
                             handleKeyCommand(event)
                         }} />
                 </Slate>
