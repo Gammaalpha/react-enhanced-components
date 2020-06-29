@@ -3,6 +3,7 @@ import { TooltipProps } from "@material-ui/core";
 export interface IRichText {
     toolbarStyle?: string,
     buttons?: string[]
+    id?: string
 }
 
 export interface IToolbarButton {

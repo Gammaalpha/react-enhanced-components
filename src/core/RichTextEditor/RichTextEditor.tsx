@@ -1,18 +1,17 @@
 import React, { useState, useRef } from 'react'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Button, Tooltip, MenuItem, Select, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
-import { Editor, EditorState, RichUtils } from 'draft-js';
-import "draft-js/dist/Draft.css";
+import { Button, Tooltip, MenuItem, Select, FormControl } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
 import { IRichText, IToolbarButton } from './model/RichText';
 import Icon from "@material-ui/core/Icon"
-
+import ReactQuill, { Quill } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 const useStyles = makeStyles((theme: Theme) => createStyles({
     editorContainer: {
         width: '100%',
-        minHeight: '350px',
+        // minHeight: '350px',
         border: '2px solid black',
         borderRadius: 8
     },
@@ -27,14 +26,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     cmdButton: {
         marginRight: theme.spacing(1),
-        backgroundColor: 'lightgray',
+        backgroundColor: 'lightgray!important',
         minWidth: '40px',
+        height: '28px!important',
         '&:hover': {
             backgroundColor: 'darkgray'
         }
     },
     appBar: {
-        backgroundColor: '#1e272c',
+        backgroundColor: '#1e272c!important',
 
     },
     selectEmpty: {
@@ -47,8 +47,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         '&>.MuiInputBase-root>.MuiSelect-root': {
             paddingTop: 5,
             paddingBottom: 5,
-            paddingRight: 0,
-            paddingLeft: 0,
+            paddingRight: '0px!important',
+            paddingLeft: '0px!important',
 
         }
     },
@@ -59,13 +59,25 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
     }
 }))
-
-type TextAlignment = "left" | "right" | "center";
+const Font = Quill.import("formats/font");
+Font.whitelist = [
+    "arial",
+    "comic-sans",
+    "courier-new",
+    "georgia",
+    "helvetica",
+    "lucida",
+    "SegoeUI"
+]
+Quill.register(Font, true);
+const Size = Quill.import("formats/size");
+Size.whitelist = ["extra-small", "small", "medium", "large"];
+Quill.register(Size, true);
 
 export const RichTextEditor = (props: IRichText) => {
+    const editorId = props.id === undefined ? `editor_${Math.floor(Math.random() * 1000)}` : props.id;
     const classes = useStyles()
-    const [alignText, setAlignText] = useState<TextAlignment>('left')
-    const [editorState, setEditorState] = useState(() => EditorState.createEmpty(),)
+    const [value, setValue] = useState('');
     const editorRef = useRef<any>(null)
 
     function focusEditor() {
@@ -76,29 +88,28 @@ export const RichTextEditor = (props: IRichText) => {
 
     const _onBoldClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        onChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'))
+        console.log(editorRef.current);
+        console.log(value);
+
+
     }
 
     const _onItalicClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        onChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'))
+
     }
     const _onUnderlineClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        onChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'))
     }
 
     const _onLeftAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        setAlignText("left")
     }
     const _onCenterAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        setAlignText("center")
     }
     const _onRightAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        setAlignText("right")
     }
 
 
@@ -111,7 +122,7 @@ export const RichTextEditor = (props: IRichText) => {
             ariaLabel: 'Bold Selection',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onBoldClick(e),
             position: 'top',
-            buttonStyle: classes.cmdButton
+            buttonStyle: `${classes.cmdButton}`
         },
         {
             key: 'ITALIC',
@@ -120,7 +131,7 @@ export const RichTextEditor = (props: IRichText) => {
             ariaLabel: 'Italic Selection',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onItalicClick(e),
             position: 'top',
-            buttonStyle: classes.cmdButton
+            buttonStyle: `${classes.cmdButton}`
         },
         {
             key: 'UNDERLINE',
@@ -129,14 +140,14 @@ export const RichTextEditor = (props: IRichText) => {
             ariaLabel: 'Underline Selection',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onUnderlineClick(e),
             position: 'top',
-            buttonStyle: classes.cmdButton
+            buttonStyle: `${classes.cmdButton}`
         },
         {
             key: 'textAlign',
             icon: 'format_align_justify',
             tooltip: '',
-            value: alignText,
             ariaLabel: 'Text Alignment',
+            value: 'left',
             position: 'top',
             buttonStyle: classes.selectEmpty,
             childButtons: [
@@ -182,7 +193,7 @@ export const RichTextEditor = (props: IRichText) => {
 
     const toolbar = () => {
         return (
-            <div className={classes.flexGrow1}>
+            <div id="toolbar" className={classes.flexGrow1}>
                 <AppBar position="static" className={classes.appBar}>
                     <Toolbar className={`${props?.toolbarStyle ? props.toolbarStyle : classes.toolbar}`}>
                         {/* {toolbarButtons()} */}
@@ -193,19 +204,30 @@ export const RichTextEditor = (props: IRichText) => {
         )
     }
 
-    const handleKeyCommand = (cmd: string, editorState_: EditorState) => {
-        // console.log("cmd: ", cmd, " editorState: ", editorState_);
-        const newState = RichUtils.handleKeyCommand(editorState_, cmd);
-        if (newState) {
-            onChange(newState)
-            return 'handled'
+    const modules = {
+        toolbar: {
+            container: "#toolbar",
+            handlers: {
+            }
         }
-        return 'not-handled'
     }
 
-    const onChange = (editorState_: EditorState) => {
-        setEditorState(editorState_)
-    }
+    // const formats = [
+    //     "header",
+    //     "font",
+    //     "size",
+    //     "bold",
+    //     "italic",
+    //     "underline",
+    //     "strike",
+    //     "blockquote",
+    //     "list",
+    //     "bullet",
+    //     "indent",
+    //     "link",
+    //     "image",
+    //     "color"
+    // ];
 
     const editorRender = () => {
         console.log("render editor");
@@ -213,13 +235,14 @@ export const RichTextEditor = (props: IRichText) => {
         return (
             <div className={classes.editorContainer} onClick={() => focusEditor()}>
                 {toolbar()}
-                <Editor
-                    textAlignment={alignText}
+                <ReactQuill
                     ref={editorRef}
-                    handleKeyCommand={handleKeyCommand}
-                    editorState={editorState}
-                    onChange={onChange}
-                />
+                    id={editorId}
+                    // formats={formats}    
+                    // modules={modules}
+                    // theme="snow"
+                    value={value}
+                    onChange={setValue} />
             </div>
         )
     }
@@ -238,7 +261,7 @@ export const RichTextEditor = (props: IRichText) => {
 
 
 function createStyleButton(buttonData: IToolbarButton) {
-    const buttonStyles = makeStyles((theme: Theme) => createStyles({
+    const buttonStyles = makeStyles(() => createStyles({
         buttonLabel: {
             justifyContent: "start"
         },

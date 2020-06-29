@@ -1,10 +1,9 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
-.public-DraftStyleDefault-block {
-  /* height: 100%; */
+/* .public-DraftStyleDefault-block {
+  height: 100%;
   padding: 5px;
-}
-
+} */
 .MuiTooltip-tooltip {
   font-size: 12pt !important;
 }
