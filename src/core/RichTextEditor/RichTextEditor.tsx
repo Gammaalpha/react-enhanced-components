@@ -1,20 +1,27 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useMemo, useCallback } from 'react'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { Button, Tooltip, MenuItem, Select, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
-import { Editor, EditorState, RichUtils } from 'draft-js';
-import "draft-js/dist/Draft.css";
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
 import { IRichText, IToolbarButton } from './model/RichText';
 import Icon from "@material-ui/core/Icon"
+import { createEditor, Editor, Transforms, Range } from 'slate'
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
+
+
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     editorContainer: {
         width: '100%',
-        minHeight: '350px',
+        // minHeight: '350px',
         border: '2px solid black',
         borderRadius: 8
+    },
+    slateEditor: {
+        paddingLeft: 5,
+        paddingRight: 5,
+        minHeight: 150
     },
     fullWidth: {
         minWidth: '100%'
@@ -63,45 +70,65 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 type TextAlignment = "left" | "right" | "center";
 
 export const RichTextEditor = (props: IRichText) => {
+
     const classes = useStyles()
     const [alignText, setAlignText] = useState<TextAlignment>('left')
-    const [editorState, setEditorState] = useState(() => EditorState.createEmpty(),)
-    const editorRef = useRef<any>(null)
+    const slateEditor = useMemo(() => withReact(createEditor()), [])
+    const [value, setValue] = useState<any[]>([
+        {
+            type: 'paragraph',
+            children: [{ text: 'Type here to add your content.' }],
+        },
+    ]);
+
+    // const getLastPoint = (editor_: Editor & ReactEditor) => {
+    //     const children: any = editor_.children[editor_.children.length - 1].children;
+    //     const index = children[0].text.length;
+    //     return {
+    //         path: [editor_.children.length - 1, 0],
+    //         offset: index
+    //     }
+
+    // }
 
     function focusEditor() {
-        editorRef.current?.focus();
+        // console.log(slateEditor);
+        // let end = getLastPoint(slateEditor)
+        // const point = {
+        //     anchor: end,
+        //     focus: end
+        // }
+        ReactEditor.focus(slateEditor)
+        // Transforms.select(slateEditor, point)
     }
 
 
 
     const _onBoldClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        onChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'))
     }
 
     const _onItalicClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        onChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'))
     }
     const _onUnderlineClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        onChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'))
     }
-
+    const _onCodeClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+    }
     const _onLeftAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        setAlignText("left")
     }
     const _onCenterAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        setAlignText("center")
     }
     const _onRightAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        setAlignText("right")
     }
 
 
+    const callbacks: any = {}
 
     const buttonsArray: IToolbarButton[] = [
         {
@@ -132,6 +159,15 @@ export const RichTextEditor = (props: IRichText) => {
             buttonStyle: classes.cmdButton
         },
         {
+            key: 'CODE',
+            icon: 'code',
+            tooltip: 'Code (Ctrl+`)',
+            ariaLabel: 'Code Selection',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onCodeClick(e),
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        },
+        {
             key: 'textAlign',
             icon: 'format_align_justify',
             tooltip: '',
@@ -146,7 +182,7 @@ export const RichTextEditor = (props: IRichText) => {
                     tooltip: 'Align Left',
                     ariaLabel: 'Align Left',
                     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onLeftAlignClick(e),
-                    position: 'right',
+                    position: 'left',
                     buttonStyle: classes.cmdButton
                 },
                 {
@@ -155,7 +191,7 @@ export const RichTextEditor = (props: IRichText) => {
                     tooltip: 'Align Center',
                     ariaLabel: 'Align Center',
                     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onCenterAlignClick(e),
-                    position: 'right',
+                    position: 'center',
                     buttonStyle: classes.cmdButton
                 },
                 {
@@ -170,6 +206,15 @@ export const RichTextEditor = (props: IRichText) => {
             ]
         }
     ]
+
+
+    function pseudoSwitch(value: any) {
+        if (callbacks[value]) {
+            callbacks[value].forEach(function (fn: any) {
+                fn()
+            });
+        }
+    }
 
     const renderToolbarButtons = () => {
         const toolbarButtons: any[] = []
@@ -193,33 +238,146 @@ export const RichTextEditor = (props: IRichText) => {
         )
     }
 
-    const handleKeyCommand = (cmd: string, editorState_: EditorState) => {
-        // console.log("cmd: ", cmd, " editorState: ", editorState_);
-        const newState = RichUtils.handleKeyCommand(editorState_, cmd);
-        if (newState) {
-            onChange(newState)
-            return 'handled'
+    // const handleKeyCommand = (cmd: string, editorState_: EditorState) => {
+    //     const newState = RichUtils.handleKeyCommand(editorState_, cmd);
+    //     if (newState) {
+    //         onChange(newState)
+    //         return 'handled'
+    //     }
+    //     return 'not-handled'
+    // }
+
+    const CustomEditor = {
+        isBoldMarkActive(editor: any) {
+            const [match] = Editor.nodes(editor, {
+                match: n => n.bold === true,
+                universal: true,
+            })
+            return !!match
+        },
+        isItalicMarkActive(editor: any) {
+            const [match] = Editor.nodes(editor, {
+                match: n => n.italic === true,
+                universal: true,
+            })
+            return !!match
+        },
+        isCodeBlockActive(editor: any) {
+            const [match] = Editor.nodes(editor, {
+                match: n => n.type === 'code',
+            })
+
+            return !!match
+        },
+        toggleBoldMark(editor: any) {
+            const isActive = CustomEditor.isBoldMarkActive(editor)
+            Transforms.setNodes(
+                editor,
+                { bold: isActive ? null : true },
+                {
+                    match: n => typeof n?.text === 'string'
+                    , split: true
+                }
+            )
+        },
+        toggleItalicMark(editor: any) {
+            const isActive = CustomEditor.isItalicMarkActive(editor)
+            Transforms.setNodes(
+                editor,
+                { italic: isActive ? null : true },
+                {
+                    match: n => typeof n?.text === 'string'
+                    , split: true
+                }
+            )
+        },
+        toggleCodeBlock(editor: any) {
+            const isActive = CustomEditor.isCodeBlockActive(editor)
+            Transforms.setNodes(
+                editor,
+                { type: isActive ? null : 'code' },
+                { match: n => Editor.isBlock(editor, n) }
+            )
         }
-        return 'not-handled'
     }
 
-    const onChange = (editorState_: EditorState) => {
-        setEditorState(editorState_)
+    const handleKeyCommand = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (!event.ctrlKey) {
+            return
+        }
+        switch (event.key) {
+            case '`':
+                event.preventDefault()
+                CustomEditor.toggleCodeBlock(slateEditor)
+                break
+            case 'b':
+                event.preventDefault()
+                CustomEditor.toggleBoldMark(slateEditor)
+                break
+            case 'i':
+                event.preventDefault()
+                CustomEditor.toggleItalicMark(slateEditor)
+                break
+            default:
+                break;
+        }
+    }
+
+    const CodeElement = (props: any) => {
+        return (
+            <pre {...props.attributes}>
+                <code>{props.children}</code>
+            </pre>
+        )
+    }
+
+    const DefaultElement = (props: any) => {
+        return <p {...props.attributes}>{props.children}</p>
+    }
+
+    // Define a rendering function based on the element passed to `props`. We use
+    // `useCallback` here to memoize the function for subsequent renders.
+    const renderElement = useCallback((props: any) => {
+        switch (props.element.type) {
+            case 'code':
+                return <CodeElement {...props} />
+            default:
+                return <DefaultElement {...props} />
+        }
+    }, []);
+
+    const renderLeaf = useCallback(props => {
+        return <Leaf {...props} />
+    }, []);
+    // Define a React component to render leaves with bold text.
+    const Leaf = (props: any) => {
+        return (
+            <span
+                {...props.attributes}
+                style={{ fontWeight: props.leaf.bold ? 'bold' : 'normal' }}
+            >
+                {props.children}
+            </span>
+        )
     }
 
     const editorRender = () => {
-        console.log("render editor");
-
+        const editorId = props?.id !== undefined ? `$slateEditor_${props.id}` : `slateEditor_${Math.floor(Math.random() * 1000)}`;
         return (
             <div className={classes.editorContainer} onClick={() => focusEditor()}>
                 {toolbar()}
-                <Editor
-                    textAlignment={alignText}
-                    ref={editorRef}
-                    handleKeyCommand={handleKeyCommand}
-                    editorState={editorState}
-                    onChange={onChange}
-                />
+                <Slate editor={slateEditor}
+                    value={value}
+                    onChange={newValue => setValue(newValue)}>
+                    <Editable
+                        className={classes.slateEditor}
+                        id={editorId}
+                        renderLeaf={renderLeaf}
+                        renderElement={renderElement}
+                        onKeyDown={event => {
+                            handleKeyCommand(event)
+                        }} />
+                </Slate>
             </div>
         )
     }

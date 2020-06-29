@@ -11,10 +11,11 @@
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.31",
     "core-js": "3",
-    "draft-js": "^0.11.6",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "slate": "^0.58.3",
+    "slate-react": "^0.58.3"
   },
   "scripts": {
     "prepublish": "rm -rf build/ && tsc",
