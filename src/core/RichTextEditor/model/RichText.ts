@@ -15,5 +15,6 @@ export interface IToolbarButton {
     callback?: any
     position?: any | undefined,
     buttonStyle?: string,
+    buttonText?: string,
     childButtons?: IToolbarButton[]
 }
