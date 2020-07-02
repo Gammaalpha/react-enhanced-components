@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { Button, Tooltip, MenuItem, Select, FormControl } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
-import { IRichText, IToolbarButton } from './model/RichText';
+import { IRichText, IToolbarButton, TextStyleType, TextStyle, BlockFormat } from './model/RichText';
 import Icon from "@material-ui/core/Icon"
 import { createEditor, Editor, Transforms, Text } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
@@ -44,10 +44,35 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         backgroundColor: '#1e272c',
 
     },
-    codeStyle: {
+    monospacedStyle: {
         backgroundColor: 'lightgray',
         padding: 10,
-        borderLeft: '5px solid gray'
+        // borderLeft: '5px solid gray'
+    },
+    pullQuoteStyle: {
+        padding: 32,
+        textAlign: 'center',
+        fontSize: 24,
+        fontStyle: 'italic',
+        borderLeft: 'none',
+        borderRight: 'none',
+        margin: '28px 0 28px 0'
+    },
+
+    headingOneStyle: {
+        backgroundColor: 'lightgray',
+        padding: 10,
+        // borderLeft: '5px solid gray'
+    },
+    headingTwoStyle: {
+        backgroundColor: 'lightgray',
+        padding: 10,
+        // borderLeft: '5px solid gray'
+    },
+    headingThreeStyle: {
+        backgroundColor: 'lightgray',
+        padding: 10,
+        // borderLeft: '5px solid gray'
     },
     selectEmpty: {
         marginRight: theme.spacing(1),
@@ -72,12 +97,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }))
 
-type TextAlignment = "left" | "right" | "center";
 
 export const RichTextEditor = (props: IRichText) => {
 
     const classes = useStyles()
-    const [] = useState<TextAlignment>('left')
     const slateEditor = useMemo(() => withReact(createEditor()), [])
     const [value, setValue] = useState<any[]>([
         {
@@ -93,11 +116,87 @@ export const RichTextEditor = (props: IRichText) => {
 
     const buttonsArray: IToolbarButton[] = [
         {
+            key: 'formatText',
+            icon: '',
+            tooltip: '',
+            value: 0,
+            ariaLabel: 'Format Text selection',
+            position: 'top',
+            buttonStyle: classes.selectEmpty,
+            childButtons: [
+                {
+                    key: 'normalText',
+                    icon: '',
+                    tooltip: '',
+                    buttonText: "Normal Text",
+                    value: 0,
+                    ariaLabel: 'Normal text formatting',
+                    position: 'top',
+                    buttonStyle: classes.selectEmpty,
+                },
+                {
+                    key: 'heading_1',
+                    icon: '',
+                    tooltip: '',
+                    buttonText: "Heading 1",
+                    value: 1,
+                    ariaLabel: 'Heading 1 formatting',
+                    position: 'top',
+                    buttonStyle: classes.selectEmpty,
+                }
+                ,
+                {
+                    key: 'heading_2',
+                    icon: '',
+                    tooltip: '',
+                    buttonText: "Heading 2",
+                    value: 2,
+                    ariaLabel: 'Heading 2 formatting',
+                    position: 'top',
+                    buttonStyle: classes.selectEmpty,
+                },
+                {
+                    key: 'heading_3',
+                    icon: '',
+                    tooltip: '',
+                    buttonText: "Heading 3",
+                    value: 3,
+                    ariaLabel: 'Heading 3 formatting',
+                    position: 'top',
+                    buttonStyle: classes.selectEmpty,
+                }
+                ,
+                {
+                    key: 'pullQuote',
+                    icon: '',
+                    tooltip: '',
+                    buttonText: "Pull Quote",
+                    value: 4,
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onMonospacedClick(e),
+                    ariaLabel: 'Pull Quote formatting',
+                    position: 'top',
+                    buttonStyle: classes.selectEmpty,
+                }
+                ,
+                {
+                    key: 'monospaced',
+                    icon: '',
+                    tooltip: '',
+                    buttonText: "Monospaced",
+                    value: 5,
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onMonospacedClick(e),
+                    ariaLabel: 'Heading 3 formatting',
+                    position: 'top',
+                    buttonStyle: classes.selectEmpty,
+                }
+            ]
+        },
+        {
             key: 'bold',
             icon: 'format_bold',
             tooltip: 'Bold (Ctrl+B)',
             ariaLabel: 'Bold Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBoldClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onStyleButtonClick(e, TextStyleType.bold),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -106,7 +205,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_italic',
             tooltip: 'Italic (Ctrl+I)',
             ariaLabel: 'Italic Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onItalicClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onStyleButtonClick(e, TextStyleType.italic),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -115,7 +214,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_underlined',
             tooltip: 'Underline (Ctrl+U)',
             ariaLabel: 'Underline Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onUnderlineClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onStyleButtonClick(e, TextStyleType.underline),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -124,7 +223,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'strikethrough_s',
             tooltip: 'Strike Through',
             ariaLabel: 'Underline Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onStrikeThroughClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onStyleButtonClick(e, TextStyleType.strikeThrough),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -252,13 +351,12 @@ export const RichTextEditor = (props: IRichText) => {
             value: 'indent_right',
             buttonStyle: classes.cmdButton
         },
-
         {
-            key: 'CODE',
-            icon: 'code',
-            tooltip: 'Code (Ctrl+`)',
-            ariaLabel: 'Code Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onCodeClick(e),
+            key: 'format_clear',
+            icon: 'format_clear',
+            tooltip: 'Format Clear',
+            ariaLabel: 'Clear all formatting',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onClearFormatClick(e),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -308,81 +406,71 @@ export const RichTextEditor = (props: IRichText) => {
         return tempIndentVal
     }
     const CustomEditor = {
+        isTextStyleActive(editor: any, textStyle: TextStyle) {
+            const [match] = Editor.nodes(editor, {
+                match: (n: any) => n[textStyle] === true,
+            })
+            return !!match
+        },
         isBoldMarkActive(editor: any) {
             const [match] = Editor.nodes(editor, {
                 match: (n: any) => n.bold === true,
             })
             return !!match
         },
-        isItalicMarkActive(editor: any) {
+        isBlockStyleActive(editor: any, styleFormat: BlockFormat) {
             const [match] = Editor.nodes(editor, {
-                match: (n: any) => n.italic === true,
+                match: (n: any) => n.type === styleFormat,
             })
             return !!match
         },
-        isUnderlineMarkActive(editor: any) {
+        isPullQuoteBlockActive(editor: any) {
             const [match] = Editor.nodes(editor, {
-                match: (n: any) => n.underline === true,
+                match: (n: any) => n.type === 'pullQuote',
             })
             return !!match
         },
-        isStrikeThroughMarkActive(editor: any) {
+        isMonospacedBlockActive(editor: any) {
             const [match] = Editor.nodes(editor, {
-                match: (n: any) => n.strikeThrough === true,
+                match: (n: any) => n.type === 'monospaced',
             })
             return !!match
         },
-        isCodeBlockActive(editor: any) {
-            const [match] = Editor.nodes(editor, {
-                match: (n: any) => n.type === 'code',
-            })
-            return !!match
-        },
-        toggleBoldMark(editor: any) {
-            const isActive = CustomEditor.isBoldMarkActive(editor)
+        toggleTextStyleMark(editor: any, textStyle: TextStyle) {
+            const isActive = CustomEditor.isTextStyleActive(editor, textStyle)
             Transforms.setNodes(
                 editor,
-                { bold: isActive ? null : true },
+                { [textStyle]: isActive ? null : true },
                 {
                     match: (n: any) => Text.isText(n), split: true
                 }
             )
         },
-        toggleItalicMark(editor: any) {
-            const isActive = CustomEditor.isItalicMarkActive(editor)
+        toggleBlockStyle(editor: any, styleFormat: BlockFormat) {
+            const isActive = CustomEditor.isPullQuoteBlockActive(editor)
             Transforms.setNodes(
                 editor,
-                { italic: isActive ? null : true },
+                { type: isActive ? null : styleFormat },
                 {
-                    match: (n: any) => Text.isText(n), split: true
+                    match: (n: any) => Editor.isBlock(editor, n)
                 }
             )
         },
-        toggleUnderlineMark(editor: any) {
-            const isActive = CustomEditor.isUnderlineMarkActive(editor)
+        togglePullQuoteBlock(editor: any) {
+            const isActive = CustomEditor.isPullQuoteBlockActive(editor)
             Transforms.setNodes(
                 editor,
-                { underline: isActive ? null : true },
+                { type: isActive ? null : 'pullQuote' },
                 {
-                    match: (n: any) => Text.isText(n), split: true
+                    match: (n: any) => Editor.isBlock(editor, n)
                 }
             )
         },
-        toggleStrikeThoughMark(editor: any) {
-            const isActive = CustomEditor.isStrikeThroughMarkActive(editor)
+        toggleMonospacedBlock(editor: any) {
+            const isActive = CustomEditor.isMonospacedBlockActive(editor)
             Transforms.setNodes(
                 editor,
-                { strikeThrough: isActive ? null : true },
-                {
-                    match: (n: any) => Text.isText(n), split: true
-                }
-            )
-        },
-        toggleCodeBlock(editor: any) {
-            const isActive = CustomEditor.isCodeBlockActive(editor)
-            Transforms.setNodes(
-                editor,
-                { type: isActive ? null : 'code' },
+                { type: isActive ? null : 'monospaced' },
                 {
                     match: (n: any) => Editor.isBlock(editor, n)
                 }
@@ -393,8 +481,7 @@ export const RichTextEditor = (props: IRichText) => {
                 match: (n: any) => n?.indent ? n.indent : 0
             })
             return match !== undefined ? match[0]?.indent : 0;
-        }
-        ,
+        },
         rightIndent(editor: any) {
             const currentIndent = CustomEditor.currentIndent(editor);
             console.log(currentIndent);
@@ -404,7 +491,7 @@ export const RichTextEditor = (props: IRichText) => {
                     indent: manageIndent(currentIndent, 'add')
                 },
                 {
-                    match: (n: any) => Text.isText(n)
+                    match: (n: any) => Text.isText(n) || Editor.isBlock(editor, n)
                 }
             )
         },
@@ -416,33 +503,38 @@ export const RichTextEditor = (props: IRichText) => {
                     indent: manageIndent(currentIndent, 'remove')
                 },
                 {
-                    match: (n: any) => Text.isText(n), split: true
+                    match: (n: any) => Text.isText(n) || Editor.isBlock(editor, n)
                 }
             )
         },
-
+        clearFormat(editor: any) {
+            Transforms.setNodes(
+                editor,
+                {
+                    indent: 0,
+                    bold: false,
+                    italic: false,
+                    underline: false,
+                    strikeThrough: false,
+                },
+                {
+                    match: (n: any) => Text.isText(n) || Editor.isBlock(editor, n), split: true
+                }
+            )
+        }
     }
     const ButtonActions = {
-        _onBoldClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        _onStyleButtonClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, styleFormat: TextStyle) {
             e.preventDefault();
-            CustomEditor.toggleBoldMark(slateEditor);
+            CustomEditor.toggleTextStyleMark(slateEditor, styleFormat);
         },
-        _onItalicClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        _onPullQuoteClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             e.preventDefault();
-            CustomEditor.toggleItalicMark(slateEditor);
-
+            CustomEditor.togglePullQuoteBlock(slateEditor);
         },
-        _onUnderlineClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        _onMonospacedClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             e.preventDefault();
-            CustomEditor.toggleUnderlineMark(slateEditor)
-        },
-        _onStrikeThroughClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-            e.preventDefault();
-            CustomEditor.toggleStrikeThoughMark(slateEditor)
-        },
-        _onCodeClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-            e.preventDefault();
-            CustomEditor.toggleCodeBlock(slateEditor);
+            CustomEditor.toggleMonospacedBlock(slateEditor);
         },
         _onLeftAlignClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             e.preventDefault();
@@ -479,7 +571,11 @@ export const RichTextEditor = (props: IRichText) => {
             CustomEditor.leftIndent(slateEditor);
 
         },
+        _onClearFormatClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.clearFormat(slateEditor);
 
+        }
 
 
     }
@@ -489,28 +585,28 @@ export const RichTextEditor = (props: IRichText) => {
             return
         }
         switch (event.key) {
-            case '`':
-                {
-                    event.preventDefault()
-                    CustomEditor.toggleCodeBlock(slateEditor)
-                    break
-                }
+            // case '`':
+            //     {
+            //         event.preventDefault()
+            //         CustomEditor.toggleMonospacedBlock(slateEditor)
+            //         break
+            //     }
             case 'b':
                 {
                     event.preventDefault()
-                    CustomEditor.toggleBoldMark(slateEditor)
+                    CustomEditor.toggleTextStyleMark(slateEditor, TextStyleType.bold)
                     break
                 }
             case 'i':
                 {
                     event.preventDefault()
-                    CustomEditor.toggleItalicMark(slateEditor)
+                    CustomEditor.toggleTextStyleMark(slateEditor, TextStyleType.italic)
                     break
                 }
             case 'u':
                 {
                     event.preventDefault()
-                    CustomEditor.toggleUnderlineMark(slateEditor)
+                    CustomEditor.toggleTextStyleMark(slateEditor, TextStyleType.underline)
                     break
                 }
             default:
@@ -518,10 +614,20 @@ export const RichTextEditor = (props: IRichText) => {
         }
     }
 
-    const CodeElement = (props: any) => {
+    const MonospacedElement = (props: any) => {
         return (
-            <pre {...props.attributes} className={classes.codeStyle}>
+            <pre {...props.attributes} className={classes.monospacedStyle}>
                 <code>{props.children}</code>
+            </pre>
+        )
+    }
+
+    const PullQuote = (props: any) => {
+        return (
+            <pre {...props.attributes} >
+                <blockquote className={classes.pullQuoteStyle}>
+                    {props.children}
+                </blockquote>
             </pre>
         )
     }
@@ -535,8 +641,8 @@ export const RichTextEditor = (props: IRichText) => {
     // `useCallback` here to memoize the function for subsequent renders.
     const renderElement = useCallback((props: any) => {
         switch (props.element.type) {
-            case 'code':
-                return <CodeElement {...props} />
+            case 'monospaced':
+                return <MonospacedElement {...props} />
             default:
                 return <DefaultElement {...props} />
         }
@@ -559,7 +665,6 @@ export const RichTextEditor = (props: IRichText) => {
             return decoration.length > 0 ? decoration.join(" ") : 'none'
         }
 
-        const textIndent = (indent: number) => (`${indent * 40}px`)
         return (
             <span
                 {...props.attributes}
@@ -567,7 +672,7 @@ export const RichTextEditor = (props: IRichText) => {
                     fontWeight: props.leaf.bold ? 'bold' : 'normal',
                     fontStyle: props.leaf.italic ? 'italic' : 'normal',
                     textDecoration: textDecoration(),
-                    paddingLeft: textIndent(props.leaf.indent)
+                    paddingLeft: (`${props.leaf.indent * 40}px`)
                 }}
             >
                 {props.children}
