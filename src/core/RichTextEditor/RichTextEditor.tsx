@@ -1,12 +1,12 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Button, Tooltip, MenuItem, Select, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
+import { Button, Tooltip, MenuItem, Select, FormControl } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
 import { IRichText, IToolbarButton } from './model/RichText';
 import Icon from "@material-ui/core/Icon"
-import { createEditor, Editor, Transforms, Range, Text } from 'slate'
+import { createEditor, Editor, Transforms, Text } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
 
 
@@ -77,7 +77,7 @@ type TextAlignment = "left" | "right" | "center";
 export const RichTextEditor = (props: IRichText) => {
 
     const classes = useStyles()
-    const [alignText, setAlignText] = useState<TextAlignment>('left')
+    const [] = useState<TextAlignment>('left')
     const slateEditor = useMemo(() => withReact(createEditor()), [])
     const [value, setValue] = useState<any[]>([
         {
@@ -89,7 +89,7 @@ export const RichTextEditor = (props: IRichText) => {
         ReactEditor.focus(slateEditor)
     }
 
-    const callbacks: any = {}
+    // const callbacks: any = {}
 
     const buttonsArray: IToolbarButton[] = [
         {
@@ -97,7 +97,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_bold',
             tooltip: 'Bold (Ctrl+B)',
             ariaLabel: 'Bold Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onBoldClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBoldClick(e),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -106,7 +106,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_italic',
             tooltip: 'Italic (Ctrl+I)',
             ariaLabel: 'Italic Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onItalicClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onItalicClick(e),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -115,7 +115,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_underlined',
             tooltip: 'Underline (Ctrl+U)',
             ariaLabel: 'Underline Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onUnderlineClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onUnderlineClick(e),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -124,7 +124,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'strikethrough_s',
             tooltip: 'Strike Through',
             ariaLabel: 'Underline Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onStrikeThroughClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onStrikeThroughClick(e),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -142,7 +142,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_align_left',
                     tooltip: 'Align Left',
                     ariaLabel: 'Align Left',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onLeftAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onLeftAlignClick(e),
                     position: 'right',
                     value: 'left',
                     buttonStyle: classes.cmdButton
@@ -152,7 +152,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_align_center',
                     tooltip: 'Align Center',
                     ariaLabel: 'Align Center',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onCenterAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onCenterAlignClick(e),
                     position: 'right',
                     value: 'center',
                     buttonStyle: classes.cmdButton
@@ -162,7 +162,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_align_justify',
                     tooltip: 'Align Center Justify',
                     ariaLabel: 'Align Center Justify',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onCenterAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onCenterAlignClick(e),
                     position: 'right',
                     value: 'justify',
                     buttonStyle: classes.cmdButton
@@ -172,7 +172,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_align_right',
                     tooltip: 'Align Right',
                     ariaLabel: 'Align Right',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onRightAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onRightAlignClick(e),
                     position: 'right',
                     value: 'right',
                     buttonStyle: classes.cmdButton
@@ -194,7 +194,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_list_bulleted',
                     tooltip: 'Unordered list',
                     ariaLabel: 'Unordered list',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onLeftAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onUnOrderedListClick(e),
                     position: 'right',
                     value: 'unordered_list',
                     buttonStyle: classes.cmdButton
@@ -204,7 +204,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_list_numbered',
                     tooltip: 'Ordered list',
                     ariaLabel: 'Ordered list',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onCenterAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onOrderedListClick(e),
                     position: 'right',
                     value: 'ordered_list',
                     buttonStyle: classes.cmdButton
@@ -217,8 +217,8 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'insert_link',
             tooltip: 'Insert link',
             ariaLabel: 'Insert link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onRightAlignClick(e),
-            position: 'right',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onInsertLinkClick(e),
+            position: 'top',
             value: 'insertLink',
             buttonStyle: classes.cmdButton
         },
@@ -227,30 +227,44 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'link_off',
             tooltip: 'Remove link',
             ariaLabel: 'Remove link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onRightAlignClick(e),
-            position: 'right',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onRemoveLinkClick(e),
+            position: 'top',
             value: 'removeLink',
             buttonStyle: classes.cmdButton
         },
+        {
+            key: 'indent_left',
+            icon: 'format_indent_decrease',
+            tooltip: 'Indent left',
+            ariaLabel: 'Indent left',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onLeftIndentClick(e),
+            position: 'top',
+            value: 'indent_left',
+            buttonStyle: classes.cmdButton
+        },
+        {
+            key: 'indent_right',
+            icon: 'format_indent_increase',
+            tooltip: 'Indent right',
+            ariaLabel: 'Indent right',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onRightIndentClick(e),
+            position: 'top',
+            value: 'indent_right',
+            buttonStyle: classes.cmdButton
+        },
+
         {
             key: 'CODE',
             icon: 'code',
             tooltip: 'Code (Ctrl+`)',
             ariaLabel: 'Code Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onCodeClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onCodeClick(e),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
     ]
 
 
-    function pseudoSwitch(value: any) {
-        if (callbacks[value]) {
-            callbacks[value].forEach(function (fn: any) {
-                fn()
-            });
-        }
-    }
 
     const renderToolbarButtons = () => {
         const toolbarButtons: any[] = []
@@ -273,7 +287,26 @@ export const RichTextEditor = (props: IRichText) => {
             </div>
         )
     }
-
+    const manageIndent = (indentValue: any, type: string) => {
+        debugger;
+        let tempIndentVal = 0;
+        if (typeof indentValue === 'number') {
+            switch (type) {
+                case 'add':
+                    tempIndentVal = indentValue + 1
+                    break;
+                case 'remove':
+                    if (indentValue > 0) {
+                        tempIndentVal--;
+                    }
+                    break
+                default:
+                    console.error("error encountered in indent function");
+                    break;
+            }
+        }
+        return tempIndentVal
+    }
     const CustomEditor = {
         isBoldMarkActive(editor: any) {
             const [match] = Editor.nodes(editor, {
@@ -354,38 +387,106 @@ export const RichTextEditor = (props: IRichText) => {
                     match: (n: any) => Editor.isBlock(editor, n)
                 }
             )
+        },
+        currentIndent(editor: any) {
+            const [match] = Editor.nodes(editor, {
+                match: (n: any) => n?.indent ? n.indent : 0
+            })
+            debugger;
+            return match !== undefined ? match : 0;
         }
-    }
-    const _onBoldClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        CustomEditor.toggleBoldMark(slateEditor);
-    }
+        ,
+        rightIndent(editor: any) {
+            const currentIndent = CustomEditor.currentIndent(editor);
+            console.log(currentIndent);
+            
+            debugger;
 
-    const _onItalicClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        CustomEditor.toggleItalicMark(slateEditor);
+            Transforms.setNodes(
+                editor,
+                {
+                    indent: manageIndent(currentIndent, 'add')
+                },
+                {
+                    match: (n: any) => Text.isText(n)
+                }
+            )
+        },
+        leftIndent(editor: any) {
+            const currentIndent = CustomEditor.currentIndent(editor);
+            debugger;
+            Transforms.setNodes(
+                editor,
+                {
+                    indent: currentIndent
+                },
+                {
+                    match: (n: any) => Text.isText(n), split: true
+                }
+            )
+        },
 
     }
-    const _onUnderlineClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        CustomEditor.toggleUnderlineMark(slateEditor)
-    }
-    const _onStrikeThroughClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        CustomEditor.toggleStrikeThoughMark(slateEditor)
-    }
-    const _onCodeClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        CustomEditor.toggleCodeBlock(slateEditor);
-    }
-    const _onLeftAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onCenterAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onRightAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
+    const ButtonActions = {
+        _onBoldClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.toggleBoldMark(slateEditor);
+        },
+        _onItalicClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.toggleItalicMark(slateEditor);
+
+        },
+        _onUnderlineClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.toggleUnderlineMark(slateEditor)
+        },
+        _onStrikeThroughClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.toggleStrikeThoughMark(slateEditor)
+        },
+        _onCodeClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.toggleCodeBlock(slateEditor);
+        },
+        _onLeftAlignClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+        },
+        _onCenterAlignClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+
+        },
+        _onRightAlignClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+        },
+        _onCenterJustifiedAlignClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+        },
+        _onUnOrderedListClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+        },
+        _onOrderedListClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+        },
+        _onInsertLinkClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+        },
+        _onRemoveLinkClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+        },
+        _onRightIndentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.rightIndent(slateEditor);
+
+        },
+        _onLeftIndentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            CustomEditor.leftIndent(slateEditor);
+
+        },
+
+
+
     }
 
     const handleKeyCommand = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -459,9 +560,12 @@ export const RichTextEditor = (props: IRichText) => {
             }
             if (props.leaf.strikeThrough) {
                 decoration.push('line-through')
-            }            
+            }
             return decoration.length > 0 ? decoration.join(" ") : 'none'
         }
+
+        const textIndent = (indent: number) => (`${indent * 40}px`)
+        debugger;
         return (
             <span
                 {...props.attributes}
@@ -469,6 +573,7 @@ export const RichTextEditor = (props: IRichText) => {
                     fontWeight: props.leaf.bold ? 'bold' : 'normal',
                     fontStyle: props.leaf.italic ? 'italic' : 'normal',
                     textDecoration: textDecoration(),
+                    paddingLeft: textIndent(props.leaf.indent)
                 }}
             >
                 {props.children}
@@ -497,7 +602,6 @@ export const RichTextEditor = (props: IRichText) => {
         )
     }
 
-
     const render = () => {
         return (
             <div className={classes.fullWidth}>
@@ -511,7 +615,7 @@ export const RichTextEditor = (props: IRichText) => {
 
 
 function createStyleButton(buttonData: IToolbarButton) {
-    const buttonStyles = makeStyles((theme: Theme) => createStyles({
+    const buttonStyles = makeStyles(() => createStyles({
         buttonLabel: {
             justifyContent: "start"
         },
