@@ -792,7 +792,7 @@ function CreateStyleButton(buttonData: IToolbarButton) {
 
                                             disabled={button.disabled} className={classes.menuWidth} key={button.key} value={button.value}>
                                             <Tooltip placement={button?.position ? button.position : "top"} title={`${button.tooltip}`}>
-                                                <div>
+                                                <div className={classes.buttonLabel}>
                                                     {button?.icon ?
                                                         <div>
                                                             <Icon>
