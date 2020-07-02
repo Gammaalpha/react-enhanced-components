@@ -288,12 +288,12 @@ export const RichTextEditor = (props: IRichText) => {
         )
     }
     const manageIndent = (indentValue: any, type: string) => {
-        debugger;
         let tempIndentVal = 0;
         if (typeof indentValue === 'number') {
+            tempIndentVal = indentValue
             switch (type) {
                 case 'add':
-                    tempIndentVal = indentValue + 1
+                    tempIndentVal++;
                     break;
                 case 'remove':
                     if (indentValue > 0) {
@@ -392,16 +392,12 @@ export const RichTextEditor = (props: IRichText) => {
             const [match] = Editor.nodes(editor, {
                 match: (n: any) => n?.indent ? n.indent : 0
             })
-            debugger;
-            return match !== undefined ? match : 0;
+            return match !== undefined ? match[0]?.indent : 0;
         }
         ,
         rightIndent(editor: any) {
             const currentIndent = CustomEditor.currentIndent(editor);
             console.log(currentIndent);
-            
-            debugger;
-
             Transforms.setNodes(
                 editor,
                 {
@@ -414,11 +410,10 @@ export const RichTextEditor = (props: IRichText) => {
         },
         leftIndent(editor: any) {
             const currentIndent = CustomEditor.currentIndent(editor);
-            debugger;
             Transforms.setNodes(
                 editor,
                 {
-                    indent: currentIndent
+                    indent: manageIndent(currentIndent, 'remove')
                 },
                 {
                     match: (n: any) => Text.isText(n), split: true
@@ -565,7 +560,6 @@ export const RichTextEditor = (props: IRichText) => {
         }
 
         const textIndent = (indent: number) => (`${indent * 40}px`)
-        debugger;
         return (
             <span
                 {...props.attributes}
