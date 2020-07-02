@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { Button, Tooltip, MenuItem, Select, FormControl } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
-import { IRichText, IToolbarButton, TextStyleType, TextStyle, BlockFormat } from './model/RichText';
+import { IRichText, IToolbarButton, TextStyleType, TextStyle, BlockFormat, BlockFormatType } from './model/RichText';
 import Icon from "@material-ui/core/Icon"
 import { createEditor, Editor, Transforms, Text } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         '&>.MuiInputBase-root>.MuiSelect-root': {
             paddingTop: 5,
             paddingBottom: 5,
-            paddingRight: 0,
+            // paddingRight: 0,
             paddingLeft: 0,
 
         }
@@ -125,14 +125,15 @@ export const RichTextEditor = (props: IRichText) => {
             buttonStyle: classes.selectEmpty,
             childButtons: [
                 {
-                    key: 'normalText',
+                    key: 'normal',
                     icon: '',
                     tooltip: '',
                     buttonText: "Normal Text",
                     value: 0,
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.normal),
                     ariaLabel: 'Normal text formatting',
                     position: 'top',
-                    buttonStyle: classes.selectEmpty,
+                    buttonStyle: '',
                 },
                 {
                     key: 'heading_1',
@@ -140,9 +141,10 @@ export const RichTextEditor = (props: IRichText) => {
                     tooltip: '',
                     buttonText: "Heading 1",
                     value: 1,
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.headingOne),
                     ariaLabel: 'Heading 1 formatting',
                     position: 'top',
-                    buttonStyle: classes.selectEmpty,
+                    buttonStyle: '',
                 }
                 ,
                 {
@@ -151,9 +153,10 @@ export const RichTextEditor = (props: IRichText) => {
                     tooltip: '',
                     buttonText: "Heading 2",
                     value: 2,
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.headingTwo),
                     ariaLabel: 'Heading 2 formatting',
                     position: 'top',
-                    buttonStyle: classes.selectEmpty,
+                    buttonStyle: '',
                 },
                 {
                     key: 'heading_3',
@@ -161,9 +164,10 @@ export const RichTextEditor = (props: IRichText) => {
                     tooltip: '',
                     buttonText: "Heading 3",
                     value: 3,
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.headingThree),
                     ariaLabel: 'Heading 3 formatting',
                     position: 'top',
-                    buttonStyle: classes.selectEmpty,
+                    buttonStyle: '',
                 }
                 ,
                 {
@@ -172,10 +176,10 @@ export const RichTextEditor = (props: IRichText) => {
                     tooltip: '',
                     buttonText: "Pull Quote",
                     value: 4,
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onMonospacedClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.pullQuote),
                     ariaLabel: 'Pull Quote formatting',
                     position: 'top',
-                    buttonStyle: classes.selectEmpty,
+                    buttonStyle: '',
                 }
                 ,
                 {
@@ -184,10 +188,10 @@ export const RichTextEditor = (props: IRichText) => {
                     tooltip: '',
                     buttonText: "Monospaced",
                     value: 5,
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onMonospacedClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.monospaced),
                     ariaLabel: 'Heading 3 formatting',
                     position: 'top',
-                    buttonStyle: classes.selectEmpty,
+                    buttonStyle: '',
                 }
             ]
         },
@@ -367,7 +371,7 @@ export const RichTextEditor = (props: IRichText) => {
     const renderToolbarButtons = () => {
         const toolbarButtons: any[] = []
         buttonsArray.forEach((element: IToolbarButton) => {
-            toolbarButtons.push(createStyleButton(element))
+            toolbarButtons.push(CreateStyleButton(element))
         });
         return toolbarButtons
 
@@ -412,12 +416,6 @@ export const RichTextEditor = (props: IRichText) => {
             })
             return !!match
         },
-        isBoldMarkActive(editor: any) {
-            const [match] = Editor.nodes(editor, {
-                match: (n: any) => n.bold === true,
-            })
-            return !!match
-        },
         isBlockStyleActive(editor: any, styleFormat: BlockFormat) {
             const [match] = Editor.nodes(editor, {
                 match: (n: any) => n.type === styleFormat,
@@ -447,30 +445,12 @@ export const RichTextEditor = (props: IRichText) => {
             )
         },
         toggleBlockStyle(editor: any, styleFormat: BlockFormat) {
-            const isActive = CustomEditor.isPullQuoteBlockActive(editor)
+            const isActive = CustomEditor.isBlockStyleActive(editor, styleFormat)
+            const normalCheck = (style: string) =>
+                style === "normal" ? null : style
             Transforms.setNodes(
                 editor,
-                { type: isActive ? null : styleFormat },
-                {
-                    match: (n: any) => Editor.isBlock(editor, n)
-                }
-            )
-        },
-        togglePullQuoteBlock(editor: any) {
-            const isActive = CustomEditor.isPullQuoteBlockActive(editor)
-            Transforms.setNodes(
-                editor,
-                { type: isActive ? null : 'pullQuote' },
-                {
-                    match: (n: any) => Editor.isBlock(editor, n)
-                }
-            )
-        },
-        toggleMonospacedBlock(editor: any) {
-            const isActive = CustomEditor.isMonospacedBlockActive(editor)
-            Transforms.setNodes(
-                editor,
-                { type: isActive ? null : 'monospaced' },
+                { type: isActive ? null : normalCheck(styleFormat) },
                 {
                     match: (n: any) => Editor.isBlock(editor, n)
                 }
@@ -528,13 +508,10 @@ export const RichTextEditor = (props: IRichText) => {
             e.preventDefault();
             CustomEditor.toggleTextStyleMark(slateEditor, styleFormat);
         },
-        _onPullQuoteClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        _onBlockStyleClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, blockFormat: BlockFormat) {
             e.preventDefault();
-            CustomEditor.togglePullQuoteBlock(slateEditor);
-        },
-        _onMonospacedClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-            e.preventDefault();
-            CustomEditor.toggleMonospacedBlock(slateEditor);
+            ;
+            CustomEditor.toggleBlockStyle(slateEditor, blockFormat);
         },
         _onLeftAlignClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             e.preventDefault();
@@ -585,12 +562,12 @@ export const RichTextEditor = (props: IRichText) => {
             return
         }
         switch (event.key) {
-            // case '`':
-            //     {
-            //         event.preventDefault()
-            //         CustomEditor.toggleMonospacedBlock(slateEditor)
-            //         break
-            //     }
+            case '`':
+                {
+                    event.preventDefault()
+                    CustomEditor.toggleBlockStyle(slateEditor, BlockFormatType.monospaced)
+                    break
+                }
             case 'b':
                 {
                     event.preventDefault()
@@ -631,6 +608,47 @@ export const RichTextEditor = (props: IRichText) => {
             </pre>
         )
     }
+    // const NormalText = (props: any) => {
+    //     ;
+    //     return (
+    //         <pre {...props.attributes} >
+    //             <p>
+    //                 {props.children}
+    //             </p>
+    //         </pre>
+    //     )
+    // }
+
+    const Heading = (props: any, headingType: string) => {
+        let heading;
+        switch (headingType) {
+            case 'heading_1':
+                heading = (<h1>
+                    {props.children}
+                </h1>)
+                break;
+            case 'heading_2':
+                heading = (<h2>
+                    {props.children}
+                </h2>)
+                break;
+            case 'heading_3':
+                heading = (<h3>
+                    {props.children}
+                </h3>)
+                break;
+            default:
+                console.error("Error in header setting.ks")
+
+                break;
+        }
+
+        return (
+            <pre {...props.attributes} >
+                {heading}
+            </pre>
+        )
+    }
 
 
     const DefaultElement = (props: any) => {
@@ -643,6 +661,21 @@ export const RichTextEditor = (props: IRichText) => {
         switch (props.element.type) {
             case 'monospaced':
                 return <MonospacedElement {...props} />
+            case 'pullQuote':
+                return <PullQuote {...props} />
+            // case 'normal':
+            //     return <NormalText {...props} />
+            case 'heading_1':
+                return Heading(props, 'heading_1')
+            // return <Heading {...props, 'heading_1'} />
+            case 'heading_2':
+                return Heading(props, 'heading_2')
+
+            // return <Heading {...props, 'heading_2'} />
+            case 'heading_3':
+                return Heading(props, 'heading_3')
+
+            // return <Heading {...props, 'heading_3'} />
             default:
                 return <DefaultElement {...props} />
         }
@@ -713,15 +746,29 @@ export const RichTextEditor = (props: IRichText) => {
 }
 
 
-function createStyleButton(buttonData: IToolbarButton) {
+function CreateStyleButton(buttonData: IToolbarButton) {
+    const [selection, setSelection] = useState(buttonData.value)
     const buttonStyles = makeStyles(() => createStyles({
         buttonLabel: {
-            justifyContent: "start"
+            justifyContent: "start",
+            padding: '0 0 0 6px',
+            minWidth: 'auto'
         },
         menuWidth: {
-            width: '60px'
+            minWidth: 'auto',
+            paddingLeft: '0 0 0 3px'
         }
     }))
+
+    const handleCallback = (event: any) => {
+        ;
+        if (buttonData?.childButtons) {
+            const item = buttonData.childButtons.filter((x) => x.value === event.target.value)
+            // console.log(item[0].buttonText);
+            item[0].callback(event);
+            setSelection(event.target.value)
+        }
+    }
     const classes = buttonStyles()
     return (
         <div key={`${buttonData.key}`} >
@@ -732,19 +779,28 @@ function createStyleButton(buttonData: IToolbarButton) {
                             <Select
                                 aria-label={buttonData.ariaLabel}
                                 labelId={`${buttonData.key}_label`}
-                                id={`${buttonData.key}_helper`}
-                                value={buttonData.value}
+                                id={`${buttonData.key}_Id`}
+                                value={selection}
+                                onChange={(event: any) => {
+
+                                    handleCallback(event);
+                                }}
                             >
                                 {
                                     buttonData.childButtons.map((button) => (
-                                        <MenuItem className={classes.menuWidth} key={button.key} value={button.value}>
+                                        <MenuItem
+
+                                            disabled={button.disabled} className={classes.menuWidth} key={button.key} value={button.value}>
                                             <Tooltip placement={button?.position ? button.position : "top"} title={`${button.tooltip}`}>
-                                                <Button className={classes.buttonLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => button.callback(e)}>
-                                                    <Icon>
-                                                        {button.icon}
-                                                    </Icon>
-                                                    {button?.buttonText}
-                                                </Button>
+                                                <div>
+                                                    {button?.icon ?
+                                                        <div>
+                                                            <Icon>
+                                                                {button.icon}
+                                                            </Icon> {button?.buttonText}
+                                                        </div>
+                                                        : button?.buttonText}
+                                                </div>
                                             </Tooltip>
                                         </MenuItem>
                                     ))
@@ -753,8 +809,9 @@ function createStyleButton(buttonData: IToolbarButton) {
                         </Tooltip>
                     </FormControl>
                     : <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
-                        <Button aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={buttonData.buttonStyle}>
+                        <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={buttonData.buttonStyle}>
                             <Icon>{buttonData.icon}</Icon>
+                            {buttonData?.buttonText}
                         </Button>
                     </Tooltip>
             }

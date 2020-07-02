@@ -16,14 +16,15 @@ export interface IToolbarButton {
     position?: any | undefined,
     buttonStyle?: string,
     buttonText?: string,
+    disabled?: boolean,
     childButtons?: IToolbarButton[]
 }
 
 // type TextAlignment = "left" | "right" | "center";
-export type BlockFormat = "normalText" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
+export type BlockFormat = "normal" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
 
 export enum BlockFormatType {
-    normal = 'normalText',
+    normal = 'normal',
     headingOne = 'heading_1',
     headingTwo = 'heading_2',
     headingThree = 'heading_3',
