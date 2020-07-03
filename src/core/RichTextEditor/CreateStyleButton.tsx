@@ -33,8 +33,6 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
     };
     const classes = buttonStyles();
     const render = () => {
-        console.log('button render');
-
         return (
             <div key={`${buttonData.key}`}>
                 {buttonData.childButtons !== undefined && buttonData.childButtons.length > 0 ?

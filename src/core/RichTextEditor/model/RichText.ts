@@ -1,5 +1,3 @@
-import { TooltipProps } from "@material-ui/core";
-
 export interface IRichText {
     id?: string,
     toolbarStyle?: string,
@@ -20,7 +18,16 @@ export interface IToolbarButton {
     childButtons?: IToolbarButton[]
 }
 
-// type TextAlignment = "left" | "right" | "center";
+export type TextAlignment = "left" | "right" | "center" | "justify";
+export enum TextAlignmentType {
+    left = 'left',
+    right = 'right',
+    center = 'center',
+    justify = 'justify',
+
+}
+
+
 export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
 
 export enum BlockFormatType {
