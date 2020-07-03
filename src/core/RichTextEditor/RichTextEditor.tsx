@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
 import { IRichText, IToolbarButton, TextStyleType, TextStyle, BlockFormat, BlockFormatType } from './model/RichText';
-import { createEditor, Editor, Transforms, Text } from 'slate'
+import { createEditor, Editor, Transforms, Text, Node, Path } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
 import { CreateStyleButton } from './CreateStyleButton';
 
@@ -50,12 +50,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     pullQuoteStyle: {
         padding: 32,
-        textAlign: 'center',
-        fontSize: 24,
-        fontStyle: 'italic',
         borderLeft: 'none',
         borderRight: 'none',
-        margin: '28px 0 28px 0'
+        textAlign: 'center',
+        fontSize: 24,
+        margin: '28px 0 28px 0',
+        borderTop: '2px solid lightgray',
+        borderBottom: '2px solid lightgray',
+        '& span': {
+            fontStyle: 'italic',
+        }
+
     },
 
     headingOneStyle: {
@@ -76,6 +81,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     selectEmpty: {
         marginRight: theme.spacing(1),
         backgroundColor: 'lightgray',
+        // minHeight: '25px',
         minWidth: '40px',
         '&:hover': {
             backgroundColor: 'darkgray'
@@ -83,9 +89,25 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         '&>.MuiInputBase-root>.MuiSelect-root': {
             paddingTop: 5,
             paddingBottom: 5,
-            // paddingRight: 0,
             paddingLeft: 0,
-
+            height: 25,
+            marginTop: 5
+        }
+    },
+    blockStyle: {
+        marginRight: theme.spacing(1),
+        backgroundColor: 'lightgray',
+        // minHeight: '25px',
+        minWidth: '135px',
+        '&:hover': {
+            backgroundColor: 'darkgray'
+        },
+        '&>.MuiInputBase-root>.MuiSelect-root': {
+            paddingTop: 5,
+            paddingBottom: 5,
+            paddingLeft: 0,
+            height: 25,
+            marginTop: 5
         }
     },
     toolbar: {
@@ -98,7 +120,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 
 export const RichTextEditor = (props: IRichText) => {
-
+    const [fontStyle, setFontStyle] = useState('paragraph');
+    const [alignment, setAlignment] = useState('left')
     const classes = useStyles()
     const slateEditor = useMemo(() => withReact(createEditor()), [])
     const [value, setValue] = useState<any[]>([
@@ -113,23 +136,23 @@ export const RichTextEditor = (props: IRichText) => {
 
     // const callbacks: any = {}
 
-    const buttonsArray: IToolbarButton[] = [
+    let buttonsArray: IToolbarButton[] = [
         {
             key: 'formatText',
             icon: '',
             tooltip: '',
-            value: 0,
+            value: fontStyle,
             ariaLabel: 'Format Text selection',
             position: 'top',
-            buttonStyle: classes.selectEmpty,
+            buttonStyle: classes.blockStyle,
             childButtons: [
                 {
                     key: 'normal',
                     icon: '',
                     tooltip: '',
                     buttonText: "Normal Text",
-                    value: 0,
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.normal),
+                    value: 'paragraph',
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.paragraph),
                     ariaLabel: 'Normal text formatting',
                     position: 'top',
                     buttonStyle: '',
@@ -139,7 +162,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: '',
                     tooltip: '',
                     buttonText: "Heading 1",
-                    value: 1,
+                    value: 'heading_1',
                     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.headingOne),
                     ariaLabel: 'Heading 1 formatting',
                     position: 'top',
@@ -151,7 +174,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: '',
                     tooltip: '',
                     buttonText: "Heading 2",
-                    value: 2,
+                    value: 'heading_2',
                     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.headingTwo),
                     ariaLabel: 'Heading 2 formatting',
                     position: 'top',
@@ -162,7 +185,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: '',
                     tooltip: '',
                     buttonText: "Heading 3",
-                    value: 3,
+                    value: 'heading_3',
                     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.headingThree),
                     ariaLabel: 'Heading 3 formatting',
                     position: 'top',
@@ -174,7 +197,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: '',
                     tooltip: '',
                     buttonText: "Pull Quote",
-                    value: 4,
+                    value: 'pullQuote',
                     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.pullQuote),
                     ariaLabel: 'Pull Quote formatting',
                     position: 'top',
@@ -186,7 +209,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: '',
                     tooltip: '',
                     buttonText: "Monospaced",
-                    value: 5,
+                    value: 'monospaced',
                     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.monospaced),
                     ariaLabel: 'Heading 3 formatting',
                     position: 'top',
@@ -234,7 +257,7 @@ export const RichTextEditor = (props: IRichText) => {
             key: 'textAlign',
             icon: 'format_align_justify',
             tooltip: '',
-            value: 'left',
+            value: alignment,
             ariaLabel: 'Text Alignment',
             position: 'top',
             buttonStyle: classes.selectEmpty,
@@ -408,6 +431,8 @@ export const RichTextEditor = (props: IRichText) => {
         }
         return tempIndentVal
     }
+
+
     const CustomEditor = {
         isTextStyleActive(editor: any, textStyle: TextStyle) {
             const [match] = Editor.nodes(editor, {
@@ -445,11 +470,9 @@ export const RichTextEditor = (props: IRichText) => {
         },
         toggleBlockStyle(editor: any, styleFormat: BlockFormat) {
             const isActive = CustomEditor.isBlockStyleActive(editor, styleFormat)
-            const normalCheck = (style: string) =>
-                style === "normal" ? null : style
             Transforms.setNodes(
                 editor,
-                { type: isActive ? null : normalCheck(styleFormat) },
+                { type: isActive ? BlockFormatType.paragraph : styleFormat },
                 {
                     match: (n: any) => Editor.isBlock(editor, n)
                 }
@@ -509,7 +532,6 @@ export const RichTextEditor = (props: IRichText) => {
         },
         _onBlockStyleClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, blockFormat: BlockFormat) {
             e.preventDefault();
-            ;
             CustomEditor.toggleBlockStyle(slateEditor, blockFormat);
         },
         _onLeftAlignClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -556,10 +578,39 @@ export const RichTextEditor = (props: IRichText) => {
 
     }
 
+
+    const setFontStyleDropdown = (data: any) => {
+        console.log('before: ', fontStyle);
+
+        setFontStyle(data)
+        console.log('after: ', fontStyle);
+
+    }
+
+    const updateValue = (value: Node[]) => {
+        // event.preventDefault()
+        console.log('value:', value);
+
+        console.log("fragment: ", slateEditor.getFragment());
+        console.log("slate: ", slateEditor.selection);
+        let path: Path | undefined = slateEditor?.selection?.focus.path!
+
+        if (path !== undefined) {
+            console.log("path: ", path);
+            const style = value[path[0]]
+            console.log(style?.type);
+            setFontStyleDropdown(style?.type)
+        }
+
+        // setValue(editor)
+    }
+
     const handleKeyCommand = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        // updateValue(event);
         if (!event.ctrlKey) {
             return
         }
+
         switch (event.key) {
             case '`':
                 {
@@ -607,16 +658,6 @@ export const RichTextEditor = (props: IRichText) => {
             </pre>
         )
     }
-    // const NormalText = (props: any) => {
-    //     ;
-    //     return (
-    //         <pre {...props.attributes} >
-    //             <p>
-    //                 {props.children}
-    //             </p>
-    //         </pre>
-    //     )
-    // }
 
     const Heading = (props: any, headingType: string) => {
         let heading;
@@ -712,14 +753,21 @@ export const RichTextEditor = (props: IRichText) => {
         )
     }
 
+
+
     const editorRender = () => {
         const editorId = props?.id !== undefined ? `$slateEditor_${props.id}` : `slateEditor_${Math.floor(Math.random() * 1000)}`;
         return (
             <div className={classes.editorContainer} onClick={() => focusEditor()}>
                 {toolbar()}
-                <Slate editor={slateEditor}
+                <Slate
+                    editor={slateEditor}
                     value={value}
-                    onChange={(newValue: any) => setValue(newValue)}>
+                    onChange={(newValue: any) => {
+                        updateValue(newValue)
+                        setValue(newValue)
+                    }}
+                >
                     <Editable
                         className={classes.slateEditor}
                         id={editorId}
@@ -729,11 +777,13 @@ export const RichTextEditor = (props: IRichText) => {
                             handleKeyCommand(event)
                         }} />
                 </Slate>
-            </div>
+            </div >
         )
     }
 
     const render = () => {
+        console.log('Main render');
+
         return (
             <div className={classes.fullWidth}>
                 {editorRender()}

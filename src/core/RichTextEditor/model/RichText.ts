@@ -21,10 +21,10 @@ export interface IToolbarButton {
 }
 
 // type TextAlignment = "left" | "right" | "center";
-export type BlockFormat = "normal" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
+export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
 
 export enum BlockFormatType {
-    normal = 'normal',
+    paragraph = 'paragraph',
     headingOne = 'heading_1',
     headingTwo = 'heading_2',
     headingThree = 'heading_3',
