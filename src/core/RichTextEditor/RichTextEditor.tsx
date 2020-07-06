@@ -650,31 +650,46 @@ export const RichTextEditor = (props: IRichText) => {
 
 
     const BlockSection = (props: any, headingType: string) => {
+        console.log("in block: ", props);
+
         let section;
         switch (headingType) {
             case 'monospaced':
-                section = <code>{props.children}</code>
+                section = <code {...props.attributes} className={classes.monospacedStyle} style={{
+                    textAlign: props.element.alignment
+                }}>{props.children}</code>
                 break;
             case 'pullQuote':
-                section = <blockquote className={classes.pullQuoteStyle}>
+                section = <blockquote {...props.attributes} style={{
+                    textAlign: props.element.alignment
+                }}
+                    className={classes.pullQuoteStyle}>
                     {props.children}
                 </blockquote>
                 break;
             case 'paragraph':
-                section = <p>{props.children}</p>
+                section = <p {...props.attributes} style={{
+                    textAlign: props.element.alignment
+                }}>{props.children}</p>
                 break;
             case 'heading_1':
-                section = (<h1>
+                section = (<h1 {...props.attributes} style={{
+                    textAlign: props.element.alignment
+                }}>
                     {props.children}
                 </h1>)
                 break;
             case 'heading_2':
-                section = (<h2>
+                section = (<h2 {...props.attributes} style={{
+                    textAlign: props.element.alignment
+                }}>
                     {props.children}
                 </h2>)
                 break;
             case 'heading_3':
-                section = (<h3>
+                section = (<h3 {...props.attributes} style={{
+                    textAlign: props.element.alignment
+                }}>
                     {props.children}
                 </h3>)
                 break;
@@ -695,17 +710,14 @@ export const RichTextEditor = (props: IRichText) => {
                 </li>)
                 break;
             default:
-                section = <p>{props.children}</p>
+                section = <p {...props.attributes} className={headingType === 'monospaced' ? classes.monospacedStyle : ''} style={{
+                    textAlign: props.element.alignment
+                }}>{props.children}</p>
                 break;
         }
+        console.log("section: ", section);
 
-        return (
-            <pre {...props.attributes} className={headingType === 'monospaced' ? classes.monospacedStyle : ''} style={{
-                textAlign: props.element.alignment
-            }}>
-                {section}
-            </pre>
-        )
+        return section
     }
 
 
