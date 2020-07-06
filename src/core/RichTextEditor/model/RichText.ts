@@ -27,8 +27,14 @@ export enum TextAlignmentType {
 
 }
 
-
-export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
+export const LIST_TYPES = ['numbered-list', 'bulleted-list']
+export type ListFormat = 'numbered-list' | 'bulleted-list' | 'list-item';
+export enum ListFormatType {
+    bulletedList = 'bulleted-list',
+    numberedList = 'numbered-list',
+    listItem = 'list-item'
+}
+export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced" | 'numbered-list' | 'bulleted-list' | 'list-item';
 
 export enum BlockFormatType {
     paragraph = 'paragraph',
@@ -36,7 +42,11 @@ export enum BlockFormatType {
     headingTwo = 'heading_2',
     headingThree = 'heading_3',
     pullQuote = 'pullQuote',
-    monospaced = 'monospaced'
+    monospaced = 'monospaced',
+    numberedList = 'numbered-list',
+    bulletedList = 'bulleted-list',
+    listItem = 'list-item'
+
 };
 
 export type TextStyle = "italic" | "bold" | "strikeThough" | "underline"

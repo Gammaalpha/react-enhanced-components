@@ -3,10 +3,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
-import { IRichText, IToolbarButton, TextStyleType, TextStyle, BlockFormat, BlockFormatType, TextAlignment, TextAlignmentType } from './model/RichText';
+import { IRichText, IToolbarButton, TextStyleType, TextStyle, BlockFormat, BlockFormatType, TextAlignment, TextAlignmentType, LIST_TYPES } from './model/RichText';
 import { createEditor, Editor, Transforms, Text, Node, Path } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
 import { CreateStyleButton } from './CreateStyleButton';
+import { format } from 'path';
 
 
 
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     cmdButton: {
         marginRight: theme.spacing(1),
+        height: 40,
         backgroundColor: 'lightgray',
         minWidth: '40px',
         '&:hover': {
@@ -310,36 +312,24 @@ export const RichTextEditor = (props: IRichText) => {
             ]
         },
         {
-            key: 'order',
+            key: 'format_list_bulleted',
             icon: 'format_list_bulleted',
-            tooltip: '',
-            value: 'unordered_list',
-            ariaLabel: 'Text Alignment',
-            position: 'top',
-            buttonStyle: classes.selectEmpty,
-            childButtons: [
-                {
-                    key: 'format_list_bulleted',
-                    icon: 'format_list_bulleted',
-                    tooltip: 'Unordered list',
-                    ariaLabel: 'Unordered list',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onUnOrderedListClick(e),
-                    position: 'right',
-                    value: 'unordered_list',
-                    buttonStyle: classes.cmdButton
-                },
-                {
-                    key: 'format_list_numbered',
-                    icon: 'format_list_numbered',
-                    tooltip: 'Ordered list',
-                    ariaLabel: 'Ordered list',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onOrderedListClick(e),
-                    position: 'right',
-                    value: 'ordered_list',
-                    buttonStyle: classes.cmdButton
-                }
-            ],
-
+            tooltip: 'Unordered list',
+            ariaLabel: 'Unordered list',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.bulletedList),
+            position: 'right',
+            value: 'bulleted-list',
+            buttonStyle: classes.cmdButton
+        },
+        {
+            key: 'format_list_numbered',
+            icon: 'format_list_numbered',
+            tooltip: 'Ordered list',
+            ariaLabel: 'Ordered list',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onBlockStyleClick(e, BlockFormatType.numberedList),
+            position: 'right',
+            value: 'numbered-list',
+            buttonStyle: classes.cmdButton
         },
         {
             key: 'insert_link',
@@ -387,6 +377,16 @@ export const RichTextEditor = (props: IRichText) => {
             tooltip: 'Format Clear',
             ariaLabel: 'Clear all formatting',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onClearFormatClick(e),
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        },
+        {
+            key: 'abbreviation',
+            icon: '',
+            tooltip: 'Abbreviation',
+            buttonText: '<abbr>',
+            ariaLabel: 'Add Abbreviation over selected text',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => ButtonActions._onAddAbbrClick(e),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -479,13 +479,27 @@ export const RichTextEditor = (props: IRichText) => {
         },
         toggleBlockStyle(editor: any, styleFormat: BlockFormat) {
             const isActive = CustomEditor.isBlockStyleActive(editor, styleFormat)
-            Transforms.setNodes(
-                editor,
-                { type: isActive ? BlockFormatType.paragraph : styleFormat },
+            const isList = LIST_TYPES.includes(styleFormat)
+            Transforms.unwrapNodes(editor, {
+                match: (n: any) => LIST_TYPES.includes(n.type),
+                split: true,
+            })
+            // Transforms.setNodes(
+            //     editor,
+            //     { type: isActive ? BlockFormatType.paragraph : styleFormat },
+            //     {
+            //         match: (n: any) => Editor.isBlock(editor, n)
+            //     }
+            // )
+            Transforms.setNodes(editor,
                 {
-                    match: (n: any) => Editor.isBlock(editor, n)
-                }
-            )
+                    type: isActive ? BlockFormatType.paragraph : isList ? 'list-item' : styleFormat,
+                })
+
+            if (!isActive && isList) {
+                const block = { type: styleFormat, children: [] }
+                Transforms.wrapNodes(editor, block)
+            }
         },
         currentIndent(editor: any) {
             const [match] = Editor.nodes(editor, {
@@ -560,6 +574,11 @@ export const RichTextEditor = (props: IRichText) => {
         _onClearFormatClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             e.preventDefault();
             CustomEditor.clearFormat(slateEditor);
+
+        },
+        _onAddAbbrClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+            e.preventDefault();
+            console.log("Add Abbreviation");
 
         }
 
@@ -659,8 +678,24 @@ export const RichTextEditor = (props: IRichText) => {
                     {props.children}
                 </h3>)
                 break;
+            case 'bulleted-list':
+                section = (<ul>
+                    {props.children}
+                </ul>)
+                break;
+
+            case 'numbered-list':
+                section = (<ol>
+                    {props.children}
+                </ol>)
+                break;
+            case 'list-item':
+                section = (<li>
+                    {props.children}
+                </li>)
+                break;
             default:
-                console.error("Error in section setting.")
+                section = <p>{props.children}</p>
                 break;
         }
 
@@ -677,6 +712,8 @@ export const RichTextEditor = (props: IRichText) => {
     // Define a rendering function based on the element passed to `props`. We use
     // `useCallback` here to memoize the function for subsequent renders.
     const renderElement = useCallback((props: any) => {
+        console.log("Block props: ", props);
+
         return BlockSection(props, props.element.type)
     }, []);
 

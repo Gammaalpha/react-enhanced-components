@@ -19,6 +19,9 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
         menuWidth: {
             minWidth: 'auto',
             paddingLeft: '0 0 0 3px'
+        },
+        topPadding: {
+            paddingTop: 4
         }
     }));
 
@@ -54,7 +57,7 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                                         disabled={button.disabled} className={classes.menuWidth} key={button.key} value={button.value}>
                                         <Tooltip placement={button?.position ? button.position : "top"} title={`${button.tooltip}`}>
                                             <div className={classes.buttonLabel}>
-                                                {button?.icon ?
+                                                {button?.icon !== '' ?
                                                     <div>
                                                         <Icon>
                                                             {button.icon}
@@ -70,8 +73,11 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                     </FormControl>
                     : <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
                         <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={buttonData.buttonStyle}>
-                            <Icon>{buttonData.icon}</Icon>
-                            {buttonData?.buttonText}
+                            {buttonData?.icon !== '' ?
+                                <div><Icon className={classes.topPadding}>
+                                    {buttonData.icon}
+                                </Icon> {buttonData?.buttonText}</div>
+                                : buttonData?.buttonText}
                         </Button>
                     </Tooltip>}
             </div>
