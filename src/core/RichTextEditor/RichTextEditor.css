@@ -7,3 +7,7 @@
 .MuiTooltip-tooltip {
   font-size: 12pt !important;
 }
+
+.ql-editor {
+  min-height: 250px;
+}
