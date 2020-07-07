@@ -560,7 +560,6 @@ export const RichTextEditor = (props: IRichText) => {
         ['image', 'video'],
         [{ 'align': [] }],
         ['link'],                                         // link
-        ['linkOff'],
         ['clean'],                                        // remove formatting button
     ];
 
