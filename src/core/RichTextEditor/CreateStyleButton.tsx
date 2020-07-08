@@ -76,8 +76,8 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                             {buttonData?.icon !== '' ?
                                 <div><Icon className={classes.topPadding}>
                                     {buttonData.icon}
-                                </Icon> {buttonData?.buttonText}</div>
-                                : buttonData?.buttonText}
+                                </Icon> <strong>{buttonData?.buttonText}</strong></div>
+                                : <strong>{buttonData?.buttonText}</strong>}
                         </Button>
                     </Tooltip>}
             </div>

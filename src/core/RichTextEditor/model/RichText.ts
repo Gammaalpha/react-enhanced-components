@@ -50,10 +50,12 @@ export enum BlockFormatType {
 
 };
 
-export type TextStyle = "italic" | "bold" | "strikeThough" | "underline"
+export type TextStyle = "italic" | "bold" | "strikeThough" | "underline" | "subscript" | "superscript"
 export enum TextStyleType {
     bold = 'bold',
     italic = 'italic',
     strikeThrough = 'strikeThough',
-    underline = 'underline'
+    underline = 'underline',
+    subscript = 'subscript',
+    superscript = 'superscript'
 }
