@@ -3,7 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 import "./RichTextEditor.css"
-import { IRichText, IToolbarButton, TextStyle } from './model/RichText';
+import { IRichText, IToolbarButton, TextStyle, TextStyleType } from './model/RichText';
 import Icon from "@material-ui/core/Icon"
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -25,7 +25,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         minWidth: '100%'
     },
     flexGrow1: {
-        flexGrow: 1
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'row'
     },
     tooltip: {
         fontSize: "12pt!important"
@@ -33,6 +35,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     cmdButton: {
         marginRight: theme.spacing(1),
         height: 40,
+        marginTop: 2,
+        marginBottom: 2,
         backgroundColor: 'lightgray',
         minWidth: '40px',
         '&:hover': {
@@ -82,6 +86,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         marginRight: theme.spacing(1),
         backgroundColor: 'lightgray',
         // minHeight: '25px',
+
         minWidth: '40px',
         '&:hover': {
             backgroundColor: 'darkgray'
@@ -98,6 +103,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         fontSize: '12pt'
     },
     blockStyle: {
+        marginTop: 2,
+        marginBottom: 2,
         marginRight: theme.spacing(1),
         backgroundColor: 'lightgray',
         // minHeight: '25px',
@@ -117,6 +124,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         minHeight: '50px',
         paddingLeft: '5px',
         paddingRight: '5px',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
 
     }
 }))
@@ -147,36 +157,21 @@ export const RichTextEditor = (props: IRichText) => {
         editorRef.current?.focus();
     }
 
-    const _onBoldClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        console.log(editorRef.current);
-        console.log(value);
-    }
-
-    const _onItalicClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-
-    }
-    const _onUnderlineClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-
-    const _onLeftAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onCenterAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-    const _onRightAlignClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-    }
-
     const CustomEditor =
-        [
-            function _onStyleMarkClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, style: TextStyle) {
 
-            }
-        ]
+    {
+        _onStyleMarkClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, style: TextStyle) {
+            e.persist()
+            console.log(editorRef.current);
+            console.log(e);
+        },
+        _onAlignmentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: AlignSetting) {
+            e.persist()
+            console.log(editorRef.current);
+            console.log(e);
+        }
+    }
+
 
 
 
@@ -186,7 +181,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_bold',
             tooltip: 'Bold (Ctrl+B)',
             ariaLabel: 'Bold Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onBoldClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.bold),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`
         },
@@ -195,7 +190,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_italic',
             tooltip: 'Italic (Ctrl+I)',
             ariaLabel: 'Italic Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onItalicClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.italic),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`
         },
@@ -204,7 +199,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_underlined',
             tooltip: 'Underline (Ctrl+U)',
             ariaLabel: 'Underline Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onUnderlineClick(e),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.underline),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`
         },
@@ -222,7 +217,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_align_left',
                     tooltip: 'Align Left',
                     ariaLabel: 'Align Left',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onLeftAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(e, 'left'),
                     position: 'right',
                     buttonStyle: classes.cmdButton
                 },
@@ -231,7 +226,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_align_center',
                     tooltip: 'Align Center',
                     ariaLabel: 'Align Center',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onCenterAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(e, 'center'),
                     position: 'right',
                     buttonStyle: classes.cmdButton
                 },
@@ -240,7 +235,7 @@ export const RichTextEditor = (props: IRichText) => {
                     icon: 'format_align_right',
                     tooltip: 'Align Right',
                     ariaLabel: 'Align Right',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => _onRightAlignClick(e),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(e, 'right'),
                     position: 'right',
                     buttonStyle: classes.cmdButton
                 },
@@ -345,7 +340,7 @@ export const RichTextEditor = (props: IRichText) => {
             tooltip: 'Bold (Ctrl+B)',
             buttonText: '',
             ariaLabel: 'Bold Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.persist(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.bold),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
         },
@@ -357,7 +352,7 @@ export const RichTextEditor = (props: IRichText) => {
             tooltip: 'Italic (Ctrl+I)',
             buttonText: '',
             ariaLabel: 'Italic Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.persist(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.italic),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
         },
@@ -369,7 +364,7 @@ export const RichTextEditor = (props: IRichText) => {
             tooltip: 'underline (Ctrl+I)',
             buttonText: '',
             ariaLabel: 'underline Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.persist(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.underline),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
         },
@@ -381,7 +376,7 @@ export const RichTextEditor = (props: IRichText) => {
             tooltip: 'Strikethrough',
             buttonText: '',
             ariaLabel: 'Strike Through Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.persist(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.strikeThrough),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
         },
