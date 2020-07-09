@@ -21,7 +21,7 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
             paddingLeft: '0 0 0 3px'
         },
         topPadding: {
-            paddingTop: 8
+            paddingTop: 4
         }
     }));
 

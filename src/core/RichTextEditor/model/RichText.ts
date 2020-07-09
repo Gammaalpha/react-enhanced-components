@@ -2,6 +2,7 @@ export interface IRichText {
     id?: string,
     toolbarStyle?: string,
     buttons?: string[],
+    value?: string
 }
 
 export interface IToolbarButton {
@@ -50,12 +51,18 @@ export enum BlockFormatType {
 
 };
 
-export type TextStyle = "italic" | "bold" | "strikeThough" | "underline" | "subscript" | "superscript"
+export type IndentDir = -1 | 1;
+export enum IndentDirType {
+    left = -1,
+    right = 1
+}
+
+export type TextStyle = "italic" | "bold" | "strike" | "underline" | "sub" | "super"
 export enum TextStyleType {
     bold = 'bold',
     italic = 'italic',
-    strikeThrough = 'strikeThough',
+    strike = 'strike',
     underline = 'underline',
-    subscript = 'subscript',
-    superscript = 'superscript'
+    sub = 'sub',
+    super = 'super'
 }
