@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
@@ -8,6 +8,7 @@ import Icon from "@material-ui/core/Icon"
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill, { Quill } from 'react-quill';
 import { CreateStyleButton } from './CreateStyleButton';
+import { SelectionState } from 'draft-js';
 const useStyles = makeStyles((theme: Theme) => createStyles({
     editorContainer: {
         width: '100%',
@@ -178,7 +179,7 @@ export const RichTextEditor = (props: IRichText) => {
     const handleChangeSelection = (range: any, oldRange: any, source: any) => {
         const quill = getEditor();
         try {
-            if (quill) {
+            if (quill && range !== null) {
                 // Get the selected text
                 const selectedTextTemp = quill.getText(range);
 
@@ -212,13 +213,13 @@ export const RichTextEditor = (props: IRichText) => {
     const CustomEditor =
     {
         _onChangeIndentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, direction: IndentDir) {
-            e.preventDefault();
+            // e.preventDefault();
             const quill = getEditor();
             const current = +(quill.getFormat(quill.getSelection()).indent || 0);
             applyFormat("indent", current + direction)
         },
         _onScriptStyleMarkClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, style: TextStyle) {
-            e.preventDefault()
+            // e.preventDefault()
             let scriptStyle = ''
             if (style === TextStyleType.sub) {
                 scriptStyle = formats!.script === 'sub' ? '' : 'sub';
@@ -230,7 +231,7 @@ export const RichTextEditor = (props: IRichText) => {
         },
 
         _onStyleMarkClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, style: TextStyle) {
-            e.preventDefault()
+            // e.preventDefault()
             const newStyleValue = !formats[`${style}`];
             applyFormat(style, newStyleValue)
         },
@@ -240,76 +241,6 @@ export const RichTextEditor = (props: IRichText) => {
         }
     }
 
-
-
-
-    const buttonsArray: IToolbarButton[] = [
-        {
-            key: 'BOLD',
-            icon: 'format_bold',
-            tooltip: 'Bold (Ctrl+B)',
-            ariaLabel: 'Bold Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.bold),
-            position: 'top',
-            buttonStyle: `${classes.cmdButton}`
-        },
-        {
-            key: 'ITALIC',
-            icon: 'format_italic',
-            tooltip: 'Italic (Ctrl+I)',
-            ariaLabel: 'Italic Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.italic),
-            position: 'top',
-            buttonStyle: `${classes.cmdButton}`
-        },
-        {
-            key: 'UNDERLINE',
-            icon: 'format_underlined',
-            tooltip: 'Underline (Ctrl+U)',
-            ariaLabel: 'Underline Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.underline),
-            position: 'top',
-            buttonStyle: `${classes.cmdButton}`
-        },
-        {
-            key: 'textAlign',
-            icon: 'format_align_justify',
-            tooltip: '',
-            ariaLabel: 'Text Alignment',
-            value: 'left',
-            position: 'top',
-            buttonStyle: classes.selectEmpty,
-            childButtons: [
-                {
-                    key: 'left',
-                    icon: 'format_align_left',
-                    tooltip: 'Align Left',
-                    ariaLabel: 'Align Left',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(e, 'left'),
-                    position: 'right',
-                    buttonStyle: classes.cmdButton
-                },
-                {
-                    key: 'center',
-                    icon: 'format_align_center',
-                    tooltip: 'Align Center',
-                    ariaLabel: 'Align Center',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(e, 'center'),
-                    position: 'right',
-                    buttonStyle: classes.cmdButton
-                },
-                {
-                    key: 'right',
-                    icon: 'format_align_right',
-                    tooltip: 'Align Right',
-                    ariaLabel: 'Align Right',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(e, 'right'),
-                    position: 'right',
-                    buttonStyle: classes.cmdButton
-                },
-            ]
-        }
-    ]
 
     const toolbarArray: IToolbarButton[] = [
         {
@@ -629,7 +560,6 @@ export const RichTextEditor = (props: IRichText) => {
     ]
 
 
-
     const renderToolbarButtons = () => {
         const toolbarButtons: any[] = []
         toolbarArray.forEach((element: IToolbarButton) => {
@@ -641,7 +571,6 @@ export const RichTextEditor = (props: IRichText) => {
 
     const toolbar = () => {
         console.log('toolbar re-render');
-
         return (
             <div id={toolbarId} className={classes.flexGrow1}>
                 <AppBar position="static" className={classes.appBar}>
@@ -702,6 +631,58 @@ export const RichTextEditor = (props: IRichText) => {
     //     "color"
     // ];
 
+    const handleChange = (updatedValue: string) => {
+        if (props.value) {
+            let newValue = props.value;
+            setValue(newValue)
+        }
+        else {
+            setValue(updatedValue)
+        }
+    }
+
+    const handleOnFocus = (range: any, source: any, editor: any) => {
+        if (!editing) {
+            setEditing(true)
+        }
+    }
+
+    const checkParent = (parent: React.RefObject<ReactQuill>, child: any) => {
+        console.log('parent: ', parent, '\nChild:', child);
+        debugger;
+        let node = child?.currentTarget.parentNode;
+        while (node !== null) {
+            if (node == parent.current) {
+                return true;
+            }
+            node = node.parentNode
+        }
+        return false
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+        let outside: boolean = !checkParent(editorRef, event)
+        if (outside) {
+            if (editing) {
+                setEditing(false)
+            }
+        }
+        else {
+            if (!editing) {
+                setEditing(true)
+            }
+        }
+    }
+
+    // const handleClickInside = () => { }
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
+
     const editorRender = () => {
         // console.log("render editor");
         const editorId = props?.id !== undefined ? `$quillEditor_${props.id}` : `quillEditor_${randNum}`;
@@ -718,11 +699,13 @@ export const RichTextEditor = (props: IRichText) => {
                         ref={editorRef}
                         id={editorId}
                         // formats={formats}
+                        onChange={handleChange}
                         onChangeSelection={handleChangeSelection}
                         modules={modules}
                         // theme={"bubble"}
-                        defaultValue={value}
-                        onChange={setValue} />
+                        defaultValue={value || ''}
+                        onFocus={handleOnFocus}
+                    />
                 </div>
             </div>
         )
@@ -741,3 +724,19 @@ export const RichTextEditor = (props: IRichText) => {
 }
 
 
+// function UseOutsideAlert(ref: any) {
+//     useEffect(() => {
+//         function handleClickOutside(event: MouseEvent) {
+//             console.log(ref.current,event);
+//             debugger;
+//             if (ref.current && !ref.current.contains(event.target)) {
+//                 console.log("Clicked Outside of the container!");
+
+//             }
+//         }
+//         document.addEventListener("mousedown", (e) => handleClickOutside(e))
+//         return () => {
+//             document.removeEventListener("mousedown", (e) => handleClickOutside(e))
+//         }
+//     }, [ref])
+// }
