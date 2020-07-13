@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useReducer } from 'react'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
@@ -8,7 +8,6 @@ import Icon from "@material-ui/core/Icon"
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill, { Quill } from 'react-quill';
 import { CreateStyleButton } from './CreateStyleButton';
-import { SelectionState } from 'draft-js';
 const useStyles = makeStyles((theme: Theme) => createStyles({
     editorContainer: {
         width: '100%',
@@ -149,14 +148,8 @@ Quill.register(Size, true);
 const randNum = Math.floor(Math.random() * 1000)
 
 export const RichTextEditor = (props: IRichText) => {
-    const [fontStyle, setFontStyle] = useState('paragraph');
-    const [alignment, setAlignment] = useState('left')
-    const [value, setValue] = useState(props.value);
-    const [editing, setEditing] = useState(false)
-    const [selectedText, setSelectedText] = useState(undefined)
-    const [formats, setFormats] = useState<any>({})
-    const [selectedUrl, setSelectedUrl] = useState(undefined);
-
+    let value = props?.value === '' ? '' : props.value;
+    const [state, setState] = useReducer((state: any, newState: any) => ({ ...state, ...newState }), { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, })
     const classes = useStyles()
     const editorRef = useRef<ReactQuill>(null)
     let toolbarId = props?.id !== undefined ? `toolbar_${props.id}` : `toolbar_${randNum}`;
@@ -188,10 +181,16 @@ export const RichTextEditor = (props: IRichText) => {
 
                 // Get the currently selected url
                 const selectedUrlTemp = formatsTemp.link ? formatsTemp.link : undefined;
-                setSelectedText(selectedTextTemp);
-                setSelectedUrl(selectedUrlTemp);
-                setFormats(formatsTemp)
+                console.log("setSelectedText");
 
+                // setSelectedText(selectedTextTemp);
+                // setSelectedUrl(selectedUrlTemp);
+                // setFormats(formatsTemp)
+                setState({
+                    selectedText: selectedTextTemp,
+                    selectedUrl: selectedUrlTemp,
+                    formats: formatsTemp
+                });
                 // if (this._propertyPaneRef && this.state.morePaneVisible) {
                 //     this._propertyPaneRef.onChangeSelection(range, oldRange, source);
                 // }
@@ -222,17 +221,17 @@ export const RichTextEditor = (props: IRichText) => {
             // e.preventDefault()
             let scriptStyle = ''
             if (style === TextStyleType.sub) {
-                scriptStyle = formats!.script === 'sub' ? '' : 'sub';
+                scriptStyle = state.formats!.script === 'sub' ? '' : 'sub';
             }
             if (style === TextStyleType.super) {
-                scriptStyle = formats!.script === 'super' ? '' : 'super';
+                scriptStyle = state.formats!.script === 'super' ? '' : 'super';
             }
             applyFormat('script', scriptStyle)
         },
 
         _onStyleMarkClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, style: TextStyle) {
             // e.preventDefault()
-            const newStyleValue = !formats[`${style}`];
+            const newStyleValue = !state.formats[`${style}`];
             applyFormat(style, newStyleValue)
         },
         _onAlignmentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: AlignSetting) {
@@ -246,7 +245,7 @@ export const RichTextEditor = (props: IRichText) => {
         {
             key: 'header',
             className: 'ql-header',
-            value: fontStyle,
+            value: state.fontStyle,
             icon: '',
             tooltip: 'Text Format',
             ariaLabel: 'Format Selection',
@@ -431,7 +430,7 @@ export const RichTextEditor = (props: IRichText) => {
             key: 'textAlign',
             icon: 'format_align_justify',
             tooltip: '',
-            value: alignment,
+            value: state.alignment,
             ariaLabel: 'Text Alignment',
             position: 'top',
             buttonStyle: classes.selectEmpty,
@@ -632,79 +631,29 @@ export const RichTextEditor = (props: IRichText) => {
     // ];
 
     const handleChange = (updatedValue: string) => {
+        console.log("handleChange");
+
         if (props.value) {
-            let newValue = props.value;
-            setValue(newValue)
+            value = props.value;
         }
         else {
-            setValue(updatedValue)
+            value = updatedValue
         }
     }
-
-    const handleOnFocus = (range: any, source: any, editor: any) => {
-        if (!editing) {
-            setEditing(true)
-        }
-    }
-
-    const checkParent = (parent: React.RefObject<ReactQuill>, child: any) => {
-        console.log('parent: ', parent, '\nChild:', child);
-        debugger;
-        let node = child?.currentTarget.parentNode;
-        while (node !== null) {
-            if (node == parent.current) {
-                return true;
-            }
-            node = node.parentNode
-        }
-        return false
-    }
-
-    const handleClickOutside = (event: MouseEvent) => {
-        let outside: boolean = !checkParent(editorRef, event)
-        if (outside) {
-            if (editing) {
-                setEditing(false)
-            }
-        }
-        else {
-            if (!editing) {
-                setEditing(true)
-            }
-        }
-    }
-
-    // const handleClickInside = () => { }
-
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [])
 
     const editorRender = () => {
-        // console.log("render editor");
         const editorId = props?.id !== undefined ? `$quillEditor_${props.id}` : `quillEditor_${randNum}`;
-
-        // icons['linkOff'] = linkOff;
         return (
             <div>
-                {/* <Button onClick={() => {
-                    console.log(editorRef);
-                }}>Ref</Button> */}
                 <div className={classes.editorContainer} onClick={() => focusEditor()}>
-                    {toolbar()}
+                {toolbar()}
                     <ReactQuill
                         ref={editorRef}
                         id={editorId}
-                        // formats={formats}
                         onChange={handleChange}
                         onChangeSelection={handleChangeSelection}
                         modules={modules}
-                        // theme={"bubble"}
-                        defaultValue={value || ''}
-                        onFocus={handleOnFocus}
+                        defaultValue={value}
                     />
                 </div>
             </div>
@@ -722,21 +671,3 @@ export const RichTextEditor = (props: IRichText) => {
 
     return render();
 }
-
-
-// function UseOutsideAlert(ref: any) {
-//     useEffect(() => {
-//         function handleClickOutside(event: MouseEvent) {
-//             console.log(ref.current,event);
-//             debugger;
-//             if (ref.current && !ref.current.contains(event.target)) {
-//                 console.log("Clicked Outside of the container!");
-
-//             }
-//         }
-//         document.addEventListener("mousedown", (e) => handleClickOutside(e))
-//         return () => {
-//             document.removeEventListener("mousedown", (e) => handleClickOutside(e))
-//         }
-//     }, [ref])
-// }
