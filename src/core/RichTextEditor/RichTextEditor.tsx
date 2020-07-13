@@ -149,14 +149,15 @@ const randNum = Math.floor(Math.random() * 1000)
 
 export const RichTextEditor = (props: IRichText) => {
     let value = props?.value === '' ? '' : props.value;
-    const [state, setState] = useReducer((state: any, newState: any) => ({ ...state, ...newState }), { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, })
+    const [state, setState] = useReducer((state: any, newState: any) =>
+        ({ ...state, ...newState }),
+        { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, urlDialog: false, tableDialog: false })
     const classes = useStyles()
     const editorRef = useRef<ReactQuill>(null)
     let toolbarId = props?.id !== undefined ? `toolbar_${props.id}` : `toolbar_${randNum}`;
     function focusEditor() {
         editorRef.current?.focus();
     }
-
 
     const getEditor = (): any | undefined => {
         try {
@@ -181,7 +182,6 @@ export const RichTextEditor = (props: IRichText) => {
 
                 // Get the currently selected url
                 const selectedUrlTemp = formatsTemp.link ? formatsTemp.link : undefined;
-                console.log("setSelectedText");
 
                 // setSelectedText(selectedTextTemp);
                 // setSelectedUrl(selectedUrlTemp);
@@ -209,6 +209,20 @@ export const RichTextEditor = (props: IRichText) => {
         }, 100);
     }
 
+    const clearFormatting = () => {
+        const quill = getEditor();
+        const range = quill.getSelection();
+        if (range.length === 0) {
+            console.log(quill.getLeaf(range.index))
+            let [leaf, offset] = quill.getLeaf(range.index);
+            console.log(leaf, offset);
+            quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
+        }
+        else {
+            quill.removeFormat(range.index, range.length)
+        }
+    }
+
     const CustomEditor =
     {
         _onChangeIndentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, direction: IndentDir) {
@@ -233,6 +247,9 @@ export const RichTextEditor = (props: IRichText) => {
             // e.preventDefault()
             const newStyleValue = !state.formats[`${style}`];
             applyFormat(style, newStyleValue)
+        },
+        _onClearFormattingClick() {
+            clearFormatting()
         },
         _onAlignmentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: AlignSetting) {
             e.preventDefault()
@@ -532,7 +549,7 @@ export const RichTextEditor = (props: IRichText) => {
             icon: 'format_clear',
             tooltip: 'Format Clear',
             ariaLabel: 'Clear all formatting',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onClearFormattingClick(),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -569,7 +586,6 @@ export const RichTextEditor = (props: IRichText) => {
     }
 
     const toolbar = () => {
-        console.log('toolbar re-render');
         return (
             <div id={toolbarId} className={classes.flexGrow1}>
                 <AppBar position="static" className={classes.appBar}>
@@ -603,7 +619,6 @@ export const RichTextEditor = (props: IRichText) => {
     //         container: toolbarOptions,
     //         handlers: {
     //             'linkOff': (value: any) => {
-    //                 console.log("linkOff: ", value);
     //             }
     //         }
     //     }
@@ -631,7 +646,6 @@ export const RichTextEditor = (props: IRichText) => {
     // ];
 
     const handleChange = (updatedValue: string) => {
-        console.log("handleChange");
 
         if (props.value) {
             value = props.value;
@@ -646,7 +660,7 @@ export const RichTextEditor = (props: IRichText) => {
         return (
             <div>
                 <div className={classes.editorContainer} onClick={() => focusEditor()}>
-                {toolbar()}
+                    {toolbar()}
                     <ReactQuill
                         ref={editorRef}
                         id={editorId}
@@ -679,7 +693,6 @@ export const RichTextEditor = (props: IRichText) => {
 //             console.log(ref.current,event);
 //             debugger;
 //             if (ref.current && !ref.current.contains(event.target)) {
-//                 console.log("Clicked Outside of the container!");
 
 //             }
 //         }
