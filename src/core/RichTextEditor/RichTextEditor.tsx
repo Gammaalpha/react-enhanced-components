@@ -247,7 +247,7 @@ export const RichTextEditor = (props: IRichText) => {
             className: 'ql-header',
             value: state.fontStyle,
             icon: '',
-            tooltip: 'Text Format',
+            tooltip: '',
             ariaLabel: 'Format Selection',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onStyleMarkClick(e, TextStyleType.bold),
             position: 'top',
@@ -671,3 +671,21 @@ export const RichTextEditor = (props: IRichText) => {
 
     return render();
 }
+
+
+// function UseOutsideAlert(ref: any) {
+//     useEffect(() => {
+//         function handleClickOutside(event: MouseEvent) {
+//             console.log(ref.current,event);
+//             debugger;
+//             if (ref.current && !ref.current.contains(event.target)) {
+//                 console.log("Clicked Outside of the container!");
+
+//             }
+//         }
+//         document.addEventListener("mousedown", (e) => handleClickOutside(e))
+//         return () => {
+//             document.removeEventListener("mousedown", (e) => handleClickOutside(e))
+//         }
+//     }, [ref])
+// }
