@@ -2,7 +2,18 @@ export interface IRichText {
     id?: string,
     toolbarStyle?: string,
     buttons?: string[],
-    value?: string
+    value?: string,
+    editing: boolean,
+}
+
+export interface IQuillEditor {
+    editorId: string,
+    toolbarId: string,
+    toolbarStyle?: string,
+    editing: boolean,
+    buttons?: string[],
+    value?: string,
+    callback?: any
 }
 
 export interface IToolbarButton {
