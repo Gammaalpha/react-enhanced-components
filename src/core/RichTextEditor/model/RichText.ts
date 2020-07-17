@@ -40,11 +40,11 @@ export enum TextAlignmentType {
 
 }
 
-export const LIST_TYPES = ['numbered-list', 'bulleted-list']
-export type ListFormat = 'numbered' | 'bullet';
+export const LIST_TYPES = ['ordered-list', 'bulleted-list']
+export type ListFormat = 'ordered' | 'bullet';
 export enum ListFormatType {
     bulletedList = 'bullet',
-    numberedList = 'numbered'
+    orderedList = 'ordered'
 }
 export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
 

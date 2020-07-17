@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -85,13 +85,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
+
+
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
     const [state, setState] = useReducer((state: any, newState: any) =>
         ({ ...state, ...newState }),
         { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, urlDialog: false, tableDialog: false });
 
+    useEffect(() => {
+        console.log("state updated:", state);
 
+    }, [state])
     const getEditor = (): any | undefined => {
         try {
             return props.editorRef!.current?.getEditor();
@@ -100,11 +105,11 @@ export default function CustomToolbar(props: IToolbar) {
         }
     }
 
-
     /**
-* Called when richtext selection changes
-*/
+    * Called when richtext selection changes
+    */
     const handleChangeSelection = (range: any, oldRange: any, source: any) => {
+        
         const quill = getEditor();
         try {
             if (quill && range !== null) {
@@ -113,14 +118,16 @@ export default function CustomToolbar(props: IToolbar) {
 
                 // Get the current format
                 const formatsTemp = quill.getFormat(range);
+                // console.log("formatsTemp", formatsTemp);
 
                 // Get the currently selected url
                 const selectedUrlTemp = formatsTemp.link ? formatsTemp.link : undefined;
                 setState({
                     selectedText: selectedTextTemp,
                     selectedUrl: selectedUrlTemp,
-                    formats: formatsTemp
+                    formats: quill.getFormat(range)
                 });
+
             }
         } catch (error) {
             console.error(error);
@@ -128,6 +135,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const applyFormat = (name: string, value: any) => {
+        
         const quill = getEditor();
         quill.format(name, value);
         setTimeout(() => {
@@ -185,9 +193,7 @@ export default function CustomToolbar(props: IToolbar) {
             applyFormat("align", newAlignValue)
         },
         _onListClick(listType: ListFormat) {
-            const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'numbered' && state.formats.list === 'numbered') ? false : listType;
-            console.log("listValue:", newListValue);
-
+            const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'ordered' && state.formats.list === 'ordered') ? false : listType;
             applyFormat('list', newListValue);
         }
     }
@@ -367,14 +373,14 @@ export default function CustomToolbar(props: IToolbar) {
             buttonStyle: `${classes.cmdButton}`,
         },
         {
-            key: 'numbered',
+            key: 'ordered',
             className: 'list',
-            value: 'numbered',
+            value: 'ordered',
             icon: 'format_list_numbered',
-            tooltip: 'Numbered List',
+            tooltip: 'ordered List',
             buttonText: '',
-            ariaLabel: 'Numbered List',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onListClick(ListFormatType.numberedList),
+            ariaLabel: 'ordered List',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onListClick(ListFormatType.orderedList),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
         },
