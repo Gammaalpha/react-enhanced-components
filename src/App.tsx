@@ -197,7 +197,7 @@ function App() {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div className={'FullWidth'}>
-            <RichTextEditor></RichTextEditor>
+            <RichTextEditor editing={true}></RichTextEditor>
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
