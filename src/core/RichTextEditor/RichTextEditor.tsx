@@ -6,7 +6,7 @@ import './RichTextEditor.css'
 
 const randNum = Math.floor(Math.random() * 1000)
 
-export default function RichTextEditor(props: IRichText) {
+export function RichTextEditor(props: IRichText) {
     let toolbarId = `toolbar_${randNum}`;
     const editorId = `quillEditor_${randNum}`;
     const [editorRefState, setEditorRefState] = useState(null)
