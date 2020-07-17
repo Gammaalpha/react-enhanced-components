@@ -12,8 +12,6 @@ export default function QuillEditor(props: IQuillEditor) {
 
     const [value, setValue] = useState(initialValue)
     const handleChange = (_value: any) => {
-        console.log("value:", _value);
-
         setValue(_value)
     }
     const modules = {
@@ -44,7 +42,7 @@ export default function QuillEditor(props: IQuillEditor) {
 
     useEffect(() => {
         props.callback(editorRef)
-    }, [])
+    }, [props])
 
     return render();
 }

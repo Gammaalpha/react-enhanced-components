@@ -41,13 +41,12 @@ export enum TextAlignmentType {
 }
 
 export const LIST_TYPES = ['numbered-list', 'bulleted-list']
-export type ListFormat = 'numbered-list' | 'bulleted-list' | 'list-item';
+export type ListFormat = 'numbered' | 'bullet';
 export enum ListFormatType {
-    bulletedList = 'bulleted-list',
-    numberedList = 'numbered-list',
-    listItem = 'list-item'
+    bulletedList = 'bullet',
+    numberedList = 'numbered'
 }
-export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced" | 'numbered-list' | 'bulleted-list' | 'list-item';
+export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
 
 export enum BlockFormatType {
     paragraph = 'paragraph',
@@ -55,11 +54,7 @@ export enum BlockFormatType {
     headingTwo = 'heading_2',
     headingThree = 'heading_3',
     pullQuote = 'pullQuote',
-    monospaced = 'monospaced',
-    numberedList = 'numbered-list',
-    bulletedList = 'bulleted-list',
-    listItem = 'list-item'
-
+    monospaced = 'monospaced'
 };
 
 export type IndentDir = -1 | 1;

@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
@@ -104,7 +104,7 @@ export default function CustomToolbar(props: IToolbar) {
     /**
 * Called when richtext selection changes
 */
-    const handleChangeSelection = (range: any) => {
+    const handleChangeSelection = (range: any, oldRange: any, source: any) => {
         const quill = getEditor();
         try {
             if (quill && range !== null) {
@@ -116,22 +116,14 @@ export default function CustomToolbar(props: IToolbar) {
 
                 // Get the currently selected url
                 const selectedUrlTemp = formatsTemp.link ? formatsTemp.link : undefined;
-
-                // setSelectedText(selectedTextTemp);
-                // setSelectedUrl(selectedUrlTemp);
-                // setFormats(formatsTemp)
                 setState({
                     selectedText: selectedTextTemp,
                     selectedUrl: selectedUrlTemp,
                     formats: formatsTemp
                 });
-                // if (this._propertyPaneRef && this.state.morePaneVisible) {
-                //     this._propertyPaneRef.onChangeSelection(range, oldRange, source);
-                // }
             }
         } catch (error) {
             console.error(error);
-
         }
     }
 
@@ -139,10 +131,9 @@ export default function CustomToolbar(props: IToolbar) {
         const quill = getEditor();
         quill.format(name, value);
         setTimeout(() => {
-            // handleChangeSelection(quill.getSelection(), undefined, undefined)
-            console.log("applyFormat");
-
-            handleChangeSelection(quill.getSelection())
+            // console.log("applyFormat");
+            handleChangeSelection(quill.getSelection(), undefined, undefined)
+            // handleChangeSelection(quill.getSelection())
         }, 100);
     }
 
@@ -188,9 +179,16 @@ export default function CustomToolbar(props: IToolbar) {
         _onClearFormattingClick() {
             clearFormatting()
         },
-        _onAlignmentClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-            e.preventDefault()
+        _onAlignmentClick(alignValue: TextAlignment) {
+            // e.preventDefault()
+            const newAlignValue = alignValue === 'left' ? false : alignValue;
+            applyFormat("align", newAlignValue)
+        },
+        _onListClick(listType: ListFormat) {
+            const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'numbered' && state.formats.list === 'numbered') ? false : listType;
+            console.log("listValue:", newListValue);
 
+            applyFormat('list', newListValue);
         }
     }
 
@@ -361,10 +359,10 @@ export default function CustomToolbar(props: IToolbar) {
             className: 'list',
             value: 'bulleted',
             icon: 'format_list_bulleted',
-            tooltip: 'Bullet points',
+            tooltip: 'Bulleted List',
             buttonText: '',
-            ariaLabel: 'Bullet points',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            ariaLabel: 'Bulleted List',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onListClick(ListFormatType.bulletedList),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
         },
@@ -373,10 +371,10 @@ export default function CustomToolbar(props: IToolbar) {
             className: 'list',
             value: 'numbered',
             icon: 'format_list_numbered',
-            tooltip: 'Strikethrough',
+            tooltip: 'Numbered List',
             buttonText: '',
-            ariaLabel: 'Strike Through Selection',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            ariaLabel: 'Numbered List',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onListClick(ListFormatType.numberedList),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
         },
@@ -394,7 +392,7 @@ export default function CustomToolbar(props: IToolbar) {
                     icon: 'format_align_left',
                     tooltip: 'Align Left',
                     ariaLabel: 'Align Left',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onChangeIndentClick(IndentDirType.left),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(TextAlignmentType.left),
                     position: 'right',
                     value: 'left',
                     buttonStyle: classes.cmdButton
@@ -404,7 +402,7 @@ export default function CustomToolbar(props: IToolbar) {
                     icon: 'format_align_center',
                     tooltip: 'Align Center',
                     ariaLabel: 'Align Center',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(TextAlignmentType.center),
                     position: 'right',
                     value: 'center',
                     buttonStyle: classes.cmdButton
@@ -414,7 +412,7 @@ export default function CustomToolbar(props: IToolbar) {
                     icon: 'format_align_justify',
                     tooltip: 'Justify',
                     ariaLabel: 'Justify',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(TextAlignmentType.justify),
                     position: 'right',
                     value: 'justify',
                     buttonStyle: classes.cmdButton
@@ -424,7 +422,7 @@ export default function CustomToolbar(props: IToolbar) {
                     icon: 'format_align_right',
                     tooltip: 'Align Right',
                     ariaLabel: 'Align Right',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAlignmentClick(TextAlignmentType.right),
                     position: 'right',
                     value: 'right',
                     buttonStyle: classes.cmdButton
