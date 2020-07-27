@@ -11,7 +11,7 @@ export function RichTextEditor(props: IRichText) {
     const editorId = `quillEditor_${randNum}`;
     const [editorRefState, setEditorRefState] = useState(null)
     const handleIncomingRef = (ref: any) => {
-        console.log("ref handled", ref);
+        // console.log("ref handled", ref);
         setEditorRefState(ref)
     }
     const render = () => {

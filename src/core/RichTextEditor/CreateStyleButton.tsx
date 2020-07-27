@@ -22,6 +22,9 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
         },
         topPadding: {
             paddingTop: 4
+        },
+        transformNone: {
+            textTransform: 'none'
         }
     }));
 
@@ -61,9 +64,9 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                                                     <div>
                                                         <Icon>
                                                             {button.icon}
-                                                        </Icon> {button?.buttonText}
+                                                        </Icon> <span> {button?.buttonText}</span>
                                                     </div>
-                                                    : button?.buttonText}
+                                                    : <span> {button?.buttonText}</span>}
                                             </div>
                                         </Tooltip>
                                     </MenuItem>
@@ -72,12 +75,12 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                         </Tooltip>
                     </FormControl>
                     : <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
-                        <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={buttonData.buttonStyle}>
+                        <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={`${buttonData.buttonStyle} ${classes.transformNone}`}>
                             {buttonData?.icon !== '' ?
                                 <div><Icon className={classes.topPadding}>
                                     {buttonData.icon}
-                                </Icon> <strong>{buttonData?.buttonText}</strong></div>
-                                : <strong>{buttonData?.buttonText}</strong>}
+                                </Icon> <span><strong>{buttonData?.buttonText}</strong></span></div>
+                                : <span><strong>{buttonData?.buttonText}</strong></span>}
                         </Button>
                     </Tooltip>}
             </div>

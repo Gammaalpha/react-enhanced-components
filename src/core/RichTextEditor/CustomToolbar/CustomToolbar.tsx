@@ -1,9 +1,10 @@
 import React, { useReducer, useEffect } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
 import './CustomToolbar.css'
+import { Quill } from 'react-quill';
 
 
 export interface IToolbar {
@@ -46,8 +47,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     selectEmpty: {
         marginRight: theme.spacing(1),
         backgroundColor: 'lightgray',
-        // minHeight: '25px',
-
         minWidth: '40px',
         '&:hover': {
             backgroundColor: 'darkgray'
@@ -60,7 +59,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             marginTop: 5
         }
     },
-
+    pullQuoteStyle: {
+        padding: 32,
+        borderLeft: 'none',
+        borderRight: 'none',
+        textAlign: 'center',
+        fontSize: 24,
+        margin: '28px 0 28px 0',
+        borderTop: '2px solid lightgray',
+        borderBottom: '2px solid lightgray',
+        '& span': {
+            fontStyle: 'italic',
+        }
+    },
     blockStyle: {
         marginTop: 2,
         marginBottom: 2,
@@ -85,13 +96,34 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
+let Parchment = Quill.import('parchment');
 
+let config = {
+    scope: Parchment.Scope.BLOCK,
+};
+
+let MClass = new Parchment.Attributor.Class('mark', 'style', config);
+Quill.register(MClass, true)
+
+let SizeClass = Quill.import('formats/size');
+SizeClass.whitelist = [
+    'small',
+    'medium',
+    'mediumplus',
+    'large',
+    'xlarge',
+    'xlargeplus',
+    'xxlarge',
+    'xxxlarge',
+    'xxlargeplus',
+    'super'];
+Quill.register(SizeClass, true);
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
     const [state, setState] = useReducer((state: any, newState: any) =>
         ({ ...state, ...newState }),
-        { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, urlDialog: false, tableDialog: false });
+        { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
 
     useEffect(() => {
         console.log("state updated:", state);
@@ -109,7 +141,7 @@ export default function CustomToolbar(props: IToolbar) {
     * Called when richtext selection changes
     */
     const handleChangeSelection = (range: any, oldRange: any, source: any) => {
-        
+
         const quill = getEditor();
         try {
             if (quill && range !== null) {
@@ -135,9 +167,13 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const applyFormat = (name: string, value: any) => {
-        
         const quill = getEditor();
-        quill.format(name, value);
+        if (name === 'mark') {
+            quill.format('mark', value);
+        }
+        else {
+            quill.format(name, value);
+        }
         setTimeout(() => {
             // console.log("applyFormat");
             handleChangeSelection(quill.getSelection(), undefined, undefined)
@@ -161,6 +197,18 @@ export default function CustomToolbar(props: IToolbar) {
 
     const CustomEditor =
     {
+        _onTextFormatClick(type: BlockFormat) {
+            if (type === BlockFormatType.paragraph) {
+                applyFormat("header", '');
+                return;
+            }
+            if (type === BlockFormatType.pullQuote) {
+                debugger;
+                applyFormat("mark", type);
+                return;
+            }
+            applyFormat("header", type);
+        },
         _onChangeIndentClick(direction: IndentDir) {
             // e.preventDefault();
             const quill = getEditor();
@@ -178,7 +226,6 @@ export default function CustomToolbar(props: IToolbar) {
             }
             applyFormat('script', scriptStyle)
         },
-
         _onStyleMarkClick(style: TextStyle) {
             // e.preventDefault()
             const newStyleValue = !state.formats[`${style}`];
@@ -195,6 +242,18 @@ export default function CustomToolbar(props: IToolbar) {
         _onListClick(listType: ListFormat) {
             const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'ordered' && state.formats.list === 'ordered') ? false : listType;
             applyFormat('list', newListValue);
+        },
+        _onTextFormatColor() {
+
+        },
+        _onTextHighlight() {
+
+        },
+        _onAbbrInsert() {
+
+        },
+        _onHrInsert() {
+
         }
     }
 
@@ -219,7 +278,7 @@ export default function CustomToolbar(props: IToolbar) {
                     tooltip: '',
                     buttonText: 'Header 1',
                     ariaLabel: 'Header 1 Selection',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTextFormatClick(BlockFormatType.headingOne),
                     position: 'top',
                     buttonStyle: '',
                 },
@@ -232,7 +291,7 @@ export default function CustomToolbar(props: IToolbar) {
                     buttonText: 'Header 2',
 
                     ariaLabel: 'Header 2 Selection',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTextFormatClick(BlockFormatType.headingTwo),
                     position: 'top',
                     buttonStyle: '',
                 },
@@ -245,31 +304,42 @@ export default function CustomToolbar(props: IToolbar) {
                     buttonText: 'Header 3',
 
                     ariaLabel: 'Header 3 Selection',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTextFormatClick(BlockFormatType.headingThree),
                     position: 'top',
                     buttonStyle: '',
                 },
+                {
+                    key: 'header4',
+                    className: 'header4',
+                    value: 3,
+                    icon: '',
+                    tooltip: '',
+                    buttonText: 'Header 4',
 
+                    ariaLabel: 'Header 4 Selection',
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTextFormatClick(BlockFormatType.headingFour),
+                    position: 'top',
+                    buttonStyle: '',
+                },
+                {
+                    key: 'blockquote',
+                    icon: '',
+                    tooltip: '',
+                    buttonText: "Block Quote",
+                    value: 'blockquote',
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTextFormatClick(BlockFormatType.blockquote),
+                    ariaLabel: 'Block Quote formatting',
+                    position: 'top',
+                    buttonStyle: '',
+                },
                 {
                     key: 'pullQuote',
                     icon: '',
                     tooltip: '',
                     buttonText: "Pull Quote",
                     value: 'pullQuote',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault()
-                    ,
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTextFormatClick(BlockFormatType.pullQuote),
                     ariaLabel: 'Pull Quote formatting',
-                    position: 'top',
-                    buttonStyle: '',
-                },
-                {
-                    key: 'monospaced',
-                    icon: '',
-                    tooltip: '',
-                    buttonText: "Monospaced",
-                    value: 'monospaced',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-                    ariaLabel: 'Heading 3 formatting',
                     position: 'top',
                     buttonStyle: '',
                 },
@@ -282,7 +352,7 @@ export default function CustomToolbar(props: IToolbar) {
                     buttonText: 'Normal',
 
                     ariaLabel: 'Normal Selection',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTextFormatClick(BlockFormatType.paragraph),
                     position: 'top',
                     buttonStyle: '',
                 }
@@ -483,6 +553,24 @@ export default function CustomToolbar(props: IToolbar) {
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onChangeIndentClick(IndentDirType.right),
             position: 'top',
             value: 'indent_right',
+            buttonStyle: classes.cmdButton
+        },
+        {
+            key: 'highlight',
+            icon: 'highlight',
+            tooltip: 'Highlight text',
+            ariaLabel: 'Highlight text',
+            callback: () => CustomEditor._onTextHighlight(),
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        },
+        {
+            key: 'text_format',
+            icon: 'text_format',
+            tooltip: 'Format text color',
+            ariaLabel: 'Format text color',
+            callback: () => CustomEditor._onTextFormatColor(),
+            position: 'top',
             buttonStyle: classes.cmdButton
         },
         {

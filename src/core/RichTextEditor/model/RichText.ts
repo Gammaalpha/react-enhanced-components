@@ -46,15 +46,18 @@ export enum ListFormatType {
     bulletedList = 'bullet',
     orderedList = 'ordered'
 }
-export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
+// export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
+
+export type BlockFormat = "H1" | "H2" | "H3" | "H4" | "H5" | "H6" | "blockquote" | "paragraph" | "pullQuote";
 
 export enum BlockFormatType {
     paragraph = 'paragraph',
-    headingOne = 'heading_1',
-    headingTwo = 'heading_2',
-    headingThree = 'heading_3',
-    pullQuote = 'pullQuote',
-    monospaced = 'monospaced'
+    headingOne = 'H1',
+    headingTwo = 'H2',
+    headingThree = 'H3',
+    headingFour = 'H4',
+    blockquote = 'blockquote',
+    pullQuote = 'pullQuote'
 };
 
 export type IndentDir = -1 | 1;
