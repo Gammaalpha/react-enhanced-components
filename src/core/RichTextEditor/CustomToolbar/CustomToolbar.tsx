@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
-
+let Delta = Quill.import('delta');
 //Set custom class marking
 let Parchment = Quill.import('parchment');
 let config = {
@@ -134,7 +134,7 @@ Quill.register(SizeClass, true);
 let Embed = Quill.import('blots/block/embed');
 class Hr extends Embed {
     static create(value: any) {
-        let node = super.create(value);
+        let node: Element = super.create(value);
         node.setAttribute('style', 'height:0px;margin-top:10px;margin-bottom:10px;');
         return node;
     }
@@ -145,6 +145,24 @@ Hr.tagName = 'hr'
 Quill.register({
     'formats/hr': Hr
 })
+let blockEmbed = Quill.import('blots/embed')
+class Abbr extends blockEmbed {
+    static create(value: IAbbr) {
+        console.log("in Abbr: ", value);
+        let node: Element = super.create();
+        node.setAttribute('title', value.title);
+        node.innerHTML = value.text;
+        console.log(node);
+        return node;
+    }
+    static value(node: Element) {
+        return node
+    }
+}
+Abbr.blotName = "abbr";
+Abbr.className = "rec-abbr";
+Abbr.tagName = "abbr";
+Quill.register(Abbr)
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
@@ -163,13 +181,14 @@ export default function CustomToolbar(props: IToolbar) {
             return undefined
         }
     }
+    const quill = getEditor();
 
     /**
     * Called when richtext selection changes
     */
     const handleChangeSelection = (range: any, oldRange: any, source: any) => {
 
-        const quill = getEditor();
+        // const quill = getEditor();
         try {
             if (quill && range !== null) {
                 // Get the selected text
@@ -194,7 +213,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const applyFormat = (name: string, value: any) => {
-        const quill = getEditor();
+        // const quill = getEditor();
         if (name === 'mark') {
             quill.format('mark', value);
         }
@@ -209,7 +228,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const clearFormatting = () => {
-        const quill = getEditor();
+        // const quill = getEditor();
         const range = quill.getSelection();
         if (range.length === 0) {
             console.log(quill.getLeaf(range.index))
@@ -242,7 +261,7 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onChangeIndentClick(direction: IndentDir) {
             // e.preventDefault();
-            const quill = getEditor();
+            // const quill = getEditor();
             const current = +(quill.getFormat(quill.getSelection()).indent || 0);
             applyFormat("indent", current + direction)
         },
@@ -281,10 +300,27 @@ export default function CustomToolbar(props: IToolbar) {
 
         },
         _onAbbrInsert() {
+            // const quill = getEditor();
+            let range = quill.getSelection();
+            let innerText = "";
+            if (range) {
+                if (range.length === 0) {
+                    console.log("Inserting without text...");
+                }
+                else {
+                    console.log("Inserting with text...");
+                    innerText = quill.getText(range.index, range.length)
+                }
+                quill.updateContents(new Delta().delete(range.length))
+                quill.insertEmbed(range.index, 'abbr', {
+                    title: "abbr title",
+                    text: innerText
+                })
+            }
 
         },
         _onHrInsert() {
-            const quill = getEditor();
+            // const quill = getEditor();
             let range = quill.getSelection();
             if (range) {
                 quill.insertEmbed(range.index, "hr", "null")
@@ -540,7 +576,8 @@ export default function CustomToolbar(props: IToolbar) {
                 },
 
             ]
-        }, {
+        },
+        {
             key: 'insert_link',
             icon: 'insert_link',
             tooltip: 'Insert link',
@@ -623,7 +660,7 @@ export default function CustomToolbar(props: IToolbar) {
             tooltip: 'Abbreviation',
             buttonText: '<abbr>',
             ariaLabel: 'Add Abbreviation over selected text',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAbbrInsert(),
             position: 'top',
             buttonStyle: classes.cmdButton
         },

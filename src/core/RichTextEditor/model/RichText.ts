@@ -40,6 +40,11 @@ export enum TextAlignmentType {
 
 }
 
+export interface IAbbr {
+    title: string,
+    text: string
+}
+
 export const LIST_TYPES = ['ordered-list', 'bulleted-list']
 export type ListFormat = 'ordered' | 'bullet';
 export enum ListFormatType {
