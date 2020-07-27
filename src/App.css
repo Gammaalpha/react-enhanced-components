@@ -13,6 +13,14 @@
   }
 }
 
+.LightGrayB{
+  background-color: lightgray!important;
+}
+
+.FullWidth{
+  min-width: 100%;
+}
+
 .headerCellStyle1.MuiColumnHeader_id {
   text-align: center;
 }

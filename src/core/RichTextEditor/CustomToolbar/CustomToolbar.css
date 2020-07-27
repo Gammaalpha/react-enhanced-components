@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+/* .public-DraftStyleDefault-block {
+  height: 100%;
+  padding: 5px;
+} */
+.MuiTooltip-tooltip {
+  font-size: 12pt !important;
+}
+
+.style-pullQuote {
+  padding: 32px !important;
+  border-left: none;
+  border-right: none;
+  text-align: center;
+  font-size: 24px;
+  margin: 28px 0 28px 0 !important;
+  border-top: 2px solid lightgray;
+  border-bottom: 2px solid lightgray;
+  font-style: italic;
+}
