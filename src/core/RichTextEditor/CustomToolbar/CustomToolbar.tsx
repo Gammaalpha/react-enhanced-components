@@ -208,16 +208,19 @@ export default function CustomToolbar(props: IToolbar) {
     const CustomEditor =
     {
         _onTextFormatClick(type: BlockFormat) {
-            if (type === BlockFormatType.paragraph) {
-                applyFormat("header", false);
-                return;
+            if (type !== BlockFormatType.pullQuote) {
+                clearFormatting();
             }
-            if (type === BlockFormatType.pullQuote) {
-                applyFormat("mark", type);
-                return;
-            }
-            else {
-                applyFormat("header", type);
+            switch (type) {
+                case BlockFormatType.paragraph:
+                    applyFormat("header", false);
+                    break;
+                case BlockFormatType.pullQuote:
+                    applyFormat("mark", type);
+                    break;
+                default:
+                    applyFormat("header", type);
+                    break;
             }
         },
         _onChangeIndentClick(direction: IndentDir) {
