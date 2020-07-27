@@ -96,12 +96,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
-let Parchment = Quill.import('parchment');
 
+//Set custom class marking
+let Parchment = Quill.import('parchment');
 let config = {
     scope: Parchment.Scope.BLOCK,
 };
-
 let MClass = new Parchment.Attributor.Class('mark', 'style', config);
 Quill.register(MClass, true)
 
@@ -115,6 +115,7 @@ header.tagName = [
     'blockquote'];
 Quill.register(header, true);
 
+// Set font sizes
 let SizeClass = Quill.import('formats/size');
 SizeClass.whitelist = [
     'small',
@@ -128,6 +129,22 @@ SizeClass.whitelist = [
     'xxlargeplus',
     'super'];
 Quill.register(SizeClass, true);
+
+// Horizontal line
+let Embed = Quill.import('blots/block/embed');
+class Hr extends Embed {
+    static create(value: any) {
+        let node = super.create(value);
+        node.setAttribute('style', 'height:0px;margin-top:10px;margin-bottom:10px;');
+        return node;
+    }
+}
+Hr.blotName = 'hr';
+Hr.className = 'rec-hr';
+Hr.tagName = 'hr'
+Quill.register({
+    'formats/hr': Hr
+})
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
@@ -267,7 +284,11 @@ export default function CustomToolbar(props: IToolbar) {
 
         },
         _onHrInsert() {
-
+            const quill = getEditor();
+            let range = quill.getSelection();
+            if (range) {
+                quill.insertEmbed(range.index, "hr", "null")
+            }
         }
     }
 
@@ -612,7 +633,7 @@ export default function CustomToolbar(props: IToolbar) {
             tooltip: 'Horizontal line',
             buttonText: '<hr/>',
             ariaLabel: 'Add horizontal line',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onHrInsert(),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
