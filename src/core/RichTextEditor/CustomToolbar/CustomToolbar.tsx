@@ -105,6 +105,16 @@ let config = {
 let MClass = new Parchment.Attributor.Class('mark', 'style', config);
 Quill.register(MClass, true)
 
+// Set headers and add blockquote capability
+let header = Quill.import('formats/header');
+header.tagName = [
+    'H1',
+    'H2',
+    'H3',
+    'H4',
+    'blockquote'];
+Quill.register(header, true);
+
 let SizeClass = Quill.import('formats/size');
 SizeClass.whitelist = [
     'small',
@@ -199,15 +209,16 @@ export default function CustomToolbar(props: IToolbar) {
     {
         _onTextFormatClick(type: BlockFormat) {
             if (type === BlockFormatType.paragraph) {
-                applyFormat("header", '');
+                applyFormat("header", false);
                 return;
             }
             if (type === BlockFormatType.pullQuote) {
-                debugger;
                 applyFormat("mark", type);
                 return;
             }
-            applyFormat("header", type);
+            else {
+                applyFormat("header", type);
+            }
         },
         _onChangeIndentClick(direction: IndentDir) {
             // e.preventDefault();
