@@ -311,7 +311,7 @@ export default function CustomToolbar(props: IToolbar) {
                     console.log("Inserting with text...");
                     innerText = quill.getText(range.index, range.length)
                 }
-                quill.updateContents(new Delta().delete(range.length))
+                // quill.updateContents(new Delta().delete(range.length))
                 quill.insertEmbed(range.index, 'abbr', {
                     title: "abbr title",
                     text: innerText
