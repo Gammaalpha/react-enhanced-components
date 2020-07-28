@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CreateStyleButton } from '../CreateStyleButton';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup } from '@material-ui/core';
 import { IAbbr } from '../model/RichText';
 export interface IAbbrDialogProps {
     quillEditor: any;
@@ -94,7 +94,7 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
                         <DialogContentText>
                             Fill in the fields below to add abbreviation.
                         </DialogContentText>
-                        <div className={classes.column}>
+                        <FormGroup aria-label="Abbreviation form group" className={classes.column}>
                             <TextField
                                 autoFocus
                                 margin="dense"
@@ -104,9 +104,8 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
                                 value={abbr.text}
                                 onChange={(e: any) => {
                                     setAbbr({
-                                        title: abbr.title,
+                                        ...abbr,
                                         text: e.target.value,
-                                        range: abbr.range
                                     });
                                 }}
                             />
@@ -119,13 +118,13 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
                                 value={abbr.title}
                                 onChange={(e: any) => {
                                     setAbbr({
+                                        ...abbr,
                                         title: e.target.value,
-                                        text: abbr.text,
-                                        range: abbr.range
+
                                     });
                                 }}
                             />
-                        </div>
+                        </FormGroup>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => handleClose()} color="primary">

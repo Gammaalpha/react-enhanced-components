@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CreateStyleButton } from '../CreateStyleButton';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
 import { ILink } from '../model/RichText';
 export interface ILinkDialogProps {
     quillEditor: any;
@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export default function LinkDialog(props: ILinkDialogProps) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const [urlErrorText, setUrlErrorText] = useState('');
+    const [urlError, setUrlError] = useState(false)
     const [link, setLink] = useState<ILink>({
         text: '',
         url: '',
@@ -39,12 +41,22 @@ export default function LinkDialog(props: ILinkDialogProps) {
     const handleClose = () => {
         setOpen(false);
     }
-    const abbrButton = {
-        key: 'abbreviation',
-        icon: '',
-        tooltip: 'Abbreviation',
-        buttonText: '<abbr>',
-        ariaLabel: 'Add Abbreviation over selected text',
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        let target = "";
+        if (event.target.checked) {
+            target = "_blank";
+        }
+        setLink({
+            ...link,
+            target: target,
+        });
+    }
+    const linkButton = {
+        key: 'insert_link',
+        icon: 'insert_link',
+        tooltip: 'Insert link',
+        ariaLabel: 'Insert link',
+        value: 'insertLink',
         callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleOpen(),
         position: 'top',
         buttonStyle: props.btnStyle
@@ -88,29 +100,27 @@ export default function LinkDialog(props: ILinkDialogProps) {
     const render = () => {
         return (
             <div >
-                {CreateStyleButton(abbrButton)}
+                {CreateStyleButton(linkButton)}
                 <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-abbr">
                     <DialogTitle id="form-dialog-abbr-title">
-                        Insert Abbreviation
+                        Insert Link
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Fill in the fields below to add abbreviation.
+                            Fill in the fields below to add link.
                         </DialogContentText>
-                        <div className={classes.column}>
+                        <FormGroup aria-label="Link addition form group." className={classes.column}>
                             <TextField
                                 autoFocus
                                 margin="dense"
                                 id="Text"
-                                label="Text"
+                                label="Text to display"
                                 type="text"
                                 value={link.text}
                                 onChange={(e: any) => {
                                     setLink({
-                                        target: '',
-                                        url: link.url,
+                                        ...link,
                                         text: e.target.value,
-                                        range: link.range
                                     });
                                 }}
                             />
@@ -118,19 +128,36 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                 autoFocus
                                 margin="dense"
                                 id="url"
-                                label="URL"
+                                label="Address"
+                                placeholder="https://"
+                                helperText="Ensure link contains https:// or http://"
                                 type="text"
                                 value={link.url}
-                                onChange={(e: any) => {
+                                error={urlError}
+                                onKeyDown={(e: any) => {
+                                    debugger;
+                                    const regex = /^http([s]?):\/\/.*/;
+                                    if (!e.target.value.match(regex)) {
+                                        setUrlError(true)
+                                        setUrlErrorText('Add http:// or https:// in front of the URL')
+                                    }
+
                                     setLink({
+                                        ...link,
                                         url: e.target.value,
-                                        text: link.text,
-                                        target: '',
-                                        range: link.range
                                     });
                                 }}
                             />
-                        </div>
+                            <FormControlLabel
+                                label="Open in a new tab?"
+                                control={
+                                    <Checkbox
+                                        onChange={handleCheckboxChange}
+                                        name="target"
+                                    />
+                                }
+                            />
+                        </FormGroup>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => handleClose()} color="primary">

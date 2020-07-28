@@ -1,11 +1,13 @@
 import React, { useReducer, useEffect } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
 import './CustomToolbar.css'
 import { Quill } from 'react-quill';
 import AbbrDialog from '../AbbrDialog/AbbrDialog';
+import { NoteAdd } from '@material-ui/icons';
+import LinkDialog from '../LinkDialog/LinkDialog';
 
 
 export interface IToolbar {
@@ -149,11 +151,9 @@ Quill.register({
 let blockEmbed = Quill.import('blots/embed')
 class Abbr extends blockEmbed {
     static create(value: IAbbr) {
-        console.log("in Abbr: ", value);
         let node: Element = super.create();
         node.setAttribute('title', value.title);
         node.innerHTML = value.text;
-        console.log(node);
         return node;
     }
     static value(node: Element) {
@@ -163,7 +163,29 @@ class Abbr extends blockEmbed {
 Abbr.blotName = "abbr";
 Abbr.className = "rec-abbr";
 Abbr.tagName = "abbr";
-Quill.register(Abbr)
+Quill.register(Abbr);
+
+let Link = Quill.import('formats/link');
+class ATag extends Link {
+    static create(value: ILink) {
+        let node: Element = super.create();
+        node.setAttribute('href', value.url);
+        if (value?.target) {
+            node.setAttribute('target', value.target);
+            node.setAttribute('rel', "noreferrer noopener");
+            node.setAttribute('data-interception', 'off');
+        }
+        node.innerHTML = value.text.trim();
+        return node;
+    }
+    static value(node: Element) {
+        return node;
+    }
+}
+ATag.blotName = "a";
+ATag.className = "rec-a";
+ATag.tagName = "a";
+Quill.register(ATag);
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
@@ -230,7 +252,6 @@ export default function CustomToolbar(props: IToolbar) {
 
     const clearFormatting = () => {
         // const quill = getEditor();
-        // debugger;
         const range = quill.getSelection();
         let [leaf, offset] = quill.getLeaf(range.index);
         console.log(leaf, offset);
@@ -239,9 +260,9 @@ export default function CustomToolbar(props: IToolbar) {
             quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
         }
         else {
-            const innerLeaf: string = (leaf.domNode.innerText).trim();
             quill.removeFormat(range.index, range.length)
             if (leaf.domNode.tagName === "ABBR") {
+                const innerLeaf: string = (leaf.domNode.innerText).trim();
                 quill.insertText(range.index, innerLeaf, 'user');
             }
         }
@@ -314,12 +335,34 @@ export default function CustomToolbar(props: IToolbar) {
             quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'abbr', {
                 title: params.title,
                 text: params.text
-            }, 'user')
+            }, 'user');
 
         },
-        _onLinkInsert(params: any) {
-
+        _onLinkInsert(params: ILink) {
+            if (params.range) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
+                }
+            }
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', {
+                text: params.text,
+                url: params.url,
+                target: params.target
+            }, 'user');
         },
+        // format version
+        // _onLinkInsert(params: ILink) {
+        //     debugger;
+        //     const cursorPosition = params.range!.index;
+        //     if (params.range) {
+        //         if (params.range.length > 0) {
+        //             quill.deleteText(params.range.index, params.range.length, 'user');
+        //         }
+        //     }
+        //     quill.insertText(cursorPosition, params.text);
+        //     quill.setSelection(cursorPosition, params.text.length);
+        //     quill.formatText(cursorPosition, params.text.length, 'link', params.url);
+        // },
         _onHrInsert() {
             // const quill = getEditor();
             let range = quill.getSelection();
@@ -327,6 +370,19 @@ export default function CustomToolbar(props: IToolbar) {
                 quill.insertEmbed(range.index, "hr", "null")
             }
         }
+    };
+
+
+    const insertEmbeddedTag = (params: IAbbr | ILink, tag: string) => {
+        if (params.range) {
+            if (params.range.length > 0) {
+                quill.deleteText(params.range.index, params.range.length, 'user');
+            }
+        }
+        // quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, {
+        //     ...params
+        // }, 'user');
+        // quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, `<a href='${params.url}'>${params.text}</a>`, 'user');
     }
 
 
@@ -578,26 +634,26 @@ export default function CustomToolbar(props: IToolbar) {
 
             ]
         },
-        {
-            key: 'insert_link',
-            icon: 'insert_link',
-            tooltip: 'Insert link',
-            ariaLabel: 'Insert link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            value: 'insertLink',
-            buttonStyle: classes.cmdButton
-        },
-        {
-            key: 'link_off',
-            icon: 'link_off',
-            tooltip: 'Remove link',
-            ariaLabel: 'Remove link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            value: 'removeLink',
-            buttonStyle: classes.cmdButton
-        },
+        // {
+        //     key: 'insert_link',
+        //     icon: 'insert_link',
+        //     tooltip: 'Insert link',
+        //     ariaLabel: 'Insert link',
+        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+        //     position: 'top',
+        //     value: 'insertLink',
+        //     buttonStyle: classes.cmdButton
+        // },
+        // {
+        //     key: 'link_off',
+        //     icon: 'link_off',
+        //     tooltip: 'Remove link',
+        //     ariaLabel: 'Remove link',
+        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+        //     position: 'top',
+        //     value: 'removeLink',
+        //     buttonStyle: classes.cmdButton
+        // },
         {
             key: 'table_insert',
             icon: 'table_chart',
@@ -683,7 +739,10 @@ export default function CustomToolbar(props: IToolbar) {
             toolbarButtons.push(CreateStyleButton(element))
         });
         // add Abbr btn
-        toolbarButtons.push(<AbbrDialog key="dialog_abbr" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onAbbrInsert}></AbbrDialog>)
+        toolbarButtons.push(<AbbrDialog key="dialog_abbr" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onAbbrInsert}></AbbrDialog>);
+        toolbarButtons.push(
+            <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
+        )
         return toolbarButtons
 
     }
