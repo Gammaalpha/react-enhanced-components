@@ -39,10 +39,14 @@ export enum TextAlignmentType {
     justify = 'justify',
 
 }
-
+export interface IRange {
+    index: number;
+    length: number;
+}
 export interface IAbbr {
     title: string,
-    text: string
+    text: string,
+    range: IRange
 }
 
 export const LIST_TYPES = ['ordered-list', 'bulleted-list']

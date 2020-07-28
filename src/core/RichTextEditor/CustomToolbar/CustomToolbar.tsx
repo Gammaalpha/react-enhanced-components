@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
 import './CustomToolbar.css'
 import { Quill } from 'react-quill';
+import AbbrDialog from '../AbbrDialog/AbbrDialog';
 
 
 export interface IToolbar {
@@ -229,15 +230,20 @@ export default function CustomToolbar(props: IToolbar) {
 
     const clearFormatting = () => {
         // const quill = getEditor();
+        // debugger;
         const range = quill.getSelection();
+        let [leaf, offset] = quill.getLeaf(range.index);
+        console.log(leaf, offset);
+
         if (range.length === 0) {
-            console.log(quill.getLeaf(range.index))
-            let [leaf, offset] = quill.getLeaf(range.index);
-            console.log(leaf, offset);
             quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
         }
         else {
+            const innerLeaf: string = (leaf.domNode.innerText).trim();
             quill.removeFormat(range.index, range.length)
+            if (leaf.domNode.tagName === "ABBR") {
+                quill.insertText(range.index, innerLeaf, 'user');
+            }
         }
     }
 
@@ -299,23 +305,15 @@ export default function CustomToolbar(props: IToolbar) {
         _onTextHighlight() {
 
         },
-        _onAbbrInsert() {
-            // const quill = getEditor();
-            let range = quill.getSelection();
-            let innerText = "";
-            if (range) {
-                if (range.length === 0) {
-                    console.log("Inserting without text...");
+        _onAbbrInsert(params: IAbbr) {
+            if (params.range) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
                 }
-                else {
-                    console.log("Inserting with text...");
-                    innerText = quill.getText(range.index, range.length)
-                }
-                // quill.updateContents(new Delta().delete(range.length))
-                quill.insertEmbed(range.index, 'abbr', {
-                    title: "abbr title",
-                    text: innerText
-                })
+                quill.insertEmbed(params.range.index, 'abbr', {
+                    title: params.title,
+                    text: params.text
+                }, 'user')
             }
 
         },
@@ -654,16 +652,16 @@ export default function CustomToolbar(props: IToolbar) {
             position: 'top',
             buttonStyle: classes.cmdButton
         },
-        {
-            key: 'abbreviation',
-            icon: '',
-            tooltip: 'Abbreviation',
-            buttonText: '<abbr>',
-            ariaLabel: 'Add Abbreviation over selected text',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAbbrInsert(),
-            position: 'top',
-            buttonStyle: classes.cmdButton
-        },
+        // {
+        //     key: 'abbreviation',
+        //     icon: '',
+        //     tooltip: 'Abbreviation',
+        //     buttonText: '<abbr>',
+        //     ariaLabel: 'Add Abbreviation over selected text',
+        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAbbrInsert(),
+        //     position: 'top',
+        //     buttonStyle: classes.cmdButton
+        // },
         {
             key: 'horizontal_line',
             icon: '',
@@ -681,6 +679,8 @@ export default function CustomToolbar(props: IToolbar) {
         toolbarArray.forEach((element: IToolbarButton) => {
             toolbarButtons.push(CreateStyleButton(element))
         });
+        // add Abbr btn
+        toolbarButtons.push(<AbbrDialog key="dialog_abbr" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onAbbrInsert}></AbbrDialog>)
         return toolbarButtons
 
     }
