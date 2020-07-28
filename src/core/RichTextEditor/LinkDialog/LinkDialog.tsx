@@ -133,13 +133,14 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                 helperText="Ensure link contains https:// or http://"
                                 type="text"
                                 value={link.url}
-                                error={urlError}
-                                onKeyDown={(e: any) => {
-                                    debugger;
+                                error={!urlError}
+                                onChange={(e: any) => {
+                                    // debugger;
                                     const regex = /^http([s]?):\/\/.*/;
-                                    if (!e.target.value.match(regex)) {
+                                    if (!regex.test(e.target.value)) {
+                                        setUrlError(false)
+                                    } else {
                                         setUrlError(true)
-                                        setUrlErrorText('Add http:// or https:// in front of the URL')
                                     }
 
                                     setLink({
@@ -163,7 +164,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                         <Button onClick={() => handleClose()} color="primary">
                             Cancel
                             </Button>
-                        <Button onClick={() => handleSubmit()} color="primary">
+                        <Button disabled={!urlError} onClick={() => handleSubmit()} color="primary">
                             Submit
                         </Button>
                     </DialogActions>
