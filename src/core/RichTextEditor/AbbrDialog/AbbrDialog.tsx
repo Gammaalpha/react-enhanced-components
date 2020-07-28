@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CreateStyleButton } from '../CreateStyleButton';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles } from '@material-ui/core';
-import { Quill } from 'react-quill';
-
 export interface IAbbrDialogProps {
     quillEditor: any;
     callback?: any;

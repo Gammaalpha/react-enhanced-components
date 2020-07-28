@@ -310,11 +310,11 @@ export default function CustomToolbar(props: IToolbar) {
                 if (params.range.length > 0) {
                     quill.deleteText(params.range.index, params.range.length, 'user');
                 }
-                quill.insertEmbed(params.range.index, 'abbr', {
-                    title: params.title,
-                    text: params.text
-                }, 'user')
             }
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'abbr', {
+                title: params.title,
+                text: params.text
+            }, 'user')
 
         },
         _onHrInsert() {
