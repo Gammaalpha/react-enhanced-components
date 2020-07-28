@@ -1,10 +1,13 @@
 import React, { useReducer, useEffect } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
 import './CustomToolbar.css'
 import { Quill } from 'react-quill';
+import AbbrDialog from '../AbbrDialog/AbbrDialog';
+import { NoteAdd } from '@material-ui/icons';
+import LinkDialog from '../LinkDialog/LinkDialog';
 
 
 export interface IToolbar {
@@ -96,12 +99,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
+let Delta = Quill.import('delta');
+//Set custom class marking
 let Parchment = Quill.import('parchment');
-
 let config = {
     scope: Parchment.Scope.BLOCK,
 };
-
 let MClass = new Parchment.Attributor.Class('mark', 'style', config);
 Quill.register(MClass, true)
 
@@ -115,6 +118,7 @@ header.tagName = [
     'blockquote'];
 Quill.register(header, true);
 
+// Set font sizes
 let SizeClass = Quill.import('formats/size');
 SizeClass.whitelist = [
     'small',
@@ -128,6 +132,60 @@ SizeClass.whitelist = [
     'xxlargeplus',
     'super'];
 Quill.register(SizeClass, true);
+
+// Horizontal line
+let Embed = Quill.import('blots/block/embed');
+class Hr extends Embed {
+    static create(value: any) {
+        let node: Element = super.create(value);
+        node.setAttribute('style', 'height:0px;margin-top:10px;margin-bottom:10px;');
+        return node;
+    }
+}
+Hr.blotName = 'hr';
+Hr.className = 'rec-hr';
+Hr.tagName = 'hr'
+Quill.register({
+    'formats/hr': Hr
+})
+let blockEmbed = Quill.import('blots/embed')
+class Abbr extends blockEmbed {
+    static create(value: IAbbr) {
+        let node: Element = super.create();
+        node.setAttribute('title', value.title);
+        node.innerHTML = value.text;
+        return node;
+    }
+    static value(node: Element) {
+        return node
+    }
+}
+Abbr.blotName = "abbr";
+Abbr.className = "rec-abbr";
+Abbr.tagName = "abbr";
+Quill.register(Abbr);
+
+let Link = Quill.import('formats/link');
+class ATag extends Link {
+    static create(value: ILink) {
+        let node: Element = super.create();
+        node.setAttribute('href', value.url);
+        if (value?.target) {
+            node.setAttribute('target', value.target);
+            node.setAttribute('rel', "noreferrer noopener");
+            node.setAttribute('data-interception', 'off');
+        }
+        node.innerHTML = value.text.trim();
+        return node;
+    }
+    static value(node: Element) {
+        return node;
+    }
+}
+ATag.blotName = "a";
+ATag.className = "rec-a";
+ATag.tagName = "a";
+Quill.register(ATag);
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
@@ -146,13 +204,14 @@ export default function CustomToolbar(props: IToolbar) {
             return undefined
         }
     }
+    const quill = getEditor();
 
     /**
     * Called when richtext selection changes
     */
     const handleChangeSelection = (range: any, oldRange: any, source: any) => {
 
-        const quill = getEditor();
+        // const quill = getEditor();
         try {
             if (quill && range !== null) {
                 // Get the selected text
@@ -177,7 +236,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const applyFormat = (name: string, value: any) => {
-        const quill = getEditor();
+        // const quill = getEditor();
         if (name === 'mark') {
             quill.format('mark', value);
         }
@@ -192,37 +251,44 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const clearFormatting = () => {
-        const quill = getEditor();
+        // const quill = getEditor();
         const range = quill.getSelection();
+        let [leaf, offset] = quill.getLeaf(range.index);
+        console.log(leaf, offset);
+
         if (range.length === 0) {
-            console.log(quill.getLeaf(range.index))
-            let [leaf, offset] = quill.getLeaf(range.index);
-            console.log(leaf, offset);
             quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
         }
         else {
             quill.removeFormat(range.index, range.length)
+            if (leaf.domNode.tagName === "ABBR") {
+                const innerLeaf: string = (leaf.domNode.innerText).trim();
+                quill.insertText(range.index, innerLeaf, 'user');
+            }
         }
     }
 
     const CustomEditor =
     {
         _onTextFormatClick(type: BlockFormat) {
-            if (type === BlockFormatType.paragraph) {
-                applyFormat("header", false);
-                return;
+            if (type !== BlockFormatType.pullQuote) {
+                clearFormatting();
             }
-            if (type === BlockFormatType.pullQuote) {
-                applyFormat("mark", type);
-                return;
-            }
-            else {
-                applyFormat("header", type);
+            switch (type) {
+                case BlockFormatType.paragraph:
+                    applyFormat("header", false);
+                    break;
+                case BlockFormatType.pullQuote:
+                    applyFormat("mark", type);
+                    break;
+                default:
+                    applyFormat("header", type);
+                    break;
             }
         },
         _onChangeIndentClick(direction: IndentDir) {
             // e.preventDefault();
-            const quill = getEditor();
+            // const quill = getEditor();
             const current = +(quill.getFormat(quill.getSelection()).indent || 0);
             applyFormat("indent", current + direction)
         },
@@ -260,12 +326,63 @@ export default function CustomToolbar(props: IToolbar) {
         _onTextHighlight() {
 
         },
-        _onAbbrInsert() {
+        _onAbbrInsert(params: IAbbr) {
+            if (params.range) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
+                }
+            }
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'abbr', {
+                title: params.title,
+                text: params.text
+            }, 'user');
 
         },
+        _onLinkInsert(params: ILink) {
+            if (params.range) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
+                }
+            }
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', {
+                text: params.text,
+                url: params.url,
+                target: params.target
+            }, 'user');
+        },
+        // format version
+        // _onLinkInsert(params: ILink) {
+        //     debugger;
+        //     const cursorPosition = params.range!.index;
+        //     if (params.range) {
+        //         if (params.range.length > 0) {
+        //             quill.deleteText(params.range.index, params.range.length, 'user');
+        //         }
+        //     }
+        //     quill.insertText(cursorPosition, params.text);
+        //     quill.setSelection(cursorPosition, params.text.length);
+        //     quill.formatText(cursorPosition, params.text.length, 'link', params.url);
+        // },
         _onHrInsert() {
-
+            // const quill = getEditor();
+            let range = quill.getSelection();
+            if (range) {
+                quill.insertEmbed(range.index, "hr", "null")
+            }
         }
+    };
+
+
+    const insertEmbeddedTag = (params: IAbbr | ILink, tag: string) => {
+        if (params.range) {
+            if (params.range.length > 0) {
+                quill.deleteText(params.range.index, params.range.length, 'user');
+            }
+        }
+        // quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, {
+        //     ...params
+        // }, 'user');
+        // quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, `<a href='${params.url}'>${params.text}</a>`, 'user');
     }
 
 
@@ -516,26 +633,27 @@ export default function CustomToolbar(props: IToolbar) {
                 },
 
             ]
-        }, {
-            key: 'insert_link',
-            icon: 'insert_link',
-            tooltip: 'Insert link',
-            ariaLabel: 'Insert link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            value: 'insertLink',
-            buttonStyle: classes.cmdButton
         },
-        {
-            key: 'link_off',
-            icon: 'link_off',
-            tooltip: 'Remove link',
-            ariaLabel: 'Remove link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            value: 'removeLink',
-            buttonStyle: classes.cmdButton
-        },
+        // {
+        //     key: 'insert_link',
+        //     icon: 'insert_link',
+        //     tooltip: 'Insert link',
+        //     ariaLabel: 'Insert link',
+        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+        //     position: 'top',
+        //     value: 'insertLink',
+        //     buttonStyle: classes.cmdButton
+        // },
+        // {
+        //     key: 'link_off',
+        //     icon: 'link_off',
+        //     tooltip: 'Remove link',
+        //     ariaLabel: 'Remove link',
+        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+        //     position: 'top',
+        //     value: 'removeLink',
+        //     buttonStyle: classes.cmdButton
+        // },
         {
             key: 'table_insert',
             icon: 'table_chart',
@@ -593,23 +711,23 @@ export default function CustomToolbar(props: IToolbar) {
             position: 'top',
             buttonStyle: classes.cmdButton
         },
-        {
-            key: 'abbreviation',
-            icon: '',
-            tooltip: 'Abbreviation',
-            buttonText: '<abbr>',
-            ariaLabel: 'Add Abbreviation over selected text',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            buttonStyle: classes.cmdButton
-        },
+        // {
+        //     key: 'abbreviation',
+        //     icon: '',
+        //     tooltip: 'Abbreviation',
+        //     buttonText: '<abbr>',
+        //     ariaLabel: 'Add Abbreviation over selected text',
+        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAbbrInsert(),
+        //     position: 'top',
+        //     buttonStyle: classes.cmdButton
+        // },
         {
             key: 'horizontal_line',
             icon: '',
             tooltip: 'Horizontal line',
             buttonText: '<hr/>',
             ariaLabel: 'Add horizontal line',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onHrInsert(),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
@@ -620,6 +738,11 @@ export default function CustomToolbar(props: IToolbar) {
         toolbarArray.forEach((element: IToolbarButton) => {
             toolbarButtons.push(CreateStyleButton(element))
         });
+        // add Abbr btn
+        toolbarButtons.push(<AbbrDialog key="dialog_abbr" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onAbbrInsert}></AbbrDialog>);
+        toolbarButtons.push(
+            <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
+        )
         return toolbarButtons
 
     }

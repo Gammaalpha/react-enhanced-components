@@ -16,7 +16,10 @@ export default function QuillEditor(props: IQuillEditor) {
     }
     const modules = {
         toolbar: {
-            container: `#${props.toolbarId}`
+            container: `#${props.toolbarId}`,
+            handlers: [
+                "link"
+            ]
         }
     }
 

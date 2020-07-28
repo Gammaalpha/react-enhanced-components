@@ -19,3 +19,7 @@
   border-bottom: 2px solid lightgray;
   font-style: italic;
 }
+
+.rec-abbr {
+  display: inline;
+}
