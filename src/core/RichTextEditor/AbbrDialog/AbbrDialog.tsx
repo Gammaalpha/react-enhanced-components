@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { CreateStyleButton } from '../CreateStyleButton';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles } from '@material-ui/core';
+import { IAbbr } from '../model/RichText';
 export interface IAbbrDialogProps {
     quillEditor: any;
     callback?: any;
@@ -21,10 +22,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export default function AbbrDialog(props: IAbbrDialogProps) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [abbr, setAbbr] = useState({
+    const [abbr, setAbbr] = useState<IAbbr>({
         text: '',
         title: '',
-        range: {}
+        range: {
+            index: 0,
+            length: 0
+        }
     })
 
     const handleOpen = () => {

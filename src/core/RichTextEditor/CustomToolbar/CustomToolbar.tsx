@@ -317,6 +317,9 @@ export default function CustomToolbar(props: IToolbar) {
             }, 'user')
 
         },
+        _onLinkInsert(params: any) {
+
+        },
         _onHrInsert() {
             // const quill = getEditor();
             let range = quill.getSelection();
