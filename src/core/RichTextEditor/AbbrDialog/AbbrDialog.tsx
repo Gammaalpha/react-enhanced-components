@@ -48,26 +48,34 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
     };
 
     useEffect(() => {
+        const quill = props.quillEditor;
         if (open) {
-            debugger;
-            console.log("dialog effect fire...");
-
             if (props?.quillEditor) {
-                const range = props.quillEditor.getSelection();
-                if (range?.length > 0) {
-                    let innerText = props.quillEditor.getText(range.index, range.length);
+                const range = quill.getSelection();
+                let [leaf, offset] = quill.getLeaf(range.index);
+                if (leaf.domNode.tagName === "ABBR") {
                     setAbbr({
-                        text: innerText,
-                        title: '',
+                        text: leaf.domNode.textContent.trim(),
+                        title: leaf.domNode.title,
                         range: range
                     })
+                }
+                else {
+
+                    if (range?.length > 0) {
+                        let innerText = quill.getText(range.index, range.length);
+                        setAbbr({
+                            text: innerText,
+                            title: '',
+                            range: range
+                        })
+                    }
                 }
             }
         }
 
     }, [open, props, props.quillEditor])
     const handleSubmit = () => {
-        debugger;
         handleClose();
         props.callback(abbr)
     };
