@@ -81,16 +81,6 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
     };
 
     const render = () => {
-        console.log("Abbr Dialog Render...");
-        // if (open && innerText === '') {
-        //     if (props?.quillEditor) {
-        //         const range = props.quillEditor.getSelection();
-        //         if (range?.length > 0) {
-        //             innerText = props.quillEditor.getText(range.index, range.length);
-
-        //         }
-        //     }
-        // }
         return (
             <div >
                 {CreateStyleButton(abbrButton)}
