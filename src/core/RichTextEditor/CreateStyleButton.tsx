@@ -62,7 +62,7 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                                             <div className={classes.buttonLabel}>
                                                 {button?.icon !== '' ?
                                                     <div>
-                                                        <Icon>
+                                                        <Icon id={`rec-mi-${button.icon}`}>
                                                             {button.icon}
                                                         </Icon> <span> {button?.buttonText}</span>
                                                     </div>
@@ -77,7 +77,7 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                     : <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
                         <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={`${buttonData.buttonStyle} ${classes.transformNone}`}>
                             {buttonData?.icon !== '' ?
-                                <div><Icon className={classes.topPadding}>
+                                <div><Icon id={`rec-mi-${buttonData.icon}`} className={classes.topPadding}>
                                     {buttonData.icon}
                                 </Icon> <span><strong>{buttonData?.buttonText}</strong></span></div>
                                 : <span><strong>{buttonData?.buttonText}</strong></span>}

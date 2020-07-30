@@ -8,6 +8,8 @@ import { Quill } from 'react-quill';
 import AbbrDialog from '../AbbrDialog/AbbrDialog';
 import { NoteAdd } from '@material-ui/icons';
 import LinkDialog from '../LinkDialog/LinkDialog';
+import FontColorButton from '../FontColorButton/FontColorButton';
+import { FontColorButtonType } from '../model/ColorPicker';
 
 
 export interface IToolbar {
@@ -191,7 +193,7 @@ export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
     const [state, setState] = useReducer((state: any, newState: any) =>
         ({ ...state, ...newState }),
-        { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
+        { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColor: "#000000", highlightColor: "#FFFFFF", fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
 
     useEffect(() => {
         console.log("state updated:", state);
@@ -266,6 +268,9 @@ export default function CustomToolbar(props: IToolbar) {
                 quill.insertText(range.index, innerLeaf, 'user');
             }
         }
+        applyFormat('color', '#000000');
+        applyFormat('background', '#FFFFFF');
+
     }
 
     const CustomEditor =
@@ -304,7 +309,6 @@ export default function CustomToolbar(props: IToolbar) {
             applyFormat('script', scriptStyle)
         },
         _onStyleMarkClick(style: TextStyle) {
-            // e.preventDefault()
             const newStyleValue = !state.formats[`${style}`];
             applyFormat(style, newStyleValue)
         },
@@ -320,11 +324,34 @@ export default function CustomToolbar(props: IToolbar) {
             const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'ordered' && state.formats.list === 'ordered') ? false : listType;
             applyFormat('list', newListValue);
         },
-        _onTextFormatColor() {
-
-        },
-        _onTextHighlight() {
-
+        _onTextFormatColor(color: string, type: FontColorButtonType) {
+            if (quill !== undefined) {
+                const range = quill.getSelection();
+                if (range) {
+                    switch (type) {
+                        case "Font":
+                            if (state.fontColor !== color) {
+                                applyFormat('color', color);
+                                setState({
+                                    fontColor: color
+                                });
+                            }
+                            break;
+                        case "Highlight":
+                            if (state.highlightColor !== color) {
+                                applyFormat('background', color);
+                                setState({
+                                    highlightColor: color
+                                });
+                            }
+                            break;
+                        default:
+                            console.error("Error in _onTextFormatColor");
+                            
+                            break;
+                    }
+                }
+            }
         },
         _onAbbrInsert(params: IAbbr) {
             if (params.range) {
@@ -373,17 +400,16 @@ export default function CustomToolbar(props: IToolbar) {
     };
 
 
-    const insertEmbeddedTag = (params: IAbbr | ILink, tag: string) => {
-        if (params.range) {
-            if (params.range.length > 0) {
-                quill.deleteText(params.range.index, params.range.length, 'user');
-            }
-        }
-        // quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, {
-        //     ...params
-        // }, 'user');
-        // quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, `<a href='${params.url}'>${params.text}</a>`, 'user');
-    }
+    // const insertEmbeddedTag = (params: IAbbr | ILink, tag: string) => {
+    //     if (params.range) {
+    //         if (params.range.length > 0) {
+    //             quill.deleteText(params.range.index, params.range.length, 'user');
+    //         }
+    //     }
+    //     quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, {
+    //         ...params
+    //     }, 'user');
+    // }
 
 
     const toolbarArray: IToolbarButton[] = [
@@ -634,26 +660,6 @@ export default function CustomToolbar(props: IToolbar) {
 
             ]
         },
-        // {
-        //     key: 'insert_link',
-        //     icon: 'insert_link',
-        //     tooltip: 'Insert link',
-        //     ariaLabel: 'Insert link',
-        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-        //     position: 'top',
-        //     value: 'insertLink',
-        //     buttonStyle: classes.cmdButton
-        // },
-        // {
-        //     key: 'link_off',
-        //     icon: 'link_off',
-        //     tooltip: 'Remove link',
-        //     ariaLabel: 'Remove link',
-        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-        //     position: 'top',
-        //     value: 'removeLink',
-        //     buttonStyle: classes.cmdButton
-        // },
         {
             key: 'table_insert',
             icon: 'table_chart',
@@ -682,24 +688,6 @@ export default function CustomToolbar(props: IToolbar) {
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onChangeIndentClick(IndentDirType.right),
             position: 'top',
             value: 'indent_right',
-            buttonStyle: classes.cmdButton
-        },
-        {
-            key: 'highlight',
-            icon: 'highlight',
-            tooltip: 'Highlight text',
-            ariaLabel: 'Highlight text',
-            callback: () => CustomEditor._onTextHighlight(),
-            position: 'top',
-            buttonStyle: classes.cmdButton
-        },
-        {
-            key: 'text_format',
-            icon: 'text_format',
-            tooltip: 'Format text color',
-            ariaLabel: 'Format text color',
-            callback: () => CustomEditor._onTextFormatColor(),
-            position: 'top',
             buttonStyle: classes.cmdButton
         },
         {
@@ -733,6 +721,27 @@ export default function CustomToolbar(props: IToolbar) {
         },
     ]
 
+    const FontColorButtonArray: any = {
+        textFormat: {
+            key: 'text_format',
+            icon: 'text_format',
+            tooltip: 'Format text color',
+            ariaLabel: 'Format text color',
+            callback: null,
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        },
+        highlight: {
+            key: 'highlight',
+            icon: 'highlight',
+            tooltip: 'Highlight text',
+            ariaLabel: 'Highlight text',
+            callback: null,
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        }
+    }
+
     const renderToolbarButtons = () => {
         const toolbarButtons: any[] = []
         toolbarArray.forEach((element: IToolbarButton) => {
@@ -742,7 +751,13 @@ export default function CustomToolbar(props: IToolbar) {
         toolbarButtons.push(<AbbrDialog key="dialog_abbr" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onAbbrInsert}></AbbrDialog>);
         toolbarButtons.push(
             <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
-        )
+        );
+        toolbarButtons.push(
+            <FontColorButton defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtonArray.textFormat}></FontColorButton>
+        );
+        toolbarButtons.push(
+            <FontColorButton defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={CustomEditor._onTextFormatColor} buttonType="Highlight" buttonParams={FontColorButtonArray.highlight}></FontColorButton>
+        );
         return toolbarButtons
 
     }
