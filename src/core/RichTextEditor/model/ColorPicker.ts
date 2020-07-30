@@ -1,4 +1,4 @@
-import { IToolbarButton } from "./RichText";
+import { IToolbarButton, IRange } from "./RichText";
 
 export interface IColor {
     colorCode: string;
@@ -22,4 +22,5 @@ export interface IFontColorButtonProps {
     buttonParams: IToolbarButton;
     callback?: any;
     defaultColor?: string;
+    // range: IRange;
 }

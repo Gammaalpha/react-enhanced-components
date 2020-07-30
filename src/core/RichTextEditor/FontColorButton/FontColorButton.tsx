@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { IFontColorButtonProps } from '../model/ColorPicker';
+import { IFontColorButtonProps, FontColorButtonType } from '../model/ColorPicker';
 import { CompactPicker } from 'react-color';
 import { withStyles, MenuProps, Menu, MenuItem } from '@material-ui/core';
 import { CreateStyleButton } from '../CreateStyleButton';
@@ -61,7 +61,7 @@ export default function FontColorButton(props: IFontColorButtonProps) {
     const handleClose = () => {
         setAnchorEl(null);
     }
-    
+
     const compactPicker = () => {
         return (
             <CompactPicker
@@ -84,7 +84,6 @@ export default function FontColorButton(props: IFontColorButtonProps) {
                 >
                     <StyledMenuItem onClick={(e) => { e.preventDefault() }}>
                         {compactPicker()}
-
                     </StyledMenuItem>
                 </StyledMenu>
             </div>

@@ -324,14 +324,15 @@ export default function CustomToolbar(props: IToolbar) {
             const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'ordered' && state.formats.list === 'ordered') ? false : listType;
             applyFormat('list', newListValue);
         },
-        _onTextFormatColor(color: string, type: FontColorButtonType) {
+        _onTextFormatColor(color: string, type: FontColorButtonType, range: any) {
             if (quill !== undefined) {
-                const range = quill.getSelection();
+                // const range = quill.getSelection();
                 if (range) {
                     switch (type) {
                         case "Font":
                             if (state.fontColor !== color) {
-                                applyFormat('color', color);
+                                // applyFormat('color', color);
+                                quill.format(range.index, range.length, 'color', color);
                                 setState({
                                     fontColor: color
                                 });
@@ -347,7 +348,6 @@ export default function CustomToolbar(props: IToolbar) {
                             break;
                         default:
                             console.error("Error in _onTextFormatColor");
-                            
                             break;
                     }
                 }
