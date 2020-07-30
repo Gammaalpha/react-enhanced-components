@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink, IRange } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
@@ -191,14 +191,11 @@ Quill.register(ATag);
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
+    let selectedRange = {};
     const [state, setState] = useReducer((state: any, newState: any) =>
         ({ ...state, ...newState }),
         { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColor: "#000000", highlightColor: "#FFFFFF", fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
 
-    useEffect(() => {
-        console.log("state updated:", state);
-
-    }, [state])
     const getEditor = (): any | undefined => {
         try {
             return props.editorRef!.current?.getEditor();
@@ -208,6 +205,9 @@ export default function CustomToolbar(props: IToolbar) {
     }
     const quill = getEditor();
 
+    useEffect(() => {
+        console.log("state updated:", state);
+    }, [state])
     /**
     * Called when richtext selection changes
     */
@@ -324,32 +324,31 @@ export default function CustomToolbar(props: IToolbar) {
             const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'ordered' && state.formats.list === 'ordered') ? false : listType;
             applyFormat('list', newListValue);
         },
-        _onTextFormatColor(color: string, type: FontColorButtonType, range: any) {
+        _onTextFormatColor(color: string, type: FontColorButtonType, range: IRange) {
+            // debugger;
             if (quill !== undefined) {
                 // const range = quill.getSelection();
-                if (range) {
-                    switch (type) {
-                        case "Font":
-                            if (state.fontColor !== color) {
-                                // applyFormat('color', color);
-                                quill.format(range.index, range.length, 'color', color);
-                                setState({
-                                    fontColor: color
-                                });
-                            }
-                            break;
-                        case "Highlight":
-                            if (state.highlightColor !== color) {
-                                applyFormat('background', color);
-                                setState({
-                                    highlightColor: color
-                                });
-                            }
-                            break;
-                        default:
-                            console.error("Error in _onTextFormatColor");
-                            break;
-                    }
+                switch (type) {
+                    case "Font":
+                        if (state.fontColor !== color) {
+                            range === null ? applyFormat('color', color) : quill.formatText(range.index, range.length, 'color', color);
+                            setState({
+                                fontColor: color
+                            });
+                        }
+                        break;
+                    case "Highlight":
+                        if (state.highlightColor !== color) {
+                            range === null ? applyFormat('background', color) : quill.formatText(range.index, range.length, 'background', color);
+                            // applyFormat('background', color);
+                            setState({
+                                highlightColor: color
+                            });
+                        }
+                        break;
+                    default:
+                        console.error("Error in _onTextFormatColor");
+                        break;
                 }
             }
         },
@@ -753,10 +752,10 @@ export default function CustomToolbar(props: IToolbar) {
             <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
         );
         toolbarButtons.push(
-            <FontColorButton defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtonArray.textFormat}></FontColorButton>
+            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtonArray.textFormat}></FontColorButton>
         );
         toolbarButtons.push(
-            <FontColorButton defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={CustomEditor._onTextFormatColor} buttonType="Highlight" buttonParams={FontColorButtonArray.highlight}></FontColorButton>
+            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={CustomEditor._onTextFormatColor} buttonType="Highlight" buttonParams={FontColorButtonArray.highlight}></FontColorButton>
         );
         return toolbarButtons
 

@@ -22,5 +22,5 @@ export interface IFontColorButtonProps {
     buttonParams: IToolbarButton;
     callback?: any;
     defaultColor?: string;
-    // range: IRange;
+    range?: IRange;
 }

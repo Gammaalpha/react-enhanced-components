@@ -45,8 +45,8 @@ export default function FontColorButton(props: IFontColorButtonProps) {
 
     useEffect(() => {
         if (props.defaultColor !== currColor) {
-            props.callback(currColor, props.buttonType);
-            handleClose();
+            props.callback(currColor, props.buttonType, props.range);
+            // handleClose();
         }
     }, [currColor, props, props.defaultColor])
 
@@ -72,6 +72,7 @@ export default function FontColorButton(props: IFontColorButtonProps) {
 
     const render = () => {
         buttonInfo.callback = (e: React.MouseEvent<HTMLElement>) => handleClick(e);
+        console.log("Color Button open:", props.range);
 
         return (
             <div>
