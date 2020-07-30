@@ -44,14 +44,18 @@ export default function FontColorButton(props: IFontColorButtonProps) {
     }
 
     useEffect(() => {
+
         if (props.defaultColor !== currColor) {
             props.callback(currColor, props.buttonType, props.range);
             // handleClose();
         }
+
     }, [currColor, props, props.defaultColor])
 
     const changeIconColor = (color: string) => {
-        document.querySelectorAll(`#rec-mi-${props.buttonParams.icon}`)[0].setAttribute('style', `color:${color};`);
+        console.log(document?.querySelectorAll(`#rec_mi_${props.buttonParams.key}`)[0]?.firstChild);
+
+        document?.querySelectorAll(`#rec_mi_${props.buttonParams.key}>span`)[0]?.setAttribute('style', `font-size:18px;border-bottom: 3px solid ${color};`);
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -73,7 +77,9 @@ export default function FontColorButton(props: IFontColorButtonProps) {
     const render = () => {
         buttonInfo.callback = (e: React.MouseEvent<HTMLElement>) => handleClick(e);
         console.log("Color Button open:", props.range);
-
+        if (props.defaultColor !== undefined) {
+            changeIconColor(props.defaultColor);
+        }
         return (
             <div>
                 {CreateStyleButton(buttonInfo)}
@@ -82,7 +88,7 @@ export default function FontColorButton(props: IFontColorButtonProps) {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
-                    >
+                >
                     {compactPicker()}
                     {/* <MenuItem onClick={(e) => { e.preventDefault() }}>
                     </MenuItem> */}

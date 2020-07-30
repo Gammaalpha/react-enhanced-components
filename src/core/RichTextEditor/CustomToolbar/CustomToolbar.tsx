@@ -723,16 +723,17 @@ export default function CustomToolbar(props: IToolbar) {
     const FontColorButtonArray: any = {
         textFormat: {
             key: 'text_format',
-            icon: 'text_format',
+            icon: '',
             tooltip: 'Format text color',
             ariaLabel: 'Format text color',
             callback: null,
+            buttonText: 'A',
             position: 'top',
             buttonStyle: classes.cmdButton
         },
         highlight: {
             key: 'highlight',
-            icon: 'highlight',
+            icon: 'create',
             tooltip: 'Highlight text',
             ariaLabel: 'Highlight text',
             callback: null,

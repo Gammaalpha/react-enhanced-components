@@ -61,12 +61,12 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                                         <Tooltip placement={button?.position ? button.position : "top"} title={`${button.tooltip}`}>
                                             <div className={classes.buttonLabel}>
                                                 {button?.icon !== '' ?
-                                                    <div>
-                                                        <Icon id={`rec-mi-${button.icon}`}>
+                                                    <div id={`rec_mi_menu_${button.key}`}>
+                                                        <Icon >
                                                             {button.icon}
                                                         </Icon> <span> {button?.buttonText}</span>
                                                     </div>
-                                                    : <span> {button?.buttonText}</span>}
+                                                    : <span > {button?.buttonText}</span>}
                                             </div>
                                         </Tooltip>
                                     </MenuItem>
@@ -77,10 +77,10 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                     : <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
                         <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={`${buttonData.buttonStyle} ${classes.transformNone}`}>
                             {buttonData?.icon !== '' ?
-                                <div><Icon id={`rec-mi-${buttonData.icon}`} className={classes.topPadding}>
+                                <div id={`rec_mi_${buttonData.key}`}><span><Icon id={`rec_mi_${buttonData.icon}`} className={classes.topPadding}>
                                     {buttonData.icon}
-                                </Icon> <span><strong>{buttonData?.buttonText}</strong></span></div>
-                                : <span><strong>{buttonData?.buttonText}</strong></span>}
+                                </Icon> <strong>{buttonData?.buttonText}</strong></span></div>
+                                : <div id={`rec_mi_${buttonData.key}`}><span><strong>{buttonData?.buttonText}</strong></span></div>}
                         </Button>
                     </Tooltip>}
             </div>
