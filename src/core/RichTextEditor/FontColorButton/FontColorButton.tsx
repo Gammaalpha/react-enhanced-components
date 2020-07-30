@@ -82,10 +82,10 @@ export default function FontColorButton(props: IFontColorButtonProps) {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
-                >
-                    <StyledMenuItem onClick={(e) => { e.preventDefault() }}>
-                        {compactPicker()}
-                    </StyledMenuItem>
+                    >
+                    {compactPicker()}
+                    {/* <MenuItem onClick={(e) => { e.preventDefault() }}>
+                    </MenuItem> */}
                 </StyledMenu>
             </div>
         )
