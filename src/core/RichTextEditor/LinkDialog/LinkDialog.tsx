@@ -92,6 +92,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
         }
 
     }, [open, props, props.quillEditor])
+    
     const handleSubmit = () => {
         handleClose();
         props.callback(link)

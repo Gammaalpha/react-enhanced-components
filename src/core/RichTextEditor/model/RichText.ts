@@ -31,6 +31,8 @@ export interface IToolbarButton {
     childButtons?: IToolbarButton[]
 }
 
+
+
 export type TextAlignment = "left" | "right" | "center" | "justify";
 export enum TextAlignmentType {
     left = 'left',
