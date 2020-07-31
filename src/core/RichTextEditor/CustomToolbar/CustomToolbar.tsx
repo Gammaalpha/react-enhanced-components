@@ -577,6 +577,16 @@ export default function CustomToolbar(props: IToolbar) {
             ]
         },
         {
+            key: 'textFontSize',
+            icon: '',
+            tooltip: '',
+            value: 'large',
+            ariaLabel: 'Text Alignment',
+            position: 'top',
+            buttonStyle: classes.selectEmpty,
+            childButtons: textFontSizeSelectionArray(fontSizeArray)
+        },
+        {
             key: 'bold',
             className: 'bold',
             value: '',
@@ -724,16 +734,7 @@ export default function CustomToolbar(props: IToolbar) {
 
             ]
         },
-        {
-            key: 'textFontSize',
-            icon: '',
-            tooltip: '',
-            value: 'large',
-            ariaLabel: 'Text Alignment',
-            position: 'top',
-            buttonStyle: classes.selectEmpty,
-            childButtons: textFontSizeSelectionArray(fontSizeArray)
-        },
+
         {
             key: 'table_insert',
             icon: 'table_chart',
