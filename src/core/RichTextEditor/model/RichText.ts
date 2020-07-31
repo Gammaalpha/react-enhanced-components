@@ -99,4 +99,5 @@ export interface IImageLink extends ILink {
     width: number;
     height: number;
     altText: string;
+    float: string;
 }

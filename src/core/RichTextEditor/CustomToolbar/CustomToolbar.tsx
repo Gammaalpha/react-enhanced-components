@@ -6,7 +6,6 @@ import { CreateStyleButton } from '../CreateStyleButton';
 import './CustomToolbar.css'
 import { Quill } from 'react-quill';
 import AbbrDialog from '../AbbrDialog/AbbrDialog';
-import { NoteAdd } from '@material-ui/icons';
 import LinkDialog from '../LinkDialog/LinkDialog';
 import FontColorButton from '../FontColorButton/FontColorButton';
 import { FontColorButtonType } from '../model/ColorPicker';
@@ -102,7 +101,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
-let Delta = Quill.import('delta');
+// let Delta = Quill.import('delta');
 //Set custom class marking
 let Parchment = Quill.import('parchment');
 let config = {
@@ -112,17 +111,18 @@ let MClass = new Parchment.Attributor.Class('mark', 'style', config);
 Quill.register(MClass, true)
 
 // Set headers and add blockquote capability
-let header = Quill.import('formats/header');
-header.tagName = [
-    'H1',
-    'H2',
-    'H3',
-    'H4',
-    'blockquote'];
-Quill.register(header, true);
+// let header = Quill.import('formats/header');
+// header.tagName = [
+//     'H1',
+//     'H2',
+//     'H3',
+//     'H4',
+//     'blockquote'];
+// Quill.register(header, true);
 
 // Set font sizes
 let SizeClass = Quill.import('formats/size');
+
 SizeClass.whitelist = [
     'small',
     'medium',
@@ -200,7 +200,7 @@ class ImageTag extends blockEmbed {
         node.setAttribute('width', value.width.toString());
         node.setAttribute('height', value.height.toString());
         node.setAttribute('id', `rec-img-${value.text}`);
-
+        node.setAttribute('style', `float:${value.float};padding:5px;`)
         node.innerHTML = value.text.trim();
         return node;
     }
@@ -227,8 +227,6 @@ export default function CustomToolbar(props: IToolbar) {
             return undefined
         }
     }
-    const quill = getEditor();
-
     useEffect(() => {
         console.log("state updated:", state);
     }, [state])
@@ -237,7 +235,7 @@ export default function CustomToolbar(props: IToolbar) {
     */
     const handleChangeSelection = (range: any, oldRange: any, source: any) => {
 
-        // const quill = getEditor();
+        const quill = getEditor();
         try {
             if (quill && range !== null) {
                 // Get the selected text
@@ -262,7 +260,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const applyFormat = (name: string, value: any) => {
-        // const quill = getEditor();
+        const quill = getEditor();
         if (name === 'mark') {
             quill.format('mark', value);
         }
@@ -277,7 +275,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const clearFormatting = () => {
-        // const quill = getEditor();
+        const quill = getEditor();
         const range = quill.getSelection();
         let [leaf, offset] = quill.getLeaf(range.index);
         console.log(leaf, offset);
@@ -317,7 +315,7 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onChangeIndentClick(direction: IndentDir) {
             // e.preventDefault();
-            // const quill = getEditor();
+            const quill = getEditor();
             const current = +(quill.getFormat(quill.getSelection()).indent || 0);
             applyFormat("indent", current + direction)
         },
@@ -350,6 +348,7 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onTextFormatColor(color: string, type: FontColorButtonType, range: IRange) {
             // debugger;
+            const quill = getEditor()
             if (quill !== undefined) {
                 // const range = quill.getSelection();
                 switch (type) {
@@ -377,6 +376,7 @@ export default function CustomToolbar(props: IToolbar) {
             }
         },
         _onAbbrInsert(params: IAbbr) {
+            const quill = getEditor()
             if (params.range) {
                 if (params.range.length > 0) {
                     quill.deleteText(params.range.index, params.range.length, 'user');
@@ -389,6 +389,7 @@ export default function CustomToolbar(props: IToolbar) {
 
         },
         _onLinkInsert(params: ILink) {
+            const quill = getEditor()
             if (params.range) {
                 if (params.range.length > 0) {
                     quill.deleteText(params.range.index, params.range.length, 'user');
@@ -401,6 +402,7 @@ export default function CustomToolbar(props: IToolbar) {
             }, 'user');
         },
         _onInsertImage(params: IImageLink) {
+            const quill = getEditor()
             if (params.range) {
                 if (params.range.length > 0) {
                     quill.deleteText(params.range.index, params.range.length, 'user');
@@ -424,11 +426,14 @@ export default function CustomToolbar(props: IToolbar) {
         //     quill.formatText(cursorPosition, params.text.length, 'link', params.url);
         // },
         _onHrInsert() {
-            // const quill = getEditor();
+            const quill = getEditor();
             let range = quill.getSelection();
             if (range) {
                 quill.insertEmbed(range.index, "hr", "null")
             }
+        },
+        _onFontSizeChange(fontSize: string) {
+            applyFormat("size", fontSize)
         }
     };
 
@@ -443,7 +448,33 @@ export default function CustomToolbar(props: IToolbar) {
     //         ...params
     //     }, 'user');
     // }
-
+    const fontSizeArray =
+        [
+            { key: 'small', text: '12' },
+            { key: 'medium', text: '14' },
+            { key: 'mediumplus', text: '15' },
+            { key: 'large', text: '17' },
+            { key: 'xlarge', text: '21' },
+            { key: 'xlargeplus', text: '24' },
+            { key: 'xxlarge', text: '28' },
+            { key: 'xxxlarge', text: '32' },
+            { key: 'xxlargeplus', text: '36' },
+            { key: 'super', text: '42' },
+        ];
+    const textFontSizeSelectionArray = (sizeArray: any[]) => {
+        // const arr = [];
+        return sizeArray.map(num => ({
+            key: `fs_${num.text}`,
+            buttonText: `${num.text}`,
+            icon: '',
+            tooltip: '',
+            ariaLabel: `Font size ${num.text}`,
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onFontSizeChange(num.key),
+            position: 'right',
+            value: num.key,
+            buttonStyle: classes.cmdButton
+        }))
+    }
 
     const toolbarArray: IToolbarButton[] = [
         {
@@ -544,6 +575,16 @@ export default function CustomToolbar(props: IToolbar) {
                     buttonStyle: '',
                 }
             ]
+        },
+        {
+            key: 'textFontSize',
+            icon: '',
+            tooltip: '',
+            value: 'large',
+            ariaLabel: 'Text Alignment',
+            position: 'top',
+            buttonStyle: classes.selectEmpty,
+            childButtons: textFontSizeSelectionArray(fontSizeArray)
         },
         {
             key: 'bold',
@@ -693,6 +734,7 @@ export default function CustomToolbar(props: IToolbar) {
 
             ]
         },
+
         {
             key: 'table_insert',
             icon: 'table_chart',
@@ -767,6 +809,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const renderToolbarButtons = () => {
+        const quill = getEditor()
         const toolbarButtons: any[] = []
         toolbarArray.forEach((element: IToolbarButton) => {
             toolbarButtons.push(CreateStyleButton(element))
