@@ -43,7 +43,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
     const handleClose = () => {
         setOpen(false);
     }
-    
+
     const linkButton = {
         key: 'insert_photo',
         icon: 'insert_photo',
@@ -59,7 +59,9 @@ export default function ImageDialog(props: ILinkDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                let [leaf, offset] = quill.getLeaf(range?.index === null ? 0 : range.index);
+                // let [leaf, offset] = quill.getLeaf(range?.index === null ? 0 : range.index);
+                let [leaf, offset] = quill.getLeaf(range.index);
+
                 if (leaf.domNode.tagName === "IMG") {
                     setImage({
                         ...image,
