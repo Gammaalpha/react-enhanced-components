@@ -28,7 +28,8 @@ export interface IToolbarButton {
     buttonText?: string,
     disabled?: boolean,
     className?: string,
-    childButtons?: IToolbarButton[]
+    childButtons?: IToolbarButton[],
+    isDefault?: boolean
 }
 
 
@@ -90,6 +91,12 @@ export enum TextStyleType {
 export interface ILink {
     text: string;
     url: string;
-    target: string;
+    target?: string;
     range: IRange
+}
+
+export interface IImageLink extends ILink {
+    width: number;
+    height: number;
+    altText: string;
 }

@@ -23,16 +23,6 @@ const StyledMenu = withStyles({
         {...props}
     />
 ));
-const StyledMenuItem = withStyles((theme) => ({
-    root: {
-        '&:focus': {
-            backgroundColor: theme.palette.primary.main,
-            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-                color: theme.palette.common.white,
-            },
-        },
-    },
-}))(MenuItem);
 
 export default function FontColorButton(props: IFontColorButtonProps) {
     const [currColor, setCurrColor] = useState(props.defaultColor);
@@ -53,8 +43,6 @@ export default function FontColorButton(props: IFontColorButtonProps) {
     }, [currColor, props, props.defaultColor])
 
     const changeIconColor = (color: string) => {
-        console.log(document?.querySelectorAll(`#rec_mi_${props.buttonParams.key}`)[0]?.firstChild);
-
         document?.querySelectorAll(`#rec_mi_${props.buttonParams.key}>span`)[0]?.setAttribute('style', `font-size:18px;border-bottom: 3px solid ${color};`);
     }
 
@@ -76,7 +64,6 @@ export default function FontColorButton(props: IFontColorButtonProps) {
 
     const render = () => {
         buttonInfo.callback = (e: React.MouseEvent<HTMLElement>) => handleClick(e);
-        console.log("Color Button open:", props.range);
         if (props.defaultColor !== undefined) {
             changeIconColor(props.defaultColor);
         }
