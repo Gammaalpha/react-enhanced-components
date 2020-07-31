@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
-import 'react-quill/dist/quill.snow.css';
 import ReactQuill, { Quill } from 'react-quill';
 import { IQuillEditor } from '../model/RichText';
 import './QuillEditor.css'
+import 'react-quill/dist/quill.snow.css';
 
 
 export default function QuillEditor(props: IQuillEditor) {
