@@ -200,7 +200,7 @@ class ImageTag extends blockEmbed {
         node.setAttribute('width', value.width.toString());
         node.setAttribute('height', value.height.toString());
         node.setAttribute('id', `rec-img-${value.text}`);
-
+        node.setAttribute('style', `float:${value.float};padding:5px;`)
         node.innerHTML = value.text.trim();
         return node;
     }

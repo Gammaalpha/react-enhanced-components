@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CreateStyleButton } from '../CreateStyleButton';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup, FormControlLabel, Checkbox, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 import { IImageLink } from '../model/RichText';
 export interface ILinkDialogProps {
     quillEditor: any;
@@ -14,9 +14,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         display: "flex",
         flexDirection: "column",
         justifyItems: "center",
-        alignItems: "center"
+        // alignItems: "center",
+        width: '100%'
 
-    }
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
 }))
 
 export default function ImageDialog(props: ILinkDialogProps) {
@@ -33,7 +38,8 @@ export default function ImageDialog(props: ILinkDialogProps) {
         },
         altText: '',
         width: 0,
-        height: 0
+        height: 0,
+        float: 'none'
     })
 
     const handleOpen = () => {
@@ -59,9 +65,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                // let [leaf, offset] = quill.getLeaf(range?.index === null ? 0 : range.index);
-                let [leaf, offset] = quill.getLeaf(range.index);
-
+                let [leaf, offset] = quill.getLeaf(range?.index === null ? 0 : range.index);
                 if (leaf.domNode.tagName === "IMG") {
                     setImage({
                         ...image,
@@ -92,6 +96,13 @@ export default function ImageDialog(props: ILinkDialogProps) {
         handleClose();
         props.callback(image)
     };
+
+    const handleFloatChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        setImage({
+            ...image,
+            float: event.target.value as string
+        });
+    }
 
     const render = () => {
         return (
@@ -187,6 +198,21 @@ export default function ImageDialog(props: ILinkDialogProps) {
                                     });
                                 }}
                             />
+                            <FormControl className={classes.formControl}>
+                                <InputLabel htmlFor="imgFloat">Image Float:</InputLabel>
+                                <Select
+                                    labelId="Image float selection"
+                                    id="imgFloat"
+                                    value={image.float}
+                                    onChange={handleFloatChange}
+                                >
+                                    <MenuItem value="none">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    <MenuItem value={'left'}>Left</MenuItem>
+                                    <MenuItem value={'right'}>Right</MenuItem>
+                                </Select>
+                            </FormControl>
                         </FormGroup>
                     </DialogContent>
                     <DialogActions>
