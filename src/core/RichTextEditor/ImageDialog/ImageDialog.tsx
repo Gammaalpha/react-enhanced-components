@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { CreateStyleButton } from '../CreateStyleButton';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core';
-import { ILink } from '../model/RichText';
+import { IImageLink } from '../model/RichText';
 export interface ILinkDialogProps {
     quillEditor: any;
     callback?: any;
@@ -19,19 +19,21 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }))
 
-export default function LinkDialog(props: ILinkDialogProps) {
+export default function ImageDialog(props: ILinkDialogProps) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [urlErrorText, setUrlErrorText] = useState('');
     const [urlError, setUrlError] = useState(false)
-    const [link, setLink] = useState<ILink>({
+    const [image, setImage] = useState<IImageLink>({
         text: '',
         url: '',
         target: '',
         range: {
             index: 0,
             length: 0
-        }
+        },
+        altText: '',
+        width: 0,
+        height: 0
     })
 
     const handleOpen = () => {
@@ -41,22 +43,12 @@ export default function LinkDialog(props: ILinkDialogProps) {
     const handleClose = () => {
         setOpen(false);
     }
-    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        let target = "";
-        if (event.target.checked) {
-            target = "_blank";
-        }
-        setLink({
-            ...link,
-            target: target,
-        });
-    }
+    
     const linkButton = {
-        key: 'insert_link',
-        icon: 'insert_link',
-        tooltip: 'Insert link',
-        ariaLabel: 'Insert link',
-        value: 'insertLink',
+        key: 'insert_photo',
+        icon: 'insert_photo',
+        tooltip: 'Insert Photo',
+        ariaLabel: 'Insert Photo.',
         callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleOpen(),
         position: 'top',
         buttonStyle: props.btnStyle
@@ -67,20 +59,21 @@ export default function LinkDialog(props: ILinkDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                let [leaf, offset] = quill.getLeaf(range.index);
-                if (leaf.domNode.tagName === "A") {
-                    setLink({
+                let [leaf, offset] = quill.getLeaf(range?.index === null ? 0 : range.index);
+                if (leaf.domNode.tagName === "IMG") {
+                    setImage({
+                        ...image,
                         text: leaf.domNode.textContent.trim(),
-                        url: leaf.domNode.href,
+                        url: leaf.domNode.src,
                         target: '',
                         range: range
                     })
                 }
                 else {
-
                     if (range?.length > 0) {
                         let innerText = quill.getText(range.index, range.length);
-                        setLink({
+                        setImage({
+                            ...image,
                             text: innerText,
                             url: '',
                             target: '',
@@ -92,10 +85,10 @@ export default function LinkDialog(props: ILinkDialogProps) {
         }
 
     }, [open, props, props.quillEditor])
-    
+
     const handleSubmit = () => {
         handleClose();
-        props.callback(link)
+        props.callback(image)
     };
 
     const render = () => {
@@ -108,7 +101,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Fill in the fields below to add address.
+                            Fill in the fields below to add image by address.
                         </DialogContentText>
                         <FormGroup aria-label="Link addition form group." className={classes.column}>
                             <TextField
@@ -117,11 +110,25 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                 id="Text"
                                 label="Text to display"
                                 type="text"
-                                value={link.text}
+                                value={image.text}
                                 onChange={(e: any) => {
-                                    setLink({
-                                        ...link,
+                                    setImage({
+                                        ...image,
                                         text: e.target.value,
+                                    });
+                                }}
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="AltText"
+                                label="Alternate Text to include"
+                                type="text"
+                                value={image.altText}
+                                onChange={(e: any) => {
+                                    setImage({
+                                        ...image,
+                                        altText: e.target.value,
                                     });
                                 }}
                             />
@@ -131,9 +138,9 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                 id="url"
                                 label="Address"
                                 placeholder="https://"
-                                helperText="Ensure link contains https://"
+                                helperText="Ensure link contains https:// or http://"
                                 type="text"
-                                value={link.url}
+                                value={image.url}
                                 error={!urlError}
                                 onChange={(e: any) => {
                                     // debugger;
@@ -144,20 +151,39 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                         setUrlError(true)
                                     }
 
-                                    setLink({
-                                        ...link,
+                                    setImage({
+                                        ...image,
                                         url: e.target.value,
                                     });
                                 }}
                             />
-                            <FormControlLabel
-                                label="Open in a new tab?"
-                                control={
-                                    <Checkbox
-                                        onChange={handleCheckboxChange}
-                                        name="target"
-                                    />
-                                }
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="Width"
+                                label="Image width"
+                                type="number"
+                                value={image.width}
+                                onChange={(e: any) => {
+                                    setImage({
+                                        ...image,
+                                        width: e.target.value,
+                                    });
+                                }}
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="Height"
+                                label="Image Height"
+                                type="number"
+                                value={image.height}
+                                onChange={(e: any) => {
+                                    setImage({
+                                        ...image,
+                                        height: e.target.value,
+                                    });
+                                }}
                             />
                         </FormGroup>
                     </DialogContent>

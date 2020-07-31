@@ -38,6 +38,17 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
         }
     };
     const classes = buttonStyles();
+
+    const buttonRenderCustom = (buttonData: IToolbarButton) => {
+        return (buttonData?.icon !== '' ?
+            <div id={`rec_mi_${buttonData.key}`}><span><Icon id={`rec_mi_${buttonData.icon}`} className={classes.topPadding}>
+                {buttonData.icon}
+            </Icon> <strong>{buttonData?.buttonText}</strong></span></div>
+            : <div id={`rec_mi_${buttonData.key}`}><span><strong>{buttonData?.buttonText}</strong></span></div>)
+    }
+    const buttonRenderDefault = (buttonData: IToolbarButton) => {
+        return buttonData.callback();
+    }
     const render = () => {
         return (
             <div key={`${buttonData.key}`}>
@@ -76,11 +87,7 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                     </FormControl>
                     : <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
                         <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={`${buttonData.buttonStyle} ${classes.transformNone}`}>
-                            {buttonData?.icon !== '' ?
-                                <div id={`rec_mi_${buttonData.key}`}><span><Icon id={`rec_mi_${buttonData.icon}`} className={classes.topPadding}>
-                                    {buttonData.icon}
-                                </Icon> <strong>{buttonData?.buttonText}</strong></span></div>
-                                : <div id={`rec_mi_${buttonData.key}`}><span><strong>{buttonData?.buttonText}</strong></span></div>}
+                            {buttonData.isDefault ? buttonRenderDefault(buttonData) : buttonRenderCustom(buttonData)}
                         </Button>
                     </Tooltip>}
             </div>

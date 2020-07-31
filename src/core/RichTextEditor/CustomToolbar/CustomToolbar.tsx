@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink, IRange } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink, IRange, IImageLink } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
@@ -10,6 +10,7 @@ import { NoteAdd } from '@material-ui/icons';
 import LinkDialog from '../LinkDialog/LinkDialog';
 import FontColorButton from '../FontColorButton/FontColorButton';
 import { FontColorButtonType } from '../model/ColorPicker';
+import ImageDialog from '../ImageDialog/ImageDialog';
 
 
 export interface IToolbar {
@@ -188,6 +189,29 @@ ATag.blotName = "a";
 ATag.className = "rec-a";
 ATag.tagName = "a";
 Quill.register(ATag);
+
+
+class ImageTag extends blockEmbed {
+    static create(value: IImageLink) {
+        let node: Element = super.create();
+        node.setAttribute('src', value.url);
+        node.setAttribute('alt', value.altText);
+        node.setAttribute('title', value.text);
+        node.setAttribute('width', value.width.toString());
+        node.setAttribute('height', value.height.toString());
+        node.setAttribute('id', `rec-img-${value.text}`);
+
+        node.innerHTML = value.text.trim();
+        return node;
+    }
+    static value(node: Element) {
+        return node;
+    }
+}
+ImageTag.blotName = "img";
+ImageTag.className = "rec-img";
+ImageTag.tagName = "img";
+Quill.register(ImageTag);
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
@@ -374,6 +398,16 @@ export default function CustomToolbar(props: IToolbar) {
                 text: params.text,
                 url: params.url,
                 target: params.target
+            }, 'user');
+        },
+        _onInsertImage(params: IImageLink) {
+            if (params.range) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
+                }
+            }
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
+                ...params
             }, 'user');
         },
         // format version
@@ -698,16 +732,6 @@ export default function CustomToolbar(props: IToolbar) {
             position: 'top',
             buttonStyle: classes.cmdButton
         },
-        // {
-        //     key: 'abbreviation',
-        //     icon: '',
-        //     tooltip: 'Abbreviation',
-        //     buttonText: '<abbr>',
-        //     ariaLabel: 'Add Abbreviation over selected text',
-        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onAbbrInsert(),
-        //     position: 'top',
-        //     buttonStyle: classes.cmdButton
-        // },
         {
             key: 'horizontal_line',
             icon: '',
@@ -718,9 +742,9 @@ export default function CustomToolbar(props: IToolbar) {
             position: 'top',
             buttonStyle: classes.cmdButton
         },
-    ]
+    ];
 
-    const FontColorButtonArray: any = {
+    const FontColorButtons: any = {
         textFormat: {
             key: 'text_format',
             icon: '',
@@ -753,10 +777,13 @@ export default function CustomToolbar(props: IToolbar) {
             <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
         );
         toolbarButtons.push(
-            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtonArray.textFormat}></FontColorButton>
+            <ImageDialog key="image_insert" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
         );
         toolbarButtons.push(
-            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={CustomEditor._onTextFormatColor} buttonType="Highlight" buttonParams={FontColorButtonArray.highlight}></FontColorButton>
+            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtons.textFormat}></FontColorButton>
+        );
+        toolbarButtons.push(
+            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={CustomEditor._onTextFormatColor} buttonType="Highlight" buttonParams={FontColorButtons.highlight}></FontColorButton>
         );
         return toolbarButtons
 
