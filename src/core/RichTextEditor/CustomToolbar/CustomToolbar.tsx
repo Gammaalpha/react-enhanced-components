@@ -23,7 +23,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     flexGrow1: {
         flexGrow: 1,
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        background: "#1e272c"
     },
     tooltip: {
         fontSize: "12pt!important"
