@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import ReactQuill, { Quill } from 'react-quill';
+import ReactQuill from 'react-quill';
 import { IQuillEditor } from '../model/RichText';
 import './QuillEditor.css'
 import 'react-quill/dist/quill.snow.css';
