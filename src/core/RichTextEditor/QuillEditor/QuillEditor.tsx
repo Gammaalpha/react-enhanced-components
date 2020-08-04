@@ -7,10 +7,9 @@ import 'react-quill/dist/quill.snow.css';
 
 export default function QuillEditor(props: IQuillEditor) {
 
-    let initialValue = props?.value !== '' ? props.value : '';
     const editorRef = useRef<ReactQuill>(null)
 
-    const [value, setValue] = useState(initialValue)
+    const [value, setValue] = useState(props.value !== undefined ? props.value : '')
     const handleChange = (_value: any) => {
         setValue(_value)
     }
@@ -38,7 +37,7 @@ export default function QuillEditor(props: IQuillEditor) {
     const render = () => {
         return (
             <div className={`${props.editing ? 'ql-active' : ""}`}>
-                {renderReactQuill()}
+                {props.editing ? renderReactQuill() : <div dangerouslySetInnerHTML={{ __html: value }}></div>}
             </div>
         )
     }

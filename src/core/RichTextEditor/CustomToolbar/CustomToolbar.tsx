@@ -16,6 +16,7 @@ export interface IToolbar {
     id: string,
     editorRef: any,
     toolbarStyle?: string,
+    editorId: string
 }
 
 
@@ -191,6 +192,27 @@ ATag.className = "rec-a";
 ATag.tagName = "a";
 Quill.register(ATag);
 
+class TableTag extends blockEmbed {
+    static create(value: any) {
+        console.log('table:', value);
+        let node: Element = super.create();
+        node.setAttribute("id", `rec_table_${value.tableCount + 1}`)
+        node.setAttribute("style", "border:1px solid black;");
+        node.appendChild(document.createElement("thead"));
+        node.appendChild(document.createElement("tbody"))
+        debugger;
+        return node;
+    }
+
+    static value(node: Element) {
+        return node;
+    }
+}
+
+TableTag.blotName = "table";
+TableTag.className = "rect-table";
+TableTag.tagName = "table";
+Quill.register(TableTag);
 
 class ImageTag extends blockEmbed {
     static create(value: IImageLink) {
@@ -435,8 +457,70 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onFontSizeChange(fontSize: string) {
             applyFormat("size", fontSize)
-        }
+        },
+        _onRowInsertBelow() { },
+        _onColumnInsertRight() { },
+        _onTableInsert() {
+            const quill = getEditor();
+            const range = quill.getSelection();
+            const count = document.querySelectorAll("[id^= 'rec_table_']");
+            console.log('Count: ', count);
+            // quill.insertEmbed(range.index, 'table', {
+            //     tableCount: count.length
+            // }, 'user');
+            // getQuillInnerHTML();
+            setQuillInnerHTML();
+
+        },
+        _onTableDelete() { },
+        _onDeleteCurrentRow() { },
+        _onDeleteCurrentColumn() { }
+
     };
+
+    const getEditorBySelector = (): NodeListOf<Element> => {
+        return document.querySelectorAll(`[id='${props.editorId}']`)[0].querySelectorAll("[class='ql-editor'");
+    }
+
+    const getQuillInnerHTML = () => {
+
+        console.log(getEditorBySelector());
+
+    }
+    const setQuillInnerHTML = (html?: string) => {
+        const quill = getEditor();
+        const range = quill.getSelection();
+        // let editor: NodeListOf<Element> = getEditorBySelector();
+        // const htmlContent = '<div>Hello</div>';
+        // const delta = quill.clipboard.convert(htmlContent);
+        // quill.insertEmbed(range.index, 'p', delta);
+        // quill.setContents(delta, 'silent')
+    }
+
+    const basicTable = () => {
+        return <table>
+            <thead>
+                <tr>
+                    <td>
+                        Col1
+                    </td>
+                    <td>
+                        Col2
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Cell1
+                    </td>
+                    <td>
+                        Cell2
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
 
 
     // const insertEmbeddedTag = (params: IAbbr | ILink, tag: string) => {
@@ -735,13 +819,12 @@ export default function CustomToolbar(props: IToolbar) {
 
             ]
         },
-
         {
             key: 'table_insert',
             icon: 'table_chart',
             tooltip: 'Add table',
             ariaLabel: 'Add Table.',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTableInsert(),
             position: 'top',
             value: '',
             buttonStyle: classes.cmdButton
