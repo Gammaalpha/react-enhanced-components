@@ -54,7 +54,7 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                let [leaf, offset] = quill.getLeaf(range.index);
+                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
                 if (leaf.domNode.tagName === "ABBR") {
                     setAbbr({
                         text: leaf.domNode.textContent.trim(),

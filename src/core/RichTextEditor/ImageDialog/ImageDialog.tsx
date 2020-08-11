@@ -65,7 +65,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                let [leaf, offset] = quill.getLeaf(range?.index === null ? 0 : range.index);
+                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
                 if (leaf.domNode.tagName === "IMG") {
                     setImage({
                         ...image,

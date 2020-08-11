@@ -67,7 +67,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                let [leaf, offset] = quill.getLeaf(range.index);
+                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
                 if (leaf.domNode.tagName === "A") {
                     setLink({
                         text: leaf.domNode.textContent.trim(),
@@ -92,7 +92,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
         }
 
     }, [open, props, props.quillEditor])
-    
+
     const handleSubmit = () => {
         handleClose();
         props.callback(link)

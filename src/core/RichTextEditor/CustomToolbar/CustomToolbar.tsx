@@ -300,21 +300,23 @@ export default function CustomToolbar(props: IToolbar) {
     const clearFormatting = () => {
         const quill = getEditor();
         const range = quill.getSelection();
-        let [leaf, offset] = quill.getLeaf(range.index);
-        console.log(leaf, offset);
+        if (range !== null) {
+            let [leaf, offset] = quill.getLeaf(range.index);
+            // console.log(leaf, offset);
 
-        if (range.length === 0) {
-            quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
-        }
-        else {
-            quill.removeFormat(range.index, range.length)
-            if (leaf.domNode.tagName === "ABBR") {
-                const innerLeaf: string = (leaf.domNode.innerText).trim();
-                quill.insertText(range.index, innerLeaf, 'user');
+            if (range.length === 0) {
+                quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
             }
+            else {
+                quill.removeFormat(range.index, range.length)
+                if (leaf.domNode.tagName === "ABBR") {
+                    const innerLeaf: string = (leaf.domNode.innerText).trim();
+                    quill.insertText(range.index, innerLeaf, 'user');
+                }
+            }
+            applyFormat('color', '#000000');
+            applyFormat('background', '#FFFFFF');
         }
-        applyFormat('color', '#000000');
-        applyFormat('background', '#FFFFFF');
 
     }
 
@@ -339,7 +341,7 @@ export default function CustomToolbar(props: IToolbar) {
         _onChangeIndentClick(direction: IndentDir) {
             // e.preventDefault();
             const quill = getEditor();
-            const current = +(quill.getFormat(quill.getSelection()).indent || 0);
+            const current = +(quill.getFormat(quill.getSelection() !== null ? quill.getSelection() : 0).indent || 0);
             applyFormat("indent", current + direction)
         },
         _onScriptStyleMarkClick(style: TextStyle) {
