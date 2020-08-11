@@ -212,7 +212,7 @@ function App() {
           <div className={'FullWidth'}>
             <div className={'Spacing'}>
               <div>
-                Editor: {renderEditorSwitch()}
+                Edit mode {state.editor ? '(ON)' : "(OFF)"}: {renderEditorSwitch()}
               </div>
             </div>
             <RichTextEditor editing={state.editor}></RichTextEditor>

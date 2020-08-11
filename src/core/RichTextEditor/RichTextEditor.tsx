@@ -17,7 +17,7 @@ export function RichTextEditor(props: IRichText) {
 
         return (
             <div>
-                <CustomToolbar editorRef={editorRefState} id={toolbarId} editorId={editorId} />
+                <CustomToolbar editing={props.editing} editorRef={editorRefState} id={toolbarId} editorId={editorId} />
                 <QuillEditor callback={handleIncomingRef} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
             </div>
         )

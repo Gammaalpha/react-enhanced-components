@@ -16,7 +16,8 @@ export interface IToolbar {
     id: string,
     editorRef: any,
     toolbarStyle?: string,
-    editorId: string
+    editorId: string,
+    editing?: boolean
 }
 
 
@@ -99,8 +100,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     appBar: {
         backgroundColor: '#1e272c',
-
     },
+    displayNone: {
+        display: 'none'
+    }
 }));
 
 // let Delta = Quill.import('delta');
@@ -922,7 +925,7 @@ export default function CustomToolbar(props: IToolbar) {
         console.log('toolbar render');
         console.log('Editor Ref: ', getEditor());
         return (
-            <div id={props.id} className={classes.flexGrow1}>
+            <div id={props.id} className={`${classes.flexGrow1} ${props.editing ? "" : classes.displayNone}`}>
                 <AppBar position="static" className={classes.appBar}>
                     <Toolbar className={`${props?.toolbarStyle ? props.toolbarStyle : classes.toolbar}`}>
                         {renderToolbarButtons()}
