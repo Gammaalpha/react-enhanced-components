@@ -54,7 +54,8 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0)
                 if (leaf.domNode.tagName === "ABBR") {
                     setAbbr({
                         text: leaf.domNode.textContent.trim(),

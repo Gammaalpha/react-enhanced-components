@@ -241,7 +241,7 @@ Quill.register(ImageTag);
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
-    let selectedRange = {};
+    // let selectedRange = {};
     const [state, setState] = useReducer((state: any, newState: any) =>
         ({ ...state, ...newState }),
         { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColor: "#000000", highlightColor: "#FFFFFF", fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
@@ -923,7 +923,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
     const render = () => {
         console.log('toolbar render');
-        console.log('Editor Ref: ', getEditor());
+        // console.log('Editor Ref: ', getEditor());
         return (
             <div id={props.id} className={`${classes.flexGrow1} ${props.editing ? "" : classes.displayNone}`}>
                 <AppBar position="static" className={classes.appBar}>

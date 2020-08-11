@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CreateStyleButton } from '../CreateStyleButton';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup, FormControlLabel, Checkbox, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 import { IImageLink } from '../model/RichText';
 export interface ILinkDialogProps {
     quillEditor: any;
@@ -55,7 +55,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
         icon: 'insert_photo',
         tooltip: 'Insert Photo',
         ariaLabel: 'Insert Photo.',
-        callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleOpen(),
+        callback: () => handleOpen(),
         position: 'top',
         buttonStyle: props.btnStyle
     };
@@ -65,7 +65,8 @@ export default function ImageDialog(props: ILinkDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
-                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                let [leaf] = quill.getLeaf(range !== null ? range.index : 0);
                 if (leaf.domNode.tagName === "IMG") {
                     setImage({
                         ...image,
@@ -90,6 +91,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
             }
         }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, props, props.quillEditor])
 
     const handleSubmit = () => {

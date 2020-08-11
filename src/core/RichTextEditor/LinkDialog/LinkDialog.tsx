@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export default function LinkDialog(props: ILinkDialogProps) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [urlErrorText, setUrlErrorText] = useState('');
+    // const [urlErrorText, setUrlErrorText] = useState('');
     const [urlError, setUrlError] = useState(false)
     const [link, setLink] = useState<ILink>({
         text: '',
@@ -67,6 +67,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
         if (open) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
                 if (leaf.domNode.tagName === "A") {
                     setLink({
