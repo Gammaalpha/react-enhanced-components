@@ -21,8 +21,7 @@
     "react-scripts": "3.4.2"
   },
   "scripts": {
-    "prepublish": "rm -rf build/",
-    "publish": "webpack --mode production && sh deploy.sh",
+    "publish": "npm run build-wp && sh deploy.sh",
     "tsCopy": "cp -f ./tsconfig.prod.json ./tsconfig.json",
     "webpack:dev": "npm run tsCopy && npx webpack --config webpack.config.js",
     "build-wp": "rm -rf build/ && npm run tsCopy && webpack --mode production",

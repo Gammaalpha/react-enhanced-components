@@ -21,7 +21,7 @@
     "isolatedModules": true,
     "jsx": "react",
     "allowJs": true,
-    "noEmit": true
+    "noEmit": false
   },
   "include": [
     "src/**/*",
@@ -32,5 +32,12 @@
     "node_modules",
     "build",
     "**/*.spec.ts",
+    "src/App.tsx",
+    "src/App.css",
+    "src/App.test.tsx",
+    "src/index.css",
+    "src/index.tsx",
+    "src/serviceWorker.ts",
+    "src/setupTests.ts"
   ]
 }

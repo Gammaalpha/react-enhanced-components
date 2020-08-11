@@ -1,6 +1,6 @@
 # set -e
 
-yarn build-wp
+# yarn build-wp
 
 # rm -rf production
 
