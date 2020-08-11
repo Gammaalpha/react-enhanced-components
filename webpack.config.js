@@ -2,7 +2,7 @@ var path = require("path");
 // var webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/index.ts",
+  entry: "./src/core/index.ts",
   target: "node",
   mode: "production",
   output: {
