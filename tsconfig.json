@@ -21,7 +21,7 @@
     "isolatedModules": true,
     "jsx": "react",
     "allowJs": true,
-    "noEmit": false
+    "noEmit": true
   },
   "include": [
     "src/**/*",
