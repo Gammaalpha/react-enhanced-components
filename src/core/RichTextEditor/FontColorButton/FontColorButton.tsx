@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { IFontColorButtonProps, FontColorButtonType } from '../model/ColorPicker';
+import { IFontColorButtonProps } from '../model/ColorPicker';
 import { CompactPicker } from 'react-color';
-import { withStyles, MenuProps, Menu, MenuItem } from '@material-ui/core';
+import { withStyles, MenuProps, Menu } from '@material-ui/core';
 import { CreateStyleButton } from '../CreateStyleButton';
 
 const StyledMenu = withStyles({
