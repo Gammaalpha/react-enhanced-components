@@ -1,6 +1,6 @@
 set -e
 
-yarn build
+# yarn build
 
 rm -rf gh-pages
 

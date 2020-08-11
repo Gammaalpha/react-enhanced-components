@@ -2,6 +2,7 @@
   "name": "react-enhanced-components",
   "version": "1.2.0",
   "private": true,
+  "homepage": "https://gammaalpha.github.io/react-enhanced-components",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
@@ -22,10 +23,11 @@
   "scripts": {
     "prepublish": "rm -rf build/",
     "publish": "webpack --mode production && sh deploy.sh",
-    "webpack:dev": "npx webpack --config webpack.config.js",
-    "build-wp": "webpack --mode production",
-    "watch": "webpack --config webpack.config.js --mode production --watch",
-    "deploy-gh": "npm run build && gh-pages -d build && sh gh-deploy.sh",
+    "tsCopy": "cp -f ./tsconfig.prod.json ./tsconfig.json",
+    "webpack:dev": "npm run tsCopy && npx webpack --config webpack.config.js",
+    "build-wp": "rm -rf build/ && npm run tsCopy && webpack --mode production",
+    "watch": "npm run tsCopy && webpack --config webpack.config.js --mode production --watch",
+    "deploy-gh": "rm -rf build/ && npm run build && gh-pages -d build && sh gh-deploy.sh",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
