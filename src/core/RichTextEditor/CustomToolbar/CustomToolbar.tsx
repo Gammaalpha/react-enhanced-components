@@ -823,6 +823,7 @@ export default function CustomToolbar(props: IToolbar) {
             key: 'table_insert',
             icon: 'table_chart',
             tooltip: 'Add table',
+            disabled: true,
             ariaLabel: 'Add Table.',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTableInsert(),
             position: 'top',

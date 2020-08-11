@@ -25,6 +25,9 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
         },
         transformNone: {
             textTransform: 'none'
+        },
+        displayNone: {
+            display: 'none'
         }
     }));
 
@@ -68,7 +71,7 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                                 {buttonData.childButtons.map((button) => (
                                     <MenuItem
 
-                                        disabled={button.disabled} className={classes.menuWidth} key={button.key} value={button.value}>
+                                        disabled={button.disabled} className={`${classes.menuWidth} ${button.disabled ? classes.displayNone : ""}`} key={button.key} value={button.value}>
                                         <Tooltip placement={button?.position ? button.position : "top"} title={`${button.tooltip}`}>
                                             <div className={classes.buttonLabel}>
                                                 {button?.icon !== '' ?
@@ -85,11 +88,12 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
                             </Select>
                         </Tooltip>
                     </FormControl>
-                    : <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
-                        <Button disabled={buttonData.disabled} aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={`${buttonData.buttonStyle} ${classes.transformNone}`}>
-                            {buttonData.isDefault ? buttonRenderDefault(buttonData) : buttonRenderCustom(buttonData)}
-                        </Button>
-                    </Tooltip>}
+                    : <div className={buttonData.disabled ? classes.displayNone : ''}>
+                        <Tooltip placement={buttonData?.position ? buttonData.position : "top"} title={`${buttonData.tooltip}`}>
+                            <Button aria-label={buttonData.ariaLabel} onMouseDown={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => buttonData.callback(e)} className={`${buttonData.buttonStyle} ${classes.transformNone}`}>
+                                {buttonData.isDefault ? buttonRenderDefault(buttonData) : buttonRenderCustom(buttonData)}
+                            </Button>
+                        </Tooltip></div>}
             </div>
         );
     }
