@@ -8,19 +8,19 @@ An AODA and WCAG 2.0 compliant library with various Material-UI based components
 
 You can install the production version of this repository by using the following npm command
 
-`npm install https://github.com/Gammaalpha/react-enhanced-table.git#production`
+`npm install https://github.com/Gammaalpha/react-enhanced-components.git#production`
+
+## Demo
+
+You can view a demo of this project [here](https://gammaalpha.github.io/react-enhanced-components-demo/).
 
 ## DataTable
-
-### Demo
-
-You can view a demo of this project [here](https://gammaalpha.github.io/react-table-demo/).
 
 ### Usage
 
 After including the repository into your project, you can import the component as follows:
 
-`import { DataTable, IHeaderProps } from "react-enhanced-table/prod";`
+`import { DataTable, IHeaderProps } from "react-enhanced-components/core/DataTable";`
 
 ### IHeader props
 
@@ -126,9 +126,38 @@ The name of the class is based on the key of the column. For example, if the key
 
 If there are any issues related to styling when importing the DataTable system, refer to this link to add [class name generator](https://material-ui.com/styles/api/#creategenerateclassname-options-class-name-generator)
 
+## RichTextEditor
+
+A fully AODA compliant rich text editor built on the [Quill v1.3.7](https://quilljs.com/)/[React Quill v2.0.0-beta.2](https://github.com/zenoamaro/react-quill) framework.
+
+### Usage
+
+After including the repository into your project, you can import the component as follows:
+
+`import { RichTextEditor } from "react-enhanced-components/core/RichTextEditor";`
+
+### RichTextEditor props
+
+| Prop    | Require Status | type    | Description                                                                            |
+| ------- | -------------- | ------- | -------------------------------------------------------------------------------------- |
+| editing | required       | boolean | Enable or disable input area for editing. This also hides or shows the editor toolbar. |
+
+To render the rich text editor simply put it in as follows:
+
+```
+    <RichTextEditor editing={booleanValue}></RichTextEditor>
+
+```
+
 ## Upcoming features
 
+### DataTable Component
+
 - Group by row items
+
+### RichTextEditor Component
+
+- None (Dependent on base Quill for future releases and enhancements.)
 
 ## Completed features
 
@@ -170,6 +199,8 @@ If there are any issues related to styling when importing the DataTable system, 
 
 None at this time. Yay!
 
+If any are found please raise an issue.
+
 ## Resolved bugs
 
 1. Fix sort issue when a row contains a cell with undefined value.
@@ -190,6 +221,8 @@ This project is still under development. The author may change any or all part o
 
 - [React](https://github.com/facebook/create-react-app)
 - [Material-UI](https://material-ui.com/)
+- [Quill v1.3.7](https://quilljs.com/)
+- [React Quill v2.0.0-beta.2](https://github.com/zenoamaro/react-quill)
 
 ## Available Scripts
 
