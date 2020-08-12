@@ -128,7 +128,7 @@ If there are any issues related to styling when importing the DataTable system, 
 
 ## RichTextEditor
 
-A fully AODA compliant rich text editor built on the [Quill v1.3.7](https://quilljs.com/)/[React Quill v2.0.0-beta.2](https://github.com/zenoamaro/react-quill) framework.
+A fully AODA compliant rich text editor built on the [https://quilljs.com/](Quill v1.3.7)/[https://github.com/zenoamaro/react-quill](React Quill v2.0.0-beta.2) framework.
 
 ### Usage
 
@@ -157,7 +157,9 @@ To render the rich text editor simply put it in as follows:
 
 ### RichTextEditor Component
 
-- None (Dependent on base Quill for future releases and enhancements.)
+Note: (Dependent on base Quill for future releases and enhancements.)
+
+- None
 
 ## Completed features
 
@@ -197,9 +199,19 @@ To render the rich text editor simply put it in as follows:
 
 ## Current bugs and issues
 
-None at this time. Yay!
+If bugs are found please raise an issue.
 
-If any are found please raise an issue.
+### DataTable
+
+    No issues reported. Yay!
+
+### RichTextEditor
+
+- Image not inserting in the indicated cursor location.
+
+- State not clearing for new image insertion.
+
+- Font color and highlight glitch on selection.
 
 ## Resolved bugs
 
