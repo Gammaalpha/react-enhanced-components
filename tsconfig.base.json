@@ -21,17 +21,6 @@
       "isolatedModules": true,
       "jsx": "react",
       "allowJs": true,
-      "noEmit": true
-    },
-    "include": [
-      "src/**/*",
-      "src/**/*.scss",
-      "src/**/*.css"
-    ],
-    "exclude": [
-      "node_modules",
-      "build",
-      "**/*.spec.ts",
-    ]
+    }
   }
   
