@@ -14,7 +14,7 @@ You can install the production version of this repository by using the following
 
 ### Demo
 
-You can view a demo of this project [here](https://gammaalpha.github.io/react-table-demo/).
+You can view a demo of this project [here](https://gammaalpha.github.io/react-enhanced-components/).
 
 ### Usage
 
