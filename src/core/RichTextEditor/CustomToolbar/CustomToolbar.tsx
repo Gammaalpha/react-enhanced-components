@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react'
+import React, { useReducer, useEffect, useState } from 'react'
 import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink, IRange, IImageLink } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -246,13 +246,15 @@ export default function CustomToolbar(props: IToolbar) {
         { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColor: "#000000", highlightColor: "#FFFFFF", fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
 
     const getEditor = (): any | undefined => {
-        console.log(props);
-        debugger;
-        try {
-            return props.editorRef!.current?.getEditor();
-        } catch (error) {
-            return undefined
+        console.log("propspropsprpos", props);
+        // debugger;
+        if(props.editorRef !==null){
+            return props.editorRef.current?.getEditor();
         }
+        // try {
+        // } catch (error) {
+        //     return undefined
+        // }
     }
     useEffect(() => {
         console.log("state updated:", state);
@@ -915,9 +917,13 @@ export default function CustomToolbar(props: IToolbar) {
         toolbarButtons.push(
             <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
         );
-        toolbarButtons.push(
-            <ImageDialog key="image_insert" quillEditor={getEditor()} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
-        );
+        // if(refState!==null){
+            // console.log("what is this even: ", refState);
+            
+            toolbarButtons.push(
+                <ImageDialog key="image_insert" editorRef={props.editorRef} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
+            );
+        
         toolbarButtons.push(
             <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtons.textFormat}></FontColorButton>
         );

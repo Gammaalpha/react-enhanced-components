@@ -3,7 +3,7 @@ import { CreateStyleButton } from '../CreateStyleButton';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, makeStyles, Theme, createStyles, FormGroup, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 import { IImageLink } from '../model/RichText';
 export interface ILinkDialogProps {
-    quillEditor: any;
+    editorRef: any;
     callback?: any;
     btnStyle?: string;
 }
@@ -67,18 +67,18 @@ export default function ImageDialog(props: ILinkDialogProps) {
         position: 'top',
         buttonStyle: props.btnStyle
     };
-
     useEffect(() => {
-        console.log("in use effect: ", props);
-
-        const quill = props.quillEditor;
+        
+        console.log("in use effect: ", open);
         if (open) {
-            if (quill !== undefined && quill !== null) {
+            if (props.editorRef !== undefined && props.editorRef !== null) {
+                const quill = props.editorRef.current.getEditor();
                 const tempRange = quill.getSelection();
                 // range = quill.getSelection();
                 if (tempRange !== null) {
                     setRange(tempRange);
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    // debugger;
                     // debugger;
                     if (tempRange.length > 0) {
                         let [leaf, offset] = quill.getLeaf(tempRange !== null ? tempRange.index + tempRange.length : 0);
@@ -116,7 +116,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [open, props, props.quillEditor]);
+    }, [open, props.editorRef]);
 
     // useEffect(() => {
     //     console.log("range", range)

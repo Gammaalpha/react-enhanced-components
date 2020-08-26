@@ -21,7 +21,11 @@ export default function QuillEditor(props: IQuillEditor) {
             ]
         }
     }
-
+    useEffect(() => {
+        // if (editorRef !== null && editorRef !==undefined) {
+            props.setEditorRef(editorRef);
+        // }
+    }, [editorRef]);
     const renderReactQuill = () => {
         return (
             <ReactQuill
@@ -42,9 +46,9 @@ export default function QuillEditor(props: IQuillEditor) {
         )
     }
 
-    useEffect(() => {
-        props.callback(editorRef)
-    }, [props])
+    // useEffect(() => {
+    //     props.callback(editorRef)
+    // }, [props])
 
     return render();
 }

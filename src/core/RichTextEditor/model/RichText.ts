@@ -7,6 +7,7 @@ export interface IRichText {
 }
 
 export interface IQuillEditor {
+    setEditorRef:any;
     editorId: string,
     toolbarId: string,
     toolbarStyle?: string,
