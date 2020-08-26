@@ -25,14 +25,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }))
 
 export default function ImageDialog(props: ILinkDialogProps) {
-    const classes = useStyles();
-    const [open, setOpen] = useState(false);
-    const [range, setRange] = useState({ index: 0, length: 0 })
-    const [urlError, setUrlError] = useState(false)
-    const [image, setImage] = useState<IImageLink>({
-        text: 'image',
-        url: '',
-        target: '',
+    const initialImageState = {
+        title: 'image',
+        src: '',
         range: {
             index: 0,
             length: 0
@@ -41,15 +36,25 @@ export default function ImageDialog(props: ILinkDialogProps) {
         width: 150,
         height: 150,
         float: 'none'
-    })
+    }
+
+    const classes = useStyles();
+    const [open, setOpen] = useState(false);
+    const [range, setRange] = useState({ index: 0, length: 0 })
+    const [urlError, setUrlError] = useState(false)
+    const [image, setImage] = useState<IImageLink>({ ...initialImageState })
 
     const handleOpen = () => {
-        console.log(props);
-
+        // console.log("handle Open: ", props);
         setOpen(true);
     }
 
     const handleClose = () => {
+        // debugger;
+        let tempImage = image;
+        tempImage.range = range;
+        props.callback(tempImage, true)
+        setImage({ ...initialImageState })
         setOpen(false);
     }
 
@@ -64,45 +69,49 @@ export default function ImageDialog(props: ILinkDialogProps) {
     };
 
     useEffect(() => {
-        console.log("in use effect: ",props);
+        console.log("in use effect: ", props);
 
         const quill = props.quillEditor;
         if (open) {
             if (quill !== undefined && quill !== null) {
+                const tempRange = quill.getSelection();
                 // range = quill.getSelection();
-                setRange(quill.getSelection());
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                let [leaf] = quill.getLeaf(range !== null ? range.index : 0);
-                if (leaf.domNode.tagName === "IMG") {
-                    setImage({
-                        height: image.height,
-                        width: image.width,
-                        alt: image.alt,
-                        float: image.float,
-                        text: leaf.domNode.textContent.trim(),
-                        url: leaf.domNode.src,
-                        target: '',
-                        range: range
-                    })
-                }
-                // else {
-                //     debugger;
-                //     if (range?.index > 0) {
-                //         let innerText = quill.getText(range.index, range.length);
-                //         setImage({
-                //             height: image.height,
-                //             width: image.width,
-                //             altText: image.altText,
-                //             float: image.float,
-                //             text: innerText,
-                //             url: '',
-                //             target: '',
-                //             range: range
-                //         })
-                //         console.log(image);
+                if (tempRange !== null) {
+                    setRange(tempRange);
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    // debugger;
+                    if (tempRange.length > 0) {
+                        let [leaf, offset] = quill.getLeaf(tempRange !== null ? tempRange.index + tempRange.length : 0);
+                        if (leaf?.domNode.tagName === "IMG") {
+                            setImage({
+                                height: image.height,
+                                width: image.width,
+                                alt: image.alt === "" ? 'image' : image.alt,
+                                float: image.float,
+                                title: leaf.domNode.textContent !== "" ? leaf.domNode.textContent.trim() : 'image',
+                                src: leaf.domNode.src !== undefined ? leaf.domNode.src : "",
+                                range: tempRange
+                            })
+                        }
+                    }
+                    else {
+                        if (tempRange?.length === 0) {
+                            let innerText = quill.getText(range.index, tempRange.length);
+                            setImage({
+                                height: image.height,
+                                width: image.width,
+                                alt: image.alt !== null ? image.alt : "image",
+                                float: image.float,
+                                title: innerText !== "" ? innerText : image.title,
+                                src: "",
+                                range: tempRange
+                            })
+                            console.log(image);
 
-                //     }
-                // }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -117,7 +126,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
         handleClose();
         let tempImage = image;
         tempImage.range = range;
-        props.callback(tempImage)
+        props.callback(tempImage, false)
     };
 
     const handleFloatChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -146,11 +155,11 @@ export default function ImageDialog(props: ILinkDialogProps) {
                                 id="Text"
                                 label="Text to display"
                                 type="text"
-                                value={image.text}
+                                value={image.title}
                                 onChange={(e: any) => {
                                     setImage({
                                         ...image,
-                                        text: e.target.value,
+                                        title: e.target.value,
                                     });
                                 }}
                             />
@@ -176,7 +185,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
                                 placeholder="https://"
                                 helperText="Ensure link contains https:// or http://"
                                 type="text"
-                                value={image.url}
+                                value={image.src}
                                 error={!urlError}
                                 onChange={(e: any) => {
                                     // debugger;
@@ -189,7 +198,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
 
                                     setImage({
                                         ...image,
-                                        url: e.target.value,
+                                        src: e.target.value,
                                     });
                                 }}
                             />
@@ -243,7 +252,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
                             Cancel
                             </Button>
                         <Button
-                            // disabled={!urlError} 
+                            disabled={!urlError}
                             onClick={() => handleSubmit()} color="primary">
                             Submit
                         </Button>

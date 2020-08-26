@@ -203,7 +203,6 @@ class TableTag extends blockEmbed {
         node.setAttribute("style", "border:1px solid black;");
         node.appendChild(document.createElement("thead"));
         node.appendChild(document.createElement("tbody"))
-        debugger;
         return node;
     }
 
@@ -220,14 +219,14 @@ Quill.register(TableTag);
 class ImageTag extends blockEmbed {
     static create(value: IImageLink) {
         let node: Element = super.create();
-        value.url !== undefined ? node.setAttribute('src', value.url) : node.setAttribute('src', "")
+        value.src !== undefined ? node.setAttribute('src', value.src) : node.setAttribute('src', "")
         node.setAttribute('alt', value.alt);
-        node.setAttribute('title', value.text);
+        node.setAttribute('title', value.title);
         node.setAttribute('width', value.width.toString());
         node.setAttribute('height', value.height.toString());
-        node.setAttribute('id', `rec-img-${value.text.replace(" ", "-").toLowerCase()}`);
+        node.setAttribute('id', `rec-img-${value.title !== undefined ? value.title.replace(" ", "-").toLowerCase() : 'image'}`);
         node.setAttribute('style', `float:${value.float};padding:5px;`)
-        node.innerHTML = value.text.trim();
+        node.innerHTML = value.title !== undefined ? value.title.trim() : 'image';
         return node;
     }
     static value(node: Element) {
@@ -247,6 +246,8 @@ export default function CustomToolbar(props: IToolbar) {
         { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColor: "#000000", highlightColor: "#FFFFFF", fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
 
     const getEditor = (): any | undefined => {
+        console.log(props);
+        debugger;
         try {
             return props.editorRef!.current?.getEditor();
         } catch (error) {
@@ -429,18 +430,18 @@ export default function CustomToolbar(props: IToolbar) {
                 target: params.target
             }, 'user');
         },
-        _onInsertImage(params: IImageLink) {
+        _onInsertImage(params: IImageLink, rangeOnly: boolean) {
             const quill = getEditor();
-            debugger;
-            if (params.range !== null) {
-                if (params.range.length > 0) {
-                    quill.deleteText(params.range.index, params.range.length, 'user');
+            if (!rangeOnly) {
+                if (params.range !== null) {
+                    if (params.range.length > 0) {
+                        quill.deleteText(params.range.index, params.range.length, 'user');
+                    }
                 }
+                quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
+                    ...params
+                }, 'user');
             }
-            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
-                ...params
-            }, 'user');
-            debugger;
             setTimeout(() => quill.setSelection(params?.range?.index + 1, 0), 0)
 
         },
@@ -904,6 +905,7 @@ export default function CustomToolbar(props: IToolbar) {
 
     const renderToolbarButtons = () => {
         const quill = getEditor()
+        // debugger;
         const toolbarButtons: any[] = []
         toolbarArray.forEach((element: IToolbarButton) => {
             toolbarButtons.push(CreateStyleButton(element))
@@ -914,7 +916,7 @@ export default function CustomToolbar(props: IToolbar) {
             <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
         );
         toolbarButtons.push(
-            <ImageDialog key="image_insert" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
+            <ImageDialog key="image_insert" quillEditor={getEditor()} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
         );
         toolbarButtons.push(
             <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtons.textFormat}></FontColorButton>

@@ -95,7 +95,10 @@ export interface ILink {
     range: IRange
 }
 
-export interface IImageLink extends ILink {
+export interface IImageLink {
+    range: IRange,
+    title: string,
+    src: string,
     width: number;
     height: number;
     alt: string;
