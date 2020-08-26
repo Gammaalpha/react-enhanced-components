@@ -431,14 +431,17 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onInsertImage(params: IImageLink) {
             const quill = getEditor();
-            if (params.range) {
-                if (params.range.length > 0) {
-                    quill.deleteText(params.range.index, params.range.length, 'user');
-                }
-            }
+            // if (params.range) {
+            //     if (params.range.length > 0) {
+            //         quill.deleteText(params.range.index, params.range.length, 'user');
+            //     }
+            // }
             quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
                 ...params
             }, 'user');
+            debugger;
+            setTimeout(() => quill.setSelection(params?.range?.index + 1, 0), 0)
+
         },
         // format version
         // _onLinkInsert(params: ILink) {
