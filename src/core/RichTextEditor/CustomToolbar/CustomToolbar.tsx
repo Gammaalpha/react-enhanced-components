@@ -177,7 +177,7 @@ let Link = Quill.import('formats/link');
 class ATag extends Link {
     static create(value: ILink) {
         let node: Element = super.create();
-        node.setAttribute('href', value.url);
+        value.url !== undefined ? node.setAttribute('href', value.url) : node.setAttribute('href', "")
         if (value?.target) {
             node.setAttribute('target', value.target);
             node.setAttribute('rel', "noreferrer noopener");
@@ -220,12 +220,12 @@ Quill.register(TableTag);
 class ImageTag extends blockEmbed {
     static create(value: IImageLink) {
         let node: Element = super.create();
-        node.setAttribute('src', value.url);
-        node.setAttribute('alt', value.altText);
+        value.url !== undefined ? node.setAttribute('src', value.url) : node.setAttribute('src', "")
+        node.setAttribute('alt', value.alt);
         node.setAttribute('title', value.text);
         node.setAttribute('width', value.width.toString());
         node.setAttribute('height', value.height.toString());
-        node.setAttribute('id', `rec-img-${value.text}`);
+        node.setAttribute('id', `rec-img-${value.text.replace(" ", "-").toLowerCase()}`);
         node.setAttribute('style', `float:${value.float};padding:5px;`)
         node.innerHTML = value.text.trim();
         return node;
@@ -430,7 +430,7 @@ export default function CustomToolbar(props: IToolbar) {
             }, 'user');
         },
         _onInsertImage(params: IImageLink) {
-            const quill = getEditor()
+            const quill = getEditor();
             if (params.range) {
                 if (params.range.length > 0) {
                     quill.deleteText(params.range.index, params.range.length, 'user');

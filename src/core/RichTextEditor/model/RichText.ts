@@ -90,7 +90,7 @@ export enum TextStyleType {
 
 export interface ILink {
     text: string;
-    url: string;
+    url?: string;
     target?: string;
     range: IRange
 }
@@ -98,6 +98,6 @@ export interface ILink {
 export interface IImageLink extends ILink {
     width: number;
     height: number;
-    altText: string;
+    alt: string;
     float: string;
 }

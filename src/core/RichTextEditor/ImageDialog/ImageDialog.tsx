@@ -27,22 +27,25 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export default function ImageDialog(props: ILinkDialogProps) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const [range, setRange] = useState({ index: 0, length: 0 })
     const [urlError, setUrlError] = useState(false)
     const [image, setImage] = useState<IImageLink>({
-        text: '',
+        text: 'image',
         url: '',
         target: '',
         range: {
             index: 0,
             length: 0
         },
-        altText: '',
-        width: 0,
-        height: 0,
+        alt: 'image',
+        width: 150,
+        height: 150,
         float: 'none'
     })
 
     const handleOpen = () => {
+        console.log(props);
+
         setOpen(true);
     }
 
@@ -61,42 +64,60 @@ export default function ImageDialog(props: ILinkDialogProps) {
     };
 
     useEffect(() => {
+        console.log("in use effect: ",props);
+
         const quill = props.quillEditor;
         if (open) {
-            if (props?.quillEditor) {
-                const range = quill.getSelection();
+            if (quill !== undefined && quill !== null) {
+                // range = quill.getSelection();
+                setRange(quill.getSelection());
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 let [leaf] = quill.getLeaf(range !== null ? range.index : 0);
                 if (leaf.domNode.tagName === "IMG") {
                     setImage({
-                        ...image,
+                        height: image.height,
+                        width: image.width,
+                        alt: image.alt,
+                        float: image.float,
                         text: leaf.domNode.textContent.trim(),
                         url: leaf.domNode.src,
                         target: '',
                         range: range
                     })
                 }
-                else {
-                    if (range?.length > 0) {
-                        let innerText = quill.getText(range.index, range.length);
-                        setImage({
-                            ...image,
-                            text: innerText,
-                            url: '',
-                            target: '',
-                            range: range
-                        })
-                    }
-                }
+                // else {
+                //     debugger;
+                //     if (range?.index > 0) {
+                //         let innerText = quill.getText(range.index, range.length);
+                //         setImage({
+                //             height: image.height,
+                //             width: image.width,
+                //             altText: image.altText,
+                //             float: image.float,
+                //             text: innerText,
+                //             url: '',
+                //             target: '',
+                //             range: range
+                //         })
+                //         console.log(image);
+
+                //     }
+                // }
             }
         }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [open, props, props.quillEditor])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open, props, props.quillEditor]);
+
+    // useEffect(() => {
+    //     console.log("range", range)
+    // }, [range]);
 
     const handleSubmit = () => {
         handleClose();
-        props.callback(image)
+        let tempImage = image;
+        tempImage.range = range;
+        props.callback(tempImage)
     };
 
     const handleFloatChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -139,11 +160,11 @@ export default function ImageDialog(props: ILinkDialogProps) {
                                 id="AltText"
                                 label="Alternate Text to include"
                                 type="text"
-                                value={image.altText}
+                                value={image.alt}
                                 onChange={(e: any) => {
                                     setImage({
                                         ...image,
-                                        altText: e.target.value,
+                                        alt: e.target.value,
                                     });
                                 }}
                             />
@@ -221,7 +242,9 @@ export default function ImageDialog(props: ILinkDialogProps) {
                         <Button onClick={() => handleClose()} color="primary">
                             Cancel
                             </Button>
-                        <Button disabled={!urlError} onClick={() => handleSubmit()} color="primary">
+                        <Button
+                            // disabled={!urlError} 
+                            onClick={() => handleSubmit()} color="primary">
                             Submit
                         </Button>
                     </DialogActions>
