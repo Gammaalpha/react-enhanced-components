@@ -431,8 +431,11 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onInsertImage(params: IImageLink) {
             const quill = getEditor();
-            if (params.range.length > 0) {
-                quill.deleteText(params.range.index, params.range.length, 'user');
+            debugger;
+            if (params.range !== null) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
+                }
             }
             quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
                 ...params
