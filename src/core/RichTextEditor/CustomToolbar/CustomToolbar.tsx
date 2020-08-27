@@ -176,8 +176,7 @@ Quill.register(Abbr);
 let Link = Quill.import('formats/link');
 class ATag extends Link {
     static create(value: ILink) {
-        debugger;
-        let node: Element = super.create();
+\        let node: Element = super.create();
         value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
         if (value?.target) {
             node.setAttribute('target', value.target);
