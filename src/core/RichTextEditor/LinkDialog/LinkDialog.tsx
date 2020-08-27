@@ -26,7 +26,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
     const [urlError, setUrlError] = useState(false)
     const [link, setLink] = useState<ILink>({
         text: '',
-        url: '',
+        href: '',
         target: '',
         range: {
             index: 0,
@@ -72,7 +72,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                 if (leaf.domNode.tagName === "A") {
                     setLink({
                         text: leaf.domNode.textContent.trim(),
-                        url: leaf.domNode.href,
+                        href: leaf.domNode.href,
                         target: '',
                         range: range
                     })
@@ -83,7 +83,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                         let innerText = quill.getText(range.index, range.length);
                         setLink({
                             text: innerText,
-                            url: '',
+                            href: '',
                             target: '',
                             range: range
                         })
@@ -129,12 +129,12 @@ export default function LinkDialog(props: ILinkDialogProps) {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                id="url"
+                                id="href_link"
                                 label="Address"
                                 placeholder="https://"
                                 helperText="Ensure link contains https://"
                                 type="text"
-                                value={link.url}
+                                value={link.href}
                                 error={!urlError}
                                 onChange={(e: any) => {
                                     // debugger;
@@ -147,7 +147,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
 
                                     setLink({
                                         ...link,
-                                        url: e.target.value,
+                                        href: e.target.value,
                                     });
                                 }}
                             />

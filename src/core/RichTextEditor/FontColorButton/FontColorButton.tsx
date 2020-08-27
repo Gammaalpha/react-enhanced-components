@@ -34,9 +34,8 @@ export default function FontColorButton(props: IFontColorButtonProps) {
     }
 
     useEffect(() => {
-
         if (props.defaultColor !== currColor) {
-            props.callback(currColor, props.buttonType, props.range);
+            props.callback(currColor, props.buttonType);
             // handleClose();
         }
 
