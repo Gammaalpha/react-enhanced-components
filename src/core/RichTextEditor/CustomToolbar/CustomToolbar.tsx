@@ -177,7 +177,7 @@ let Link = Quill.import('formats/link');
 class ATag extends Link {
     static create(value: ILink) {
         let node: Element = super.create();
-        node.setAttribute('href', value.url);
+        value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
         if (value?.target) {
             node.setAttribute('target', value.target);
             node.setAttribute('rel', "noreferrer noopener");
@@ -203,7 +203,6 @@ class TableTag extends blockEmbed {
         node.setAttribute("style", "border:1px solid black;");
         node.appendChild(document.createElement("thead"));
         node.appendChild(document.createElement("tbody"))
-        debugger;
         return node;
     }
 
@@ -220,14 +219,14 @@ Quill.register(TableTag);
 class ImageTag extends blockEmbed {
     static create(value: IImageLink) {
         let node: Element = super.create();
-        node.setAttribute('src', value.url);
-        node.setAttribute('alt', value.altText);
-        node.setAttribute('title', value.text);
+        value.src !== undefined ? node.setAttribute('src', value.src) : node.setAttribute('src', "")
+        node.setAttribute('alt', value.alt);
+        node.setAttribute('title', value.title);
         node.setAttribute('width', value.width.toString());
         node.setAttribute('height', value.height.toString());
-        node.setAttribute('id', `rec-img-${value.text}`);
+        node.setAttribute('id', `rec-img-${value.title !== undefined ? value.title.replace(" ", "-").toLowerCase() : 'image'}`);
         node.setAttribute('style', `float:${value.float};padding:5px;`)
-        node.innerHTML = value.text.trim();
+        node.innerHTML = value.title !== undefined ? value.title.trim() : 'image';
         return node;
     }
     static value(node: Element) {
@@ -374,11 +373,11 @@ export default function CustomToolbar(props: IToolbar) {
             const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'ordered' && state.formats.list === 'ordered') ? false : listType;
             applyFormat('list', newListValue);
         },
-        _onTextFormatColor(color: string, type: FontColorButtonType, range: IRange) {
+        _onTextFormatColor(color: string, type: FontColorButtonType) {
             // debugger;
             const quill = getEditor()
             if (quill !== undefined) {
-                // const range = quill.getSelection();
+                const range = quill.getSelection();
                 switch (type) {
                     case "Font":
                         if (state.fontColor !== color) {
@@ -391,7 +390,6 @@ export default function CustomToolbar(props: IToolbar) {
                     case "Highlight":
                         if (state.highlightColor !== color) {
                             range === null ? applyFormat('background', color) : quill.formatText(range.index, range.length, 'background', color);
-                            // applyFormat('background', color);
                             setState({
                                 highlightColor: color
                             });
@@ -425,20 +423,24 @@ export default function CustomToolbar(props: IToolbar) {
             }
             quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', {
                 text: params.text,
-                url: params.url,
+                href: params.href,
                 target: params.target
             }, 'user');
         },
-        _onInsertImage(params: IImageLink) {
-            const quill = getEditor()
-            if (params.range) {
-                if (params.range.length > 0) {
-                    quill.deleteText(params.range.index, params.range.length, 'user');
+        _onInsertImage(params: IImageLink, rangeOnly: boolean) {
+            const quill = getEditor();
+            if (!rangeOnly) {
+                if (params.range !== null) {
+                    if (params.range.length > 0) {
+                        quill.deleteText(params.range.index, params.range.length, 'user');
+                    }
                 }
+                quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
+                    ...params
+                }, 'user');
             }
-            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
-                ...params
-            }, 'user');
+            setTimeout(() => quill.setSelection(params?.range?.index + 1, 0), 0)
+
         },
         // format version
         // _onLinkInsert(params: ILink) {
@@ -551,6 +553,7 @@ export default function CustomToolbar(props: IToolbar) {
             { key: 'xxlargeplus', text: '36' },
             { key: 'super', text: '42' },
         ];
+
     const textFontSizeSelectionArray = (sizeArray: any[]) => {
         // const arr = [];
         return sizeArray.map(num => ({
@@ -899,6 +902,7 @@ export default function CustomToolbar(props: IToolbar) {
     }
 
     const renderToolbarButtons = () => {
+        // debugger;
         const quill = getEditor()
         const toolbarButtons: any[] = []
         toolbarArray.forEach((element: IToolbarButton) => {
@@ -910,13 +914,13 @@ export default function CustomToolbar(props: IToolbar) {
             <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
         );
         toolbarButtons.push(
-            <ImageDialog key="image_insert" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
+            <ImageDialog key="image_insert" quillEditor={getEditor()} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
         );
         toolbarButtons.push(
-            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.fontColor} key="fontTextFormatColor" callback={CustomEditor._onTextFormatColor} buttonType="Font" buttonParams={FontColorButtons.textFormat}></FontColorButton>
+            <FontColorButton defaultColor={state.fontColor} key="fontTextFormatColor" callback={(color: string, type: FontColorButtonType) => CustomEditor._onTextFormatColor(color, type)} buttonType="Font" buttonParams={FontColorButtons.textFormat}></FontColorButton>
         );
         toolbarButtons.push(
-            <FontColorButton range={!quill ? undefined : quill.getSelection()} defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={CustomEditor._onTextFormatColor} buttonType="Highlight" buttonParams={FontColorButtons.highlight}></FontColorButton>
+            <FontColorButton defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={(color: string, type: FontColorButtonType) => CustomEditor._onTextFormatColor(color, type)} buttonType="Highlight" buttonParams={FontColorButtons.highlight}></FontColorButton>
         );
         return toolbarButtons
 

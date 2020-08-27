@@ -14,6 +14,8 @@ cp ../{.gitignore,.npmignore} ./
 
 cp ../deploy/* ./ -r
 
+cp ../README.md ./
+
 git init
 
 git add -A
