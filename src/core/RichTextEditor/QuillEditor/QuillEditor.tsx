@@ -22,6 +22,14 @@ export default function QuillEditor(props: IQuillEditor) {
         }
     }
 
+    useEffect(() => {
+        // if (editorRef !== null && editorRef !==undefined) {
+        props.callback(editorRef);
+        if (editorRef.current !== null) {
+            editorRef.current.getEditor().enable(props.editing)
+        }
+        // }
+    }, [editorRef, props.editing]);
     const renderReactQuill = () => {
         return (
             <ReactQuill
@@ -37,14 +45,14 @@ export default function QuillEditor(props: IQuillEditor) {
     const render = () => {
         return (
             <div className={`${props.editing ? 'ql-active' : ""}`}>
-                {props.editing ? renderReactQuill() : <div dangerouslySetInnerHTML={{ __html: value }}></div>}
+                {renderReactQuill()}
             </div>
         )
     }
 
-    useEffect(() => {
-        props.callback(editorRef)
-    }, [props])
+    // useEffect(() => {
+    //     props.callback(editorRef)
+    // }, [props])
 
     return render();
 }

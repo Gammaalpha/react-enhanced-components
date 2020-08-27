@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "/react-enhanced-components/",
+    "noEmit": false
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "**/*.spec.ts",
+    "src/App.tsx",
+    "src/App.css",
+    "src/App.test.tsx",
+    "src/index.css",
+    "src/index.tsx",
+    "src/serviceWorker.ts",
+    "src/setupTests.ts"
+  ]
+}

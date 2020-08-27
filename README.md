@@ -12,7 +12,7 @@ You can install the production version of this repository by using the following
 
 ## Demo
 
-You can view a demo of this project [here](https://gammaalpha.github.io/react-enhanced-components-demo/).
+You can view a demo of this project [here](https://gammaalpha.github.io/react-enhanced-components/).
 
 ## DataTable
 
@@ -128,7 +128,7 @@ If there are any issues related to styling when importing the DataTable system, 
 
 ## RichTextEditor
 
-A fully AODA compliant rich text editor built on the [Quill v1.3.7](https://quilljs.com/)/[React Quill v2.0.0-beta.2](https://github.com/zenoamaro/react-quill) framework.
+A fully AODA compliant rich text editor built on the [Quill v1.3.7](https://quilljs.com/)/[React Quill v2.0.0-beta.2](https://github.com/zenoamaro/react-quill)) framework.
 
 ### Usage
 
@@ -157,7 +157,9 @@ To render the rich text editor simply put it in as follows:
 
 ### RichTextEditor Component
 
-- None (Dependent on base Quill for future releases and enhancements.)
+Note: (Dependent on base Quill for future releases and enhancements.)
+
+- None
 
 ## Completed features
 
@@ -197,9 +199,19 @@ To render the rich text editor simply put it in as follows:
 
 ## Current bugs and issues
 
-None at this time. Yay!
+If bugs are found please raise an issue.
 
-If any are found please raise an issue.
+### DataTable
+
+    No issues reported. Yay!
+
+### RichTextEditor
+
+- Image not inserting in the indicated cursor location.
+
+- State not clearing for new image insertion.
+
+- Font color and highlight glitch on selection.
 
 ## Resolved bugs
 
@@ -223,52 +235,6 @@ This project is still under development. The author may change any or all part o
 - [Material-UI](https://material-ui.com/)
 - [Quill v1.3.7](https://quilljs.com/)
 - [React Quill v2.0.0-beta.2](https://github.com/zenoamaro/react-quill)
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.<br  />
-
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br  />
-
-You will also see any lint errors in the console.
-
-### `yarn publish`
-
-Creates the build files for publishing and pushes them to the production branch to be used as a downloadable package within a project.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br  />
-
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build-wp`
-
-Builds the app for production to the `build` folder using webpack<br  />
-
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br  />
-
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
 ## Learn More
 
