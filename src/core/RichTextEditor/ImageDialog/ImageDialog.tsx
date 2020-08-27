@@ -61,8 +61,8 @@ export default function ImageDialog(props: ILinkDialogProps) {
     const linkButton = {
         key: 'insert_photo',
         icon: 'insert_photo',
-        tooltip: 'Insert Photo',
-        ariaLabel: 'Insert Photo.',
+        tooltip: 'Insert Picture',
+        ariaLabel: 'Insert Picture.',
         callback: () => handleOpen(),
         position: 'top',
         buttonStyle: props.btnStyle
