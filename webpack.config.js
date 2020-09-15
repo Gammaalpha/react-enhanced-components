@@ -2,7 +2,7 @@ var path = require("path");
 // var webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/index.ts",
+  entry: "./src/core/index.ts",
   target: "node",
   mode: "production",
   output: {
@@ -23,7 +23,7 @@ module.exports = {
         // Include ts, tsx, js, and jsx files.
         test: /\.(ts|js)x?$/,
         exclude: [/node_modules/],
-        loader: ["babel-loader", "ts-loader"],
+        loader: ["babel-loader","ts-loader?configFile=tsconfig.prod.json"],
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,

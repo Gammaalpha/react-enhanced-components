@@ -105,7 +105,8 @@ function App() {
     checkbox: true,
     multiSort: false,
     filter: true,
-    emptySpacing: false
+    emptySpacing: false,
+    editor: true
   })
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,6 +159,18 @@ function App() {
       />)
   }
 
+  const renderEditorSwitch = () => {
+    return (
+      <Switch
+        checked={state.editor}
+        onChange={handleChange}
+        inputProps={{
+          'aria-label': 'Switch to enable/disable rich text editor edit mode.'
+        }}
+        name="editor"
+      />)
+  }
+
   const dataTableExpansionPanel = () => {
     return (
       <ExpansionPanel >
@@ -197,7 +210,12 @@ function App() {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div className={'FullWidth'}>
-            <RichTextEditor editing={true}></RichTextEditor>
+            <div className={'Spacing'}>
+              <div>
+                Edit mode {state.editor ? '(ON)' : "(OFF)"}: {renderEditorSwitch()}
+              </div>
+            </div>
+            <RichTextEditor editing={state.editor}></RichTextEditor>
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>

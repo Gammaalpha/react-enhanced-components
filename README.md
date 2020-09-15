@@ -207,23 +207,27 @@ If bugs are found please raise an issue.
 
 ### RichTextEditor
 
-- Image not inserting in the indicated cursor location.
-
-- State not clearing for new image insertion.
-
-- Font color and highlight glitch on selection.
+    No issues reported. Yay!
 
 ## Resolved bugs
 
-1. Fix sort issue when a row contains a cell with undefined value.
+1. Fixed sort issue when a row contains a cell with undefined value.
 
-1. Fix filter edit when a user presses backspace to either remove or edit previously added key.
+1. Fixed filter edit when a user presses backspace to either remove or edit previously added key.
 
-1. Fix filter issue when a new key is added and the filter row overflows beyond the screen.
+1. Fixed filter issue when a new key is added and the filter row overflows beyond the screen.
 
-1. Fix emit when the rows are filtered and the checked items are selected.
+1. Fixed emit when the rows are filtered and the checked items are selected.
 
-1. Fix pagination issue when items are sorted and it only sorts the current page view not the entire data set on all pages.
+1. Fixed pagination issue when items are sorted and it only sorts the current page view not the entire data set on all pages.
+
+1. Fixed image not inserting in the indicated cursor location.
+
+1. Fixed state not clearing for new image insertion.
+
+1. Fixed font color and highlight glitch on selection.
+
+1. Updated incorrect Header 4 option value.
 
 ## **Development status**
 

@@ -1,16 +1,23 @@
 import React, { useReducer, useEffect } from 'react'
-import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType } from '../model/RichText';
+import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink, IRange, IImageLink } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
 import './CustomToolbar.css'
 import { Quill } from 'react-quill';
+import AbbrDialog from '../AbbrDialog/AbbrDialog';
+import LinkDialog from '../LinkDialog/LinkDialog';
+import FontColorButton from '../FontColorButton/FontColorButton';
+import { FontColorButtonType } from '../model/ColorPicker';
+import ImageDialog from '../ImageDialog/ImageDialog';
 
 
 export interface IToolbar {
     id: string,
     editorRef: any,
     toolbarStyle?: string,
+    editorId: string,
+    editing?: boolean
 }
 
 
@@ -18,7 +25,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     flexGrow1: {
         flexGrow: 1,
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        background: "#1e272c"
     },
     tooltip: {
         fontSize: "12pt!important"
@@ -92,30 +100,34 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     appBar: {
         backgroundColor: '#1e272c',
-
     },
+    displayNone: {
+        display: 'none'
+    }
 }));
 
+// let Delta = Quill.import('delta');
+//Set custom class marking
 let Parchment = Quill.import('parchment');
-
 let config = {
     scope: Parchment.Scope.BLOCK,
 };
-
 let MClass = new Parchment.Attributor.Class('mark', 'style', config);
 Quill.register(MClass, true)
 
 // Set headers and add blockquote capability
-let header = Quill.import('formats/header');
-header.tagName = [
-    'H1',
-    'H2',
-    'H3',
-    'H4',
-    'blockquote'];
-Quill.register(header, true);
+// let header = Quill.import('formats/header');
+// header.tagName = [
+//     'H1',
+//     'H2',
+//     'H3',
+//     'H4',
+//     'blockquote'];
+// Quill.register(header, true);
 
+// Set font sizes
 let SizeClass = Quill.import('formats/size');
+
 SizeClass.whitelist = [
     'small',
     'medium',
@@ -129,16 +141,110 @@ SizeClass.whitelist = [
     'super'];
 Quill.register(SizeClass, true);
 
+// Horizontal line
+let Embed = Quill.import('blots/block/embed');
+class Hr extends Embed {
+    static create(value: any) {
+        let node: Element = super.create(value);
+        node.setAttribute('style', 'height:0px;margin-top:10px;margin-bottom:10px;');
+        return node;
+    }
+}
+Hr.blotName = 'hr';
+Hr.className = 'rec-hr';
+Hr.tagName = 'hr'
+Quill.register({
+    'formats/hr': Hr
+})
+let blockEmbed = Quill.import('blots/embed')
+class Abbr extends blockEmbed {
+    static create(value: IAbbr) {
+        let node: Element = super.create();
+        node.setAttribute('title', value.title);
+        node.innerHTML = value.text;
+        return node;
+    }
+    static value(node: Element) {
+        return node
+    }
+}
+Abbr.blotName = "abbr";
+Abbr.className = "rec-abbr";
+Abbr.tagName = "abbr";
+Quill.register(Abbr);
+
+let Link = Quill.import('formats/link');
+class ATag extends Link {
+    static create(value: ILink) {
+        let node: Element = super.create();
+        value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
+        if (value?.target) {
+            node.setAttribute('target', value.target);
+            node.setAttribute('rel', "noreferrer noopener");
+            node.setAttribute('data-interception', 'off');
+        }
+        node.innerHTML = value.text.trim();
+        return node;
+    }
+    static value(node: Element) {
+        return node;
+    }
+}
+ATag.blotName = "a";
+ATag.className = "rec-a";
+ATag.tagName = "a";
+Quill.register(ATag);
+
+class TableTag extends blockEmbed {
+    static create(value: any) {
+        console.log('table:', value);
+        let node: Element = super.create();
+        node.setAttribute("id", `rec_table_${value.tableCount + 1}`)
+        node.setAttribute("style", "border:1px solid black;");
+        node.appendChild(document.createElement("thead"));
+        node.appendChild(document.createElement("tbody"))
+        return node;
+    }
+
+    static value(node: Element) {
+        return node;
+    }
+}
+
+TableTag.blotName = "table";
+TableTag.className = "rect-table";
+TableTag.tagName = "table";
+Quill.register(TableTag);
+
+class ImageTag extends blockEmbed {
+    static create(value: IImageLink) {
+        let node: Element = super.create();
+        value.src !== undefined ? node.setAttribute('src', value.src) : node.setAttribute('src', "")
+        node.setAttribute('alt', value.alt);
+        node.setAttribute('title', value.title);
+        node.setAttribute('width', value.width.toString());
+        node.setAttribute('height', value.height.toString());
+        node.setAttribute('id', `rec-img-${value.title !== undefined ? value.title.replace(" ", "-").toLowerCase() : 'image'}`);
+        node.setAttribute('style', `float:${value.float};padding:5px;`)
+        node.innerHTML = value.title !== undefined ? value.title.trim() : 'image';
+        return node;
+    }
+    static value(node: Element) {
+        return node;
+    }
+}
+ImageTag.blotName = "img";
+ImageTag.className = "rec-img";
+ImageTag.tagName = "img";
+Quill.register(ImageTag);
+
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
+    // let selectedRange = {};
     const [state, setState] = useReducer((state: any, newState: any) =>
         ({ ...state, ...newState }),
-        { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
+        { fontStyle: 'paragraph', alignment: 'left', selectedText: undefined, formats: {}, selectedUrl: undefined, abbrDialog: false, fontColor: "#000000", highlightColor: "#FFFFFF", fontColorDialog: false, highlightDialog: false, urlDialog: false, tableDialog: false });
 
-    useEffect(() => {
-        console.log("state updated:", state);
-
-    }, [state])
     const getEditor = (): any | undefined => {
         try {
             return props.editorRef!.current?.getEditor();
@@ -146,7 +252,9 @@ export default function CustomToolbar(props: IToolbar) {
             return undefined
         }
     }
-
+    useEffect(() => {
+        console.log("state updated:", state);
+    }, [state])
     /**
     * Called when richtext selection changes
     */
@@ -194,36 +302,48 @@ export default function CustomToolbar(props: IToolbar) {
     const clearFormatting = () => {
         const quill = getEditor();
         const range = quill.getSelection();
-        if (range.length === 0) {
-            console.log(quill.getLeaf(range.index))
+        if (range !== null) {
             let [leaf, offset] = quill.getLeaf(range.index);
-            console.log(leaf, offset);
-            quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
+            // console.log(leaf, offset);
+
+            if (range.length === 0) {
+                quill.removeFormat(range.index - offset, range.index + leaf?.domNode.length)
+            }
+            else {
+                quill.removeFormat(range.index, range.length)
+                if (leaf.domNode.tagName === "ABBR") {
+                    const innerLeaf: string = (leaf.domNode.innerText).trim();
+                    quill.insertText(range.index, innerLeaf, 'user');
+                }
+            }
+            applyFormat('color', '#000000');
+            applyFormat('background', '#FFFFFF');
         }
-        else {
-            quill.removeFormat(range.index, range.length)
-        }
+
     }
 
     const CustomEditor =
     {
         _onTextFormatClick(type: BlockFormat) {
-            if (type === BlockFormatType.paragraph) {
-                applyFormat("header", false);
-                return;
+            if (type !== BlockFormatType.pullQuote) {
+                clearFormatting();
             }
-            if (type === BlockFormatType.pullQuote) {
-                applyFormat("mark", type);
-                return;
-            }
-            else {
-                applyFormat("header", type);
+            switch (type) {
+                case BlockFormatType.paragraph:
+                    applyFormat("header", false);
+                    break;
+                case BlockFormatType.pullQuote:
+                    applyFormat("mark", type);
+                    break;
+                default:
+                    applyFormat("header", type);
+                    break;
             }
         },
         _onChangeIndentClick(direction: IndentDir) {
             // e.preventDefault();
             const quill = getEditor();
-            const current = +(quill.getFormat(quill.getSelection()).indent || 0);
+            const current = +(quill.getFormat(quill.getSelection() !== null ? quill.getSelection() : 0).indent || 0);
             applyFormat("indent", current + direction)
         },
         _onScriptStyleMarkClick(style: TextStyle) {
@@ -238,7 +358,6 @@ export default function CustomToolbar(props: IToolbar) {
             applyFormat('script', scriptStyle)
         },
         _onStyleMarkClick(style: TextStyle) {
-            // e.preventDefault()
             const newStyleValue = !state.formats[`${style}`];
             applyFormat(style, newStyleValue)
         },
@@ -254,20 +373,201 @@ export default function CustomToolbar(props: IToolbar) {
             const newListValue = (listType === 'bullet' && state.formats.list === 'bullet') || (listType === 'ordered' && state.formats.list === 'ordered') ? false : listType;
             applyFormat('list', newListValue);
         },
-        _onTextFormatColor() {
+        _onTextFormatColor(color: string, type: FontColorButtonType) {
+            // debugger;
+            const quill = getEditor()
+            if (quill !== undefined) {
+                const range = quill.getSelection();
+                switch (type) {
+                    case "Font":
+                        if (state.fontColor !== color) {
+                            range === null ? applyFormat('color', color) : quill.formatText(range.index, range.length, 'color', color);
+                            setState({
+                                fontColor: color
+                            });
+                        }
+                        break;
+                    case "Highlight":
+                        if (state.highlightColor !== color) {
+                            range === null ? applyFormat('background', color) : quill.formatText(range.index, range.length, 'background', color);
+                            setState({
+                                highlightColor: color
+                            });
+                        }
+                        break;
+                    default:
+                        console.error("Error in _onTextFormatColor");
+                        break;
+                }
+            }
+        },
+        _onAbbrInsert(params: IAbbr) {
+            const quill = getEditor()
+            if (params.range) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
+                }
+            }
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'abbr', {
+                title: params.title,
+                text: params.text
+            }, 'user');
 
         },
-        _onTextHighlight() {
+        _onLinkInsert(params: ILink) {
+            const quill = getEditor()
+            if (params.range) {
+                if (params.range.length > 0) {
+                    quill.deleteText(params.range.index, params.range.length, 'user');
+                }
+            }
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', {
+                text: params.text,
+                href: params.href,
+                target: params.target
+            }, 'user');
+        },
+        _onInsertImage(params: IImageLink, rangeOnly: boolean) {
+            const quill = getEditor();
+            if (!rangeOnly) {
+                if (params.range !== null) {
+                    if (params.range.length > 0) {
+                        quill.deleteText(params.range.index, params.range.length, 'user');
+                    }
+                }
+                quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'img', {
+                    ...params
+                }, 'user');
+            }
+            setTimeout(() => quill.setSelection(params?.range?.index + 1, 0), 0)
 
         },
-        _onAbbrInsert() {
-
-        },
+        // format version
+        // _onLinkInsert(params: ILink) {
+        //     debugger;
+        //     const cursorPosition = params.range!.index;
+        //     if (params.range) {
+        //         if (params.range.length > 0) {
+        //             quill.deleteText(params.range.index, params.range.length, 'user');
+        //         }
+        //     }
+        //     quill.insertText(cursorPosition, params.text);
+        //     quill.setSelection(cursorPosition, params.text.length);
+        //     quill.formatText(cursorPosition, params.text.length, 'link', params.url);
+        // },
         _onHrInsert() {
+            const quill = getEditor();
+            let range = quill.getSelection();
+            if (range) {
+                quill.insertEmbed(range.index, "hr", "null")
+            }
+        },
+        _onFontSizeChange(fontSize: string) {
+            applyFormat("size", fontSize)
+        },
+        _onRowInsertBelow() { },
+        _onColumnInsertRight() { },
+        _onTableInsert() {
+            const quill = getEditor();
+            const range = quill.getSelection();
+            const count = document.querySelectorAll("[id^= 'rec_table_']");
+            console.log('Count: ', count);
+            // quill.insertEmbed(range.index, 'table', {
+            //     tableCount: count.length
+            // }, 'user');
+            // getQuillInnerHTML();
+            setQuillInnerHTML();
 
-        }
+        },
+        _onTableDelete() { },
+        _onDeleteCurrentRow() { },
+        _onDeleteCurrentColumn() { }
+
+    };
+
+    const getEditorBySelector = (): NodeListOf<Element> => {
+        return document.querySelectorAll(`[id='${props.editorId}']`)[0].querySelectorAll("[class='ql-editor'");
     }
 
+    const getQuillInnerHTML = () => {
+
+        console.log(getEditorBySelector());
+
+    }
+    const setQuillInnerHTML = (html?: string) => {
+        const quill = getEditor();
+        const range = quill.getSelection();
+        // let editor: NodeListOf<Element> = getEditorBySelector();
+        // const htmlContent = '<div>Hello</div>';
+        // const delta = quill.clipboard.convert(htmlContent);
+        // quill.insertEmbed(range.index, 'p', delta);
+        // quill.setContents(delta, 'silent')
+    }
+
+    const basicTable = () => {
+        return <table>
+            <thead>
+                <tr>
+                    <td>
+                        Col1
+                    </td>
+                    <td>
+                        Col2
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Cell1
+                    </td>
+                    <td>
+                        Cell2
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+
+    // const insertEmbeddedTag = (params: IAbbr | ILink, tag: string) => {
+    //     if (params.range) {
+    //         if (params.range.length > 0) {
+    //             quill.deleteText(params.range.index, params.range.length, 'user');
+    //         }
+    //     }
+    //     quill.insertEmbed(params?.range?.index ? params.range.index : 0, tag, {
+    //         ...params
+    //     }, 'user');
+    // }
+    const fontSizeArray =
+        [
+            { key: 'small', text: '12' },
+            { key: 'medium', text: '14' },
+            { key: 'mediumplus', text: '15' },
+            { key: 'large', text: '17' },
+            { key: 'xlarge', text: '21' },
+            { key: 'xlargeplus', text: '24' },
+            { key: 'xxlarge', text: '28' },
+            { key: 'xxxlarge', text: '32' },
+            { key: 'xxlargeplus', text: '36' },
+            { key: 'super', text: '42' },
+        ];
+
+    const textFontSizeSelectionArray = (sizeArray: any[]) => {
+        // const arr = [];
+        return sizeArray.map(num => ({
+            key: `fs_${num.text}`,
+            buttonText: `${num.text}`,
+            icon: '',
+            tooltip: '',
+            ariaLabel: `Font size ${num.text}`,
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onFontSizeChange(num.key),
+            position: 'right',
+            value: num.key,
+            buttonStyle: classes.cmdButton
+        }))
+    }
 
     const toolbarArray: IToolbarButton[] = [
         {
@@ -322,7 +622,7 @@ export default function CustomToolbar(props: IToolbar) {
                 {
                     key: 'header4',
                     className: 'header4',
-                    value: 3,
+                    value: 4,
                     icon: '',
                     tooltip: '',
                     buttonText: 'Header 4',
@@ -368,6 +668,16 @@ export default function CustomToolbar(props: IToolbar) {
                     buttonStyle: '',
                 }
             ]
+        },
+        {
+            key: 'textFontSize',
+            icon: '',
+            tooltip: '',
+            value: 'large',
+            ariaLabel: 'Text Alignment',
+            position: 'top',
+            buttonStyle: classes.selectEmpty,
+            childButtons: textFontSizeSelectionArray(fontSizeArray)
         },
         {
             key: 'bold',
@@ -516,32 +826,14 @@ export default function CustomToolbar(props: IToolbar) {
                 },
 
             ]
-        }, {
-            key: 'insert_link',
-            icon: 'insert_link',
-            tooltip: 'Insert link',
-            ariaLabel: 'Insert link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            value: 'insertLink',
-            buttonStyle: classes.cmdButton
-        },
-        {
-            key: 'link_off',
-            icon: 'link_off',
-            tooltip: 'Remove link',
-            ariaLabel: 'Remove link',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            value: 'removeLink',
-            buttonStyle: classes.cmdButton
         },
         {
             key: 'table_insert',
             icon: 'table_chart',
             tooltip: 'Add table',
+            disabled: true,
             ariaLabel: 'Add Table.',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onTableInsert(),
             position: 'top',
             value: '',
             buttonStyle: classes.cmdButton
@@ -567,24 +859,6 @@ export default function CustomToolbar(props: IToolbar) {
             buttonStyle: classes.cmdButton
         },
         {
-            key: 'highlight',
-            icon: 'highlight',
-            tooltip: 'Highlight text',
-            ariaLabel: 'Highlight text',
-            callback: () => CustomEditor._onTextHighlight(),
-            position: 'top',
-            buttonStyle: classes.cmdButton
-        },
-        {
-            key: 'text_format',
-            icon: 'text_format',
-            tooltip: 'Format text color',
-            ariaLabel: 'Format text color',
-            callback: () => CustomEditor._onTextFormatColor(),
-            position: 'top',
-            buttonStyle: classes.cmdButton
-        },
-        {
             key: 'format_clear',
             icon: 'format_clear',
             tooltip: 'Format Clear',
@@ -594,40 +868,68 @@ export default function CustomToolbar(props: IToolbar) {
             buttonStyle: classes.cmdButton
         },
         {
-            key: 'abbreviation',
-            icon: '',
-            tooltip: 'Abbreviation',
-            buttonText: '<abbr>',
-            ariaLabel: 'Add Abbreviation over selected text',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
-            position: 'top',
-            buttonStyle: classes.cmdButton
-        },
-        {
             key: 'horizontal_line',
             icon: '',
             tooltip: 'Horizontal line',
             buttonText: '<hr/>',
             ariaLabel: 'Add horizontal line',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.preventDefault(),
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onHrInsert(),
             position: 'top',
             buttonStyle: classes.cmdButton
         },
-    ]
+    ];
+
+    const FontColorButtons: any = {
+        textFormat: {
+            key: 'text_format',
+            icon: '',
+            tooltip: 'Format text color',
+            ariaLabel: 'Format text color',
+            callback: null,
+            buttonText: 'A',
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        },
+        highlight: {
+            key: 'highlight',
+            icon: 'create',
+            tooltip: 'Highlight text',
+            ariaLabel: 'Highlight text',
+            callback: null,
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        }
+    }
 
     const renderToolbarButtons = () => {
+        // debugger;
+        const quill = getEditor()
         const toolbarButtons: any[] = []
         toolbarArray.forEach((element: IToolbarButton) => {
             toolbarButtons.push(CreateStyleButton(element))
         });
+        // add Abbr btn
+        toolbarButtons.push(<AbbrDialog key="dialog_abbr" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onAbbrInsert}></AbbrDialog>);
+        toolbarButtons.push(
+            <LinkDialog key="dialog_link" quillEditor={quill} btnStyle={classes.cmdButton} callback={CustomEditor._onLinkInsert}></LinkDialog>
+        );
+        toolbarButtons.push(
+            <ImageDialog key="image_insert" quillEditor={getEditor()} btnStyle={classes.cmdButton} callback={CustomEditor._onInsertImage}></ImageDialog>
+        );
+        toolbarButtons.push(
+            <FontColorButton defaultColor={state.fontColor} key="fontTextFormatColor" callback={(color: string, type: FontColorButtonType) => CustomEditor._onTextFormatColor(color, type)} buttonType="Font" buttonParams={FontColorButtons.textFormat}></FontColorButton>
+        );
+        toolbarButtons.push(
+            <FontColorButton defaultColor={state.highlightColor} key="fontTextFormatHighlight" callback={(color: string, type: FontColorButtonType) => CustomEditor._onTextFormatColor(color, type)} buttonType="Highlight" buttonParams={FontColorButtons.highlight}></FontColorButton>
+        );
         return toolbarButtons
 
     }
     const render = () => {
         console.log('toolbar render');
-        console.log('Editor Ref: ', getEditor());
+        // console.log('Editor Ref: ', getEditor());
         return (
-            <div id={props.id} className={classes.flexGrow1}>
+            <div id={props.id} className={`${classes.flexGrow1} ${props.editing ? "" : classes.displayNone}`}>
                 <AppBar position="static" className={classes.appBar}>
                     <Toolbar className={`${props?.toolbarStyle ? props.toolbarStyle : classes.toolbar}`}>
                         {renderToolbarButtons()}

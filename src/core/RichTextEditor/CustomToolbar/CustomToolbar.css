@@ -19,3 +19,49 @@
   border-bottom: 2px solid lightgray;
   font-style: italic;
 }
+
+.rec-abbr {
+  display: inline;
+}
+
+/*  
+    'small',
+    'medium',
+    'mediumplus',
+    'large',
+    'xlarge',
+    'xlargeplus',
+    'xxlarge',
+    'xxxlarge',
+    'xxlargeplus',
+    'super'
+     */
+
+.ql-size-medium {
+  font-size: 0.875em;
+}
+
+.ql-size-mediumplus {
+  font-size: 0.938em;
+}
+.ql-size-large {
+  font-size: 1.063em;
+}
+.ql-size-xlarge {
+  font-size: 1.313em;
+}
+.ql-size-xlargeplus {
+  font-size: 1.5em;
+}
+.ql-size-xxlarge {
+  font-size: 2.333em;
+}
+.ql-size-xxxlarge {
+  font-size: 2.667em;
+}
+.ql-size-xxlargeplus {
+  font-size: 3em;
+}
+.ql-size-super {
+  font-size:3.5em;
+}

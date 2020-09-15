@@ -28,8 +28,11 @@ export interface IToolbarButton {
     buttonText?: string,
     disabled?: boolean,
     className?: string,
-    childButtons?: IToolbarButton[]
+    childButtons?: IToolbarButton[],
+    isDefault?: boolean
 }
+
+
 
 export type TextAlignment = "left" | "right" | "center" | "justify";
 export enum TextAlignmentType {
@@ -39,6 +42,15 @@ export enum TextAlignmentType {
     justify = 'justify',
 
 }
+export interface IRange {
+    index: number;
+    length: number;
+}
+export interface IAbbr {
+    title: string,
+    text: string,
+    range: IRange
+}
 
 export const LIST_TYPES = ['ordered-list', 'bulleted-list']
 export type ListFormat = 'ordered' | 'bullet';
@@ -46,7 +58,6 @@ export enum ListFormatType {
     bulletedList = 'bullet',
     orderedList = 'ordered'
 }
-// export type BlockFormat = "paragraph" | "heading_1" | "heading_2" | "heading_3" | "pullQuote" | "monospaced";
 
 export type BlockFormat = "H1" | "H2" | "H3" | "H4" | "H5" | "H6" | "blockquote" | "paragraph" | "pullQuote";
 
@@ -74,4 +85,22 @@ export enum TextStyleType {
     underline = 'underline',
     sub = 'sub',
     super = 'super'
+}
+
+
+export interface ILink {
+    text: string;
+    href?: string;
+    target?: string;
+    range: IRange
+}
+
+export interface IImageLink {
+    range: IRange,
+    title: string,
+    src: string,
+    width: number;
+    height: number;
+    alt: string;
+    float: string;
 }

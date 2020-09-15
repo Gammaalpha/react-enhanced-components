@@ -3,7 +3,6 @@ import QuillEditor from "./QuillEditor/QuillEditor";
 import CustomToolbar from "./CustomToolbar/CustomToolbar";
 import { IRichText } from './model/RichText';
 import './RichTextEditor.css'
-
 const randNum = Math.floor(Math.random() * 1000)
 
 export function RichTextEditor(props: IRichText) {
@@ -18,7 +17,7 @@ export function RichTextEditor(props: IRichText) {
 
         return (
             <div>
-                <CustomToolbar editorRef={editorRefState} id={toolbarId} />
+                <CustomToolbar editing={props.editing} editorRef={editorRefState} id={toolbarId} editorId={editorId} />
                 <QuillEditor callback={handleIncomingRef} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
             </div>
         )
