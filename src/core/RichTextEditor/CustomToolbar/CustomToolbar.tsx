@@ -622,7 +622,7 @@ export default function CustomToolbar(props: IToolbar) {
                 {
                     key: 'header4',
                     className: 'header4',
-                    value: 3,
+                    value: 4,
                     icon: '',
                     tooltip: '',
                     buttonText: 'Header 4',

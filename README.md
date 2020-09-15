@@ -227,6 +227,8 @@ If bugs are found please raise an issue.
 
 1. Fixed font color and highlight glitch on selection.
 
+1. Updated incorrect Header 4 option value.
+
 ## **Development status**
 
 This project is still under development. The author may change any or all part of the project without notice.
