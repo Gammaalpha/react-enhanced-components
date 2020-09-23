@@ -18,11 +18,12 @@ export function RichTextEditor(props: IRichText) {
         props.callback(_data);
     }
     const render = () => {
-
+        const id = props.id === undefined ? "main_container_rich_text_editor" : props.id;
+        let value = props.value === undefined ? "" : props.value;
         return (
-            <div>
+            <div id={id}>
                 <CustomToolbar editing={props.editing} editorRef={editorRefState} id={toolbarId} editorId={editorId} />
-                <QuillEditor callback={handleIncomingRef} contentCallback={handleIncomingContent} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
+                <QuillEditor value={value} callback={handleIncomingRef} contentCallback={handleIncomingContent} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
             </div>
         )
     }
