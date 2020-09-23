@@ -4,6 +4,7 @@ export interface IRichText {
     buttons?: string[],
     value?: string,
     editing: boolean,
+    callback?: any
 }
 
 export interface IQuillEditor {
@@ -13,7 +14,8 @@ export interface IQuillEditor {
     editing: boolean,
     buttons?: string[],
     value?: string,
-    callback?: any
+    callback?: any,
+    contentCallback?: any
 }
 
 export interface IToolbarButton {
