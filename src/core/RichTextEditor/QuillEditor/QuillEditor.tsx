@@ -12,6 +12,7 @@ export default function QuillEditor(props: IQuillEditor) {
     const [value, setValue] = useState(props.value !== undefined ? props.value : '')
     const handleChange = (_value: any) => {
         setValue(_value)
+        props.contentCallback(_value)
     }
     const modules = {
         toolbar: {

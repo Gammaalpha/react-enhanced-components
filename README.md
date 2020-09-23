@@ -138,9 +138,12 @@ After including the repository into your project, you can import the component a
 
 ### RichTextEditor props
 
-| Prop    | Require Status | type    | Description                                                                            |
-| ------- | -------------- | ------- | -------------------------------------------------------------------------------------- |
-| editing | required       | boolean | Enable or disable input area for editing. This also hides or shows the editor toolbar. |
+| Prop     | Require Status | type    | Description                                                                            |
+| -------- | -------------- | ------- | -------------------------------------------------------------------------------------- |
+| id       | optional       | string  | Add a custom id for the main rich text editor container                                |
+| value    | optional       | any     | Default value to pass during initial render.                                           |
+| editing  | required       | boolean | Enable or disable input area for editing. This also hides or shows the editor toolbar. |
+| callback | optional       | any     | Callback function to return data from the editor to the parent component               |
 
 To render the rich text editor simply put it in as follows:
 

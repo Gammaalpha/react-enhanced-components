@@ -13,12 +13,17 @@ export function RichTextEditor(props: IRichText) {
         // console.log("ref handled", ref);
         setEditorRefState(ref)
     }
-    const render = () => {
 
+    const handleIncomingContent = (_data: any) => {
+        props.callback(_data);
+    }
+    const render = () => {
+        const id = props.id === undefined ? "main_container_rich_text_editor" : props.id;
+        let value = props.value === undefined ? "" : props.value;
         return (
-            <div>
+            <div id={id}>
                 <CustomToolbar editing={props.editing} editorRef={editorRefState} id={toolbarId} editorId={editorId} />
-                <QuillEditor callback={handleIncomingRef} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
+                <QuillEditor value={value} callback={handleIncomingRef} contentCallback={handleIncomingContent} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
             </div>
         )
     }
