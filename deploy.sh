@@ -16,6 +16,12 @@ cp ../deploy/* ./ -r
 
 cp ../README.md ./
 
+mkdir core
+
+cp ./src/core/* ./core/ -r
+
+rm -rf src/
+
 git init
 
 git add -A
