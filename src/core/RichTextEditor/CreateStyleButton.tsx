@@ -20,6 +20,9 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
             minWidth: 'auto',
             paddingLeft: '0 0 0 3px'
         },
+        color: {
+            color: "black"
+        },
         topPadding: {
             paddingTop: 4
         },
@@ -44,7 +47,7 @@ export function CreateStyleButton(buttonData: IToolbarButton) {
 
     const buttonRenderCustom = (buttonData: IToolbarButton) => {
         return (buttonData?.icon !== '' ?
-            <div id={`rec_mi_${buttonData.key}`}><span><Icon id={`rec_mi_${buttonData.icon}`} className={classes.topPadding}>
+            <div id={`rec_mi_${buttonData.key}`}><span><Icon id={`rec_mi_${buttonData.icon}`} className={`${classes.topPadding} ${classes.color}`}>
                 {buttonData.icon}
             </Icon> <strong>{buttonData?.buttonText}</strong></span></div>
             : <div id={`rec_mi_${buttonData.key}`}><span><strong>{buttonData?.buttonText}</strong></span></div>)
