@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         height: '40px!important',
         marginTop: 2,
         marginBottom: 2,
+        color: "black",
         backgroundColor: 'lightgray!important',
         width: 'auto!important',
         minWidth: '40px',
