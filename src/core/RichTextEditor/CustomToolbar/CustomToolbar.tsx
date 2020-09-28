@@ -413,6 +413,7 @@ export default function CustomToolbar(props: IToolbar) {
                 title: params.title,
                 text: params.text
             }, 'user');
+            quill.setSelection(params.range, 0);
 
         },
         _onLinkInsert(params: ILink) {
@@ -427,6 +428,8 @@ export default function CustomToolbar(props: IToolbar) {
                 href: params.href,
                 target: params.target
             }, 'user');
+            quill.setSelection(params.range, 0);
+
         },
         _onInsertImage(params: IImageLink, rangeOnly: boolean) {
             const quill = getEditor();
