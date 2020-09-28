@@ -184,7 +184,7 @@ class ATag extends Link {
             node.setAttribute('rel', "noreferrer noopener");
             node.setAttribute('data-interception', 'off');
         }
-        node.innerHTML = value.text.trim();
+        node.innerHTML = value.text !== undefined ? value.text.trim() : "";
         return node;
     }
     static value(node: Element) {
@@ -313,7 +313,7 @@ export default function CustomToolbar(props: IToolbar) {
             else {
                 quill.removeFormat(range.index, range.length)
                 if (leaf.domNode.tagName === "ABBR") {
-                    const innerLeaf: string = (leaf.domNode.innerText).trim();
+                    const innerLeaf: string = leaf.domNode.innerText !== undefined ? (leaf.domNode.innerText).trim() : "";
                     quill.insertText(range.index, innerLeaf, 'user');
                 }
             }

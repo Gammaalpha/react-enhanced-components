@@ -58,7 +58,7 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
                 let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0)
                 if (leaf.domNode.tagName === "ABBR") {
                     setAbbr({
-                        text: leaf.domNode.textContent.trim(),
+                        text: leaf.domNode.textContent !== undefined ? leaf.domNode.textContent.trim() : "",
                         title: leaf.domNode.title,
                         range: range
                     })
