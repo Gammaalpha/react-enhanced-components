@@ -158,11 +158,13 @@ Quill.register({
     'formats/hr': Hr
 })
 let blockEmbed = Quill.import('blots/embed')
-class Abbr extends blockEmbed {
+class Abbr extends Embed {
     static create(value: IAbbr) {
         let node: Element = super.create();
         node.setAttribute('title', value.title);
         node.innerHTML = value.text;
+        console.log("Abbr node ", node);
+
         return node;
     }
     static value(node: Element) {
@@ -184,6 +186,7 @@ class ATag extends Link {
             node.setAttribute('rel', "noreferrer noopener");
             node.setAttribute('data-interception', 'off');
         }
+        node.setAttribute('title', value.text)
         node.innerHTML = value.text !== undefined ? value.text.trim() : "";
         return node;
     }
@@ -406,29 +409,30 @@ export default function CustomToolbar(props: IToolbar) {
             const quill = getEditor()
             if (params.range) {
                 if (params.range.length > 0) {
-                    quill.deleteText(params.range.index, params.range.length, 'user');
+                    quill.deleteText(params.range.index, params.range.length, 'api');
                 }
             }
             quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'abbr', {
                 title: params.title,
                 text: params.text
-            }, 'user');
-            quill.setSelection(params.range, 0);
+            }, 'api');
+            quill.setSelection(params.range, "api");
 
         },
         _onLinkInsert(params: ILink) {
             const quill = getEditor()
+
             if (params.range) {
                 if (params.range.length > 0) {
-                    quill.deleteText(params.range.index, params.range.length, 'user');
+                    quill.deleteText(params.range.index, params.range.length, 'api');
                 }
             }
             quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', {
                 text: params.text,
                 href: params.href,
                 target: params.target
-            }, 'user');
-            quill.setSelection(params.range, 0);
+            }, 'api');
+            quill.setSelection(params.range, "api");
 
         },
         _onInsertImage(params: IImageLink, rangeOnly: boolean) {
@@ -443,10 +447,14 @@ export default function CustomToolbar(props: IToolbar) {
                     ...params
                 }, 'user');
             }
-            setTimeout(() => quill.setSelection(params?.range?.index + 1, 0), 0)
+            setTimeout(() => quill.setSelection(params?.range?.index + 1, "api"), 0)
 
         },
         _onOpenSource() {
+            const quill = getEditor();
+            const content = quill.getContents();
+
+            console.log(content);
 
         },
 
@@ -885,6 +893,16 @@ export default function CustomToolbar(props: IToolbar) {
             position: 'top',
             buttonStyle: classes.cmdButton
         },
+        {
+            key: 'source',
+            icon: '',
+            tooltip: 'Source Code',
+            buttonText: 'Source',
+            ariaLabel: 'Open Source',
+            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onOpenSource(),
+            position: 'top',
+            buttonStyle: classes.cmdButton
+        }
     ];
 
     const FontColorButtons: any = {
