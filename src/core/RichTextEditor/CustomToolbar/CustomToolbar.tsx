@@ -446,6 +446,10 @@ export default function CustomToolbar(props: IToolbar) {
             setTimeout(() => quill.setSelection(params?.range?.index + 1, 0), 0)
 
         },
+        _onOpenSource() {
+
+        },
+
         // format version
         // _onLinkInsert(params: ILink) {
         //     debugger;
