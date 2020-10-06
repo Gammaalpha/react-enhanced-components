@@ -94,6 +94,7 @@ export interface ILink {
     text: string;
     href?: string;
     target?: string;
+    title?: string;
     range: IRange
 }
 

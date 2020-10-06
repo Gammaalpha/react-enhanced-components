@@ -28,6 +28,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
         text: '',
         href: '',
         target: '',
+        title: '',
         range: {
             index: 0,
             length: 0
@@ -69,25 +70,26 @@ export default function LinkDialog(props: ILinkDialogProps) {
                 const range = quill.getSelection();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
-                if (leaf.domNode.tagName === "A") {
+                if (leaf.domNode.parentElement.tagName === "A") {
+
                     setLink({
-                        text: leaf.domNode.textContent !== undefined ? leaf.domNode.textContent.trim() : '',
-                        href: leaf.domNode.href,
-                        target: '',
+                        text: leaf.domNode.parentElement.innerText !== undefined ? leaf.domNode.parentElement.innerText.trim() : '',
+                        href: leaf.domNode.parentElement.href,
+                        target: leaf.domNode.parentElement.target,
+                        title: leaf.domNode.parentElement.title,
                         range: range
                     })
                 }
                 else {
 
-                    if (range?.length > 0) {
-                        let innerText = quill.getText(range.index, range.length);
-                        setLink({
-                            text: innerText,
-                            href: '',
-                            target: '',
-                            range: range
-                        })
-                    }
+                    let innerText = range?.length > 0 ? quill.getText(range.index, range.length) : "";
+                    setLink({
+                        text: innerText,
+                        href: '',
+                        target: '',
+                        title: '',
+                        range: range
+                    })
                 }
             }
         }
@@ -129,6 +131,20 @@ export default function LinkDialog(props: ILinkDialogProps) {
                             <TextField
                                 autoFocus
                                 margin="dense"
+                                id="Title"
+                                label="Tooltip text to display"
+                                type="text"
+                                value={link.title}
+                                onChange={(e: any) => {
+                                    setLink({
+                                        ...link,
+                                        title: e.target.value,
+                                    });
+                                }}
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
                                 id="href_link"
                                 label="Address"
                                 placeholder="https://"
@@ -155,6 +171,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                 label="Open in a new tab?"
                                 control={
                                     <Checkbox
+                                        checked={link.target === "_blank" ? true : false}
                                         onChange={handleCheckboxChange}
                                         name="target"
                                     />

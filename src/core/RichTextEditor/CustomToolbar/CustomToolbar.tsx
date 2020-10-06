@@ -161,10 +161,10 @@ let blockEmbed = Quill.import('blots/embed')
 class Abbr extends Embed {
     static create(value: IAbbr) {
         let node: Element = super.create();
-        node.setAttribute('title', value.title);
+        const title = value.title.replace(" ", "_")
+        node.setAttribute('title', title);
+        node.className = (`rec-abbr abbr_${title}`)
         node.innerHTML = value.text;
-        console.log("Abbr node ", node);
-
         return node;
     }
     static value(node: Element) {
@@ -183,10 +183,13 @@ class ATag extends Link {
         value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
         if (value?.target) {
             node.setAttribute('target', value.target);
+
             node.setAttribute('rel', "noreferrer noopener");
             node.setAttribute('data-interception', 'off');
         }
-        node.setAttribute('title', value.text)
+        if (value.title !== "" && value.title !== undefined) {
+            node.setAttribute('title', value.title);
+        }
         node.innerHTML = value.text !== undefined ? value.text.trim() : "";
         return node;
     }
@@ -257,7 +260,7 @@ export default function CustomToolbar(props: IToolbar) {
         }
     }
     useEffect(() => {
-        console.log("state updated:", state);
+        // console.log("state updated:", state);
     }, [state])
     /**
     * Called when richtext selection changes
@@ -421,7 +424,6 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onLinkInsert(params: ILink) {
             const quill = getEditor()
-
             if (params.range) {
                 if (params.range.length > 0) {
                     quill.deleteText(params.range.index, params.range.length, 'api');
@@ -430,9 +432,13 @@ export default function CustomToolbar(props: IToolbar) {
             quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', {
                 text: params.text,
                 href: params.href,
-                target: params.target
+                target: params.target,
+                title: params.title,
             }, 'api');
-            quill.setSelection(params.range, "api");
+            let range = params.range;
+            range.index = params.range.index === 0 ? params.text.length : params.range.index + params.text.length;
+            range.length = 0;
+            quill.setSelection(range, "api");
 
         },
         _onInsertImage(params: IImageLink, rangeOnly: boolean) {
@@ -890,16 +896,6 @@ export default function CustomToolbar(props: IToolbar) {
             buttonText: '<hr/>',
             ariaLabel: 'Add horizontal line',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onHrInsert(),
-            position: 'top',
-            buttonStyle: classes.cmdButton
-        },
-        {
-            key: 'source',
-            icon: '',
-            tooltip: 'Source Code',
-            buttonText: 'Source',
-            ariaLabel: 'Open Source',
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onOpenSource(),
             position: 'top',
             buttonStyle: classes.cmdButton
         }

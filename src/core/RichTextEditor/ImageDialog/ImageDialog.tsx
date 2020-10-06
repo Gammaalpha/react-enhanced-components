@@ -69,7 +69,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
     };
 
     useEffect(() => {
-        console.log("in use effect: ", props);
+        // console.log("in use effect: ", props);
 
         const quill = props.quillEditor;
         if (open) {
@@ -106,7 +106,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
                                 src: "",
                                 range: tempRange
                             })
-                            console.log(image);
+                            // console.log(image);
 
                         }
                     }
