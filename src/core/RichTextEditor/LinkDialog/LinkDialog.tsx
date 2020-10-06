@@ -70,8 +70,31 @@ export default function LinkDialog(props: ILinkDialogProps) {
                 const range = quill.getSelection();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
-                if (leaf.domNode.parentElement.tagName === "A") {
+                if (range.length > 0) {
+                    debugger;
+                    if (leaf.next?.domNode.tagName === "A") {
+                        setLink({
+                            text: leaf.next.domNode.innerText !== undefined ? leaf.domNode.parentElement.innerText.trim() : '',
+                            href: leaf.domNode.parentElement.href,
+                            target: leaf.domNode.parentElement.target,
+                            title: leaf.domNode.parentElement.title,
+                            range: range
+                        })
+                    }
+                    else {
 
+                        let innerText = range?.length > 0 ? quill.getText(range.index, range.length) : "";
+                        setLink({
+                            text: innerText,
+                            href: '',
+                            target: '',
+                            title: '',
+                            range: range
+                        })
+                    }
+                }
+                else {
+                    debugger;
                     setLink({
                         text: leaf.domNode.parentElement.innerText !== undefined ? leaf.domNode.parentElement.innerText.trim() : '',
                         href: leaf.domNode.parentElement.href,
@@ -80,17 +103,9 @@ export default function LinkDialog(props: ILinkDialogProps) {
                         range: range
                     })
                 }
-                else {
 
-                    let innerText = range?.length > 0 ? quill.getText(range.index, range.length) : "";
-                    setLink({
-                        text: innerText,
-                        href: '',
-                        target: '',
-                        title: '',
-                        range: range
-                    })
-                }
+
+
             }
         }
 
