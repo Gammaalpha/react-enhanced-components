@@ -71,7 +71,6 @@ export default function LinkDialog(props: ILinkDialogProps) {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
                 if (range.length > 0) {
-                    debugger;
                     if (leaf.next?.domNode.tagName === "A") {
                         setLink({
                             text: leaf.next.domNode.innerText !== undefined ? leaf.domNode.parentElement.innerText.trim() : '',
@@ -94,7 +93,6 @@ export default function LinkDialog(props: ILinkDialogProps) {
                     }
                 }
                 else {
-                    debugger;
                     setLink({
                         text: leaf.domNode.parentElement.innerText !== undefined ? leaf.domNode.parentElement.innerText.trim() : '',
                         href: leaf.domNode.parentElement.href,
