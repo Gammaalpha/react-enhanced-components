@@ -158,12 +158,12 @@ Quill.register({
     'formats/hr': Hr
 })
 let blockEmbed = Quill.import('blots/embed')
-class Abbr extends Embed {
+let Inline = Quill.import('blots/inline');
+class Abbr extends Inline {
     static create(value: IAbbr) {
         let node: Element = super.create();
-        const title = value.title.replace(" ", "_")
-        node.setAttribute('title', title);
-        node.className = (`rec-abbr abbr_${title}`)
+        node.setAttribute('title', value.title);
+        node.className = (`rec-abbr abbr_${value.title.replaceAll(" ", "_")}`)
         node.innerHTML = value.text;
         return node;
     }
@@ -419,8 +419,11 @@ export default function CustomToolbar(props: IToolbar) {
                 title: params.title,
                 text: params.text
             }, 'api');
-            quill.setSelection(params.range, "api");
-
+            // quill.setSelection(params.range, "api");
+            let range = params.range;
+            range.index = params.range.index === 0 ? params.text.length : params.range.index + params.range.length;
+            range.length = 0;
+            quill.setSelection(range, "api");
         },
         _onLinkInsert(params: ILink) {
             const quill = getEditor()
