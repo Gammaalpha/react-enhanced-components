@@ -157,7 +157,6 @@ Hr.tagName = 'hr'
 Quill.register({
     'formats/hr': Hr
 })
-let blockEmbed = Quill.import('blots/embed')
 let Inline = Quill.import('blots/inline');
 class Abbr extends Inline {
     static create(value: IAbbr) {
@@ -202,6 +201,7 @@ ATag.className = "rec-a";
 ATag.tagName = "a";
 Quill.register(ATag);
 
+let blockEmbed = Quill.import('blots/embed')
 class TableTag extends blockEmbed {
     static create(value: any) {
         console.log('table:', value);
