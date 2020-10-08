@@ -40,6 +40,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
     }
 
     const handleClose = () => {
+        props.callback(link)
         setOpen(false);
     }
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,19 +70,19 @@ export default function LinkDialog(props: ILinkDialogProps) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
-                if (range.length > 0) {
-                    if (leaf.next?.domNode.tagName === "A") {
-                        setLink({
-                            text: leaf.next.domNode.innerText !== undefined ? leaf.domNode.parentElement.innerText.trim() : '',
-                            href: leaf.domNode.parentElement.href,
-                            target: leaf.domNode.parentElement.target,
-                            title: leaf.domNode.parentElement.title,
-                            range: range
-                        })
-                    }
-                    else {
-
+                let [leaf, offset] = quill.getLeaf(range !== null ? range.index + 1 : 0)
+                const parentDomNode = leaf.parent.domNode;
+                if (parentDomNode.tagName === "A") {
+                    setLink({
+                        text: parentDomNode.innerText !== undefined ? parentDomNode.innerText.trim() : '',
+                        href: parentDomNode.href,
+                        target: parentDomNode.target,
+                        title: parentDomNode.title,
+                        range: range
+                    })
+                }
+                else {
+                    if (range.length > 0) {
                         let innerText = range?.length > 0 ? quill.getText(range.index, range.length) : "";
                         setLink({
                             text: innerText,
@@ -92,17 +93,6 @@ export default function LinkDialog(props: ILinkDialogProps) {
                         })
                     }
                 }
-                else {
-                    setLink({
-                        text: leaf.domNode.parentElement.innerText !== undefined ? leaf.domNode.parentElement.innerText.trim() : '',
-                        href: leaf.domNode.parentElement.href,
-                        target: leaf.domNode.parentElement.target,
-                        title: leaf.domNode.parentElement.title,
-                        range: range
-                    })
-                }
-
-
 
             }
         }
@@ -111,7 +101,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
 
     const handleSubmit = () => {
         handleClose();
-        props.callback(link)
+        // props.callback(link)
     };
 
     const render = () => {

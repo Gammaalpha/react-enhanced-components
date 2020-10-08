@@ -36,7 +36,9 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
     }
 
     const handleClose = () => {
+        props.callback(abbr);
         setOpen(false);
+
     }
     const abbrButton = {
         key: 'abbreviation',
@@ -55,11 +57,12 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0)
-                if (leaf.domNode.tagName === "ABBR") {
+                let [leaf, offset] = quill.getLeaf(range !== null ? range.index + 1 : 0)
+                const parentDomNode = leaf.parent.domNode;
+                if (parentDomNode.tagName === "ABBR") {
                     setAbbr({
-                        text: leaf.domNode.textContent !== undefined ? leaf.domNode.textContent.trim() : "",
-                        title: leaf.domNode.title,
+                        text: parentDomNode.textContent !== undefined ? parentDomNode.textContent.trim() : "",
+                        title: parentDomNode.title,
                         range: range
                     })
                 }
@@ -80,7 +83,7 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
     }, [open, props, props.quillEditor])
     const handleSubmit = () => {
         handleClose();
-        props.callback(abbr)
+        // props.callback(abbr);
     };
 
     const render = () => {

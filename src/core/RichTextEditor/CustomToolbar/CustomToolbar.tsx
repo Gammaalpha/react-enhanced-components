@@ -329,6 +329,14 @@ export default function CustomToolbar(props: IToolbar) {
 
     }
 
+    const setCursorPosition = (textLength: number, range: any) => {
+        let rangeTemp = range;
+        rangeTemp.index = range.index === 0 ? textLength : range.index + range.length;
+        rangeTemp.length = 0;
+        const quill = getEditor()
+        quill.setSelection(rangeTemp, "api");
+    }
+
     const CustomEditor =
     {
         _onTextFormatClick(type: BlockFormat) {
@@ -419,11 +427,7 @@ export default function CustomToolbar(props: IToolbar) {
                 title: params.title,
                 text: params.text
             }, 'api');
-            // quill.setSelection(params.range, "api");
-            let range = params.range;
-            range.index = params.range.index === 0 ? params.text.length : params.range.index + params.range.length;
-            range.length = 0;
-            quill.setSelection(range, "api");
+            setCursorPosition(params.text.length, params.range);
         },
         _onLinkInsert(params: ILink) {
             const quill = getEditor()
@@ -438,11 +442,7 @@ export default function CustomToolbar(props: IToolbar) {
                 target: params.target,
                 title: params.title,
             }, 'api');
-            let range = params.range;
-            range.index = params.range.index === 0 ? params.text.length : params.range.index + params.text.length;
-            range.length = 0;
-            quill.setSelection(range, "api");
-
+            setCursorPosition(params.text.length, params.range);
         },
         _onInsertImage(params: IImageLink, rangeOnly: boolean) {
             const quill = getEditor();
@@ -461,10 +461,11 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onOpenSource() {
             const quill = getEditor();
-            const content = quill.getContents();
-
+            const range = quill.getSelection();
+            const content = quill.getContents(range);
             console.log(content);
-
+            const leaf = quill.getLeaf(range.index + 1);
+            console.log("leaf:", leaf);
         },
 
         // format version
@@ -501,7 +502,7 @@ export default function CustomToolbar(props: IToolbar) {
             //     tableCount: count.length
             // }, 'user');
             // getQuillInnerHTML();
-            setQuillInnerHTML();
+            // setQuillInnerHTML();
 
         },
         _onTableDelete() { },
@@ -519,15 +520,15 @@ export default function CustomToolbar(props: IToolbar) {
         console.log(getEditorBySelector());
 
     }
-    const setQuillInnerHTML = (html?: string) => {
-        const quill = getEditor();
-        const range = quill.getSelection();
-        // let editor: NodeListOf<Element> = getEditorBySelector();
-        // const htmlContent = '<div>Hello</div>';
-        // const delta = quill.clipboard.convert(htmlContent);
-        // quill.insertEmbed(range.index, 'p', delta);
-        // quill.setContents(delta, 'silent')
-    }
+    // const setQuillInnerHTML = (html?: string) => {
+    //     const quill = getEditor();
+    //     const range = quill.getSelection();
+    // let editor: NodeListOf<Element> = getEditorBySelector();
+    // const htmlContent = '<div>Hello</div>';
+    // const delta = quill.clipboard.convert(htmlContent);
+    // quill.insertEmbed(range.index, 'p', delta);
+    // quill.setContents(delta, 'silent')
+    // }
 
     const basicTable = () => {
         return <table>
@@ -901,7 +902,17 @@ export default function CustomToolbar(props: IToolbar) {
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onHrInsert(),
             position: 'top',
             buttonStyle: classes.cmdButton
-        }
+        },
+        // {
+        //     key: 'contents',
+        //     icon: '',
+        //     tooltip: 'Get Contents',
+        //     buttonText: 'Contents',
+        //     ariaLabel: 'Get Contents',
+        //     callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onOpenSource(),
+        //     position: 'top',
+        //     buttonStyle: classes.cmdButton
+        // },
     ];
 
     const FontColorButtons: any = {
