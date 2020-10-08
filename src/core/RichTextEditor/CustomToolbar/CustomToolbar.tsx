@@ -163,7 +163,7 @@ class Abbr extends Inline {
     static create(value: IAbbr) {
         let node: Element = super.create();
         node.setAttribute('title', value.title);
-        node.className = (`rec-abbr abbr_${value.title.replaceAll(" ", "_")}`)
+        node.className = (`rec-abbr abbr_${value.title.replace(/ /g, "_")}`)
         node.innerHTML = value.text;
         return node;
     }
