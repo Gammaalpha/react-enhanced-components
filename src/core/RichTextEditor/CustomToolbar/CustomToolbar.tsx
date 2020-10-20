@@ -152,8 +152,8 @@ class Hr extends Embed {
         let node: Element = super.create(value);
         if (value === "new") {
             node.setAttribute('style', 'height:0px;margin-top:10px;margin-bottom:10px;');
-            return node;
         }
+        return node;
     }
 }
 Hr.blotName = 'hr';
