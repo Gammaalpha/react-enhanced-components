@@ -144,11 +144,16 @@ Quill.register(SizeClass, true);
 
 // Horizontal line
 let Embed = Quill.import('blots/block/embed');
+let blockEmbed = Quill.import('blots/embed')
+let Inline = Quill.import('blots/inline');
+
 class Hr extends Embed {
-    static create(value: any) {
+    static create(value: string) {
         let node: Element = super.create(value);
-        node.setAttribute('style', 'height:0px;margin-top:10px;margin-bottom:10px;');
-        return node;
+        if (value === "new") {
+            node.setAttribute('style', 'height:0px;margin-top:10px;margin-bottom:10px;');
+            return node;
+        }
     }
 }
 Hr.blotName = 'hr';
@@ -157,7 +162,6 @@ Hr.tagName = 'hr'
 Quill.register({
     'formats/hr': Hr
 })
-let Inline = Quill.import('blots/inline');
 class Abbr extends Inline {
     static create(value: IAbbr) {
 
@@ -207,7 +211,6 @@ ATag.className = "rec-a";
 ATag.tagName = "a";
 Quill.register(ATag);
 
-let blockEmbed = Quill.import('blots/embed')
 class TableTag extends blockEmbed {
     static create(value: any) {
         console.log('table:', value);
@@ -493,7 +496,7 @@ export default function CustomToolbar(props: IToolbar) {
             const quill = getEditor();
             let range = quill.getSelection();
             if (range) {
-                quill.insertEmbed(range.index, "hr", "null")
+                quill.insertEmbed(range.index, "hr", "new")
             }
         },
         _onFontSizeChange(fontSize: string) {
