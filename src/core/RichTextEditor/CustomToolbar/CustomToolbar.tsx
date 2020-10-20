@@ -160,11 +160,15 @@ Quill.register({
 let Inline = Quill.import('blots/inline');
 class Abbr extends Inline {
     static create(value: IAbbr) {
+
         let node: Element = super.create();
-        node.setAttribute('title', value.title);
-        node.className = (`rec-abbr abbr_${value.title.replace(/ /g, "_")}`)
-        node.innerHTML = value.text;
+        if (value instanceof Object) {
+            node.setAttribute('title', value.title);
+            node.className = (`rec-abbr abbr_${value.title.replace(/ /g, "_")}`)
+            node.innerHTML = value.text;
+        }
         return node;
+
     }
     static value(node: Element) {
         return node
@@ -179,17 +183,19 @@ let Link = Quill.import('formats/link');
 class ATag extends Link {
     static create(value: ILink) {
         let node: Element = super.create();
-        value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
-        if (value?.target) {
-            node.setAttribute('target', value.target);
+        if (value instanceof Object) {
+            value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
+            if (value?.target) {
+                node.setAttribute('target', value.target);
 
-            node.setAttribute('rel', "noreferrer noopener");
-            node.setAttribute('data-interception', 'off');
+                node.setAttribute('rel', "noreferrer noopener");
+                node.setAttribute('data-interception', 'off');
+            }
+            if (value.title !== "" && value.title !== undefined) {
+                node.setAttribute('title', value.title);
+            }
+            node.innerHTML = value.text !== undefined ? value.text.trim() : "";
         }
-        if (value.title !== "" && value.title !== undefined) {
-            node.setAttribute('title', value.title);
-        }
-        node.innerHTML = value.text !== undefined ? value.text.trim() : "";
         return node;
     }
     static value(node: Element) {
@@ -226,14 +232,16 @@ Quill.register(TableTag);
 class ImageTag extends blockEmbed {
     static create(value: IImageLink) {
         let node: Element = super.create();
-        value.src !== undefined ? node.setAttribute('src', value.src) : node.setAttribute('src', "")
-        node.setAttribute('alt', value.alt);
-        node.setAttribute('title', value.title);
-        node.setAttribute('width', value.width.toString());
-        node.setAttribute('height', value.height.toString());
-        node.setAttribute('id', `rec-img-${value.title !== undefined ? value.title.replace(" ", "-").toLowerCase() : 'image'}`);
-        node.setAttribute('style', `float:${value.float};padding:5px;`)
-        node.innerHTML = value.title !== undefined ? value.title.trim() : 'image';
+        if (value instanceof Object) {
+            value.src !== undefined ? node.setAttribute('src', value.src) : node.setAttribute('src', "")
+            node.setAttribute('alt', value.alt);
+            node.setAttribute('title', value.title);
+            node.setAttribute('width', value.width.toString());
+            node.setAttribute('height', value.height.toString());
+            node.setAttribute('id', `rec-img-${value.title !== undefined ? value.title.replace(" ", "-").toLowerCase() : 'image'}`);
+            node.setAttribute('style', `float:${value.float};padding:5px;`)
+            node.innerHTML = value.title !== undefined ? value.title.trim() : 'image';
+        }
         return node;
     }
     static value(node: Element) {
