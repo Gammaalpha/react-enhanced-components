@@ -184,7 +184,7 @@ export function DataTable(props: IDataTable) {
                 searchField.current.value = " " + lastChip.label;
               }
               if (e.key === "Enter") {
-                if (e.target.value.trim() !== "") {
+                if (e.target.value.trim() !== undefined && e.target.value !== "") {
                   handleChipAdd(sanitize(e.target.value));
                   searchField.current.value = "";
                 }

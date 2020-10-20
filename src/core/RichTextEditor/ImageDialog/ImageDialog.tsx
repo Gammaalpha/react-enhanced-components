@@ -69,7 +69,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
     };
 
     useEffect(() => {
-        console.log("in use effect: ", props);
+        // console.log("in use effect: ", props);
 
         const quill = props.quillEditor;
         if (open) {
@@ -88,7 +88,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
                                 width: image.width,
                                 alt: image.alt === "" ? 'image' : image.alt,
                                 float: image.float,
-                                title: leaf.domNode.textContent !== "" ? leaf.domNode.textContent.trim() : 'image',
+                                title: leaf.domNode.textContent !== undefined && leaf.domNode.textContent !== "" ? leaf.domNode.textContent.trim() : 'image',
                                 src: leaf.domNode.src !== undefined ? leaf.domNode.src : "",
                                 range: tempRange
                             })
@@ -106,7 +106,7 @@ export default function ImageDialog(props: ILinkDialogProps) {
                                 src: "",
                                 range: tempRange
                             })
-                            console.log(image);
+                            // console.log(image);
 
                         }
                     }

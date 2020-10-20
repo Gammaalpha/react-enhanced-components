@@ -28,6 +28,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
         text: '',
         href: '',
         target: '',
+        title: '',
         range: {
             index: 0,
             length: 0
@@ -39,6 +40,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
     }
 
     const handleClose = () => {
+        props.callback(link)
         setOpen(false);
     }
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,27 +70,30 @@ export default function LinkDialog(props: ILinkDialogProps) {
             if (props?.quillEditor) {
                 const range = quill.getSelection();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                let [leaf, offset] = quill.getLeaf(range !== null ? range.index : 0);
-                if (leaf.domNode.tagName === "A") {
+                let [leaf, offset] = quill.getLeaf(range !== null ? range.index + 1 : 0)
+                const parentDomNode = leaf.parent.domNode;
+                if (parentDomNode.tagName === "A") {
                     setLink({
-                        text: leaf.domNode.textContent.trim(),
-                        href: leaf.domNode.href,
-                        target: '',
+                        text: parentDomNode.innerText !== undefined ? parentDomNode.innerText.trim() : '',
+                        href: parentDomNode.href,
+                        target: parentDomNode.target,
+                        title: parentDomNode.title,
                         range: range
                     })
                 }
                 else {
-
-                    if (range?.length > 0) {
-                        let innerText = quill.getText(range.index, range.length);
+                    if (range.length > 0) {
+                        let innerText = range?.length > 0 ? quill.getText(range.index, range.length) : "";
                         setLink({
                             text: innerText,
                             href: '',
                             target: '',
+                            title: '',
                             range: range
                         })
                     }
                 }
+
             }
         }
 
@@ -96,7 +101,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
 
     const handleSubmit = () => {
         handleClose();
-        props.callback(link)
+        // props.callback(link)
     };
 
     const render = () => {
@@ -129,6 +134,20 @@ export default function LinkDialog(props: ILinkDialogProps) {
                             <TextField
                                 autoFocus
                                 margin="dense"
+                                id="Title"
+                                label="Tooltip text to display"
+                                type="text"
+                                value={link.title}
+                                onChange={(e: any) => {
+                                    setLink({
+                                        ...link,
+                                        title: e.target.value,
+                                    });
+                                }}
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
                                 id="href_link"
                                 label="Address"
                                 placeholder="https://"
@@ -155,6 +174,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                 label="Open in a new tab?"
                                 control={
                                     <Checkbox
+                                        checked={link.target === "_blank" ? true : false}
                                         onChange={handleCheckboxChange}
                                         name="target"
                                     />
