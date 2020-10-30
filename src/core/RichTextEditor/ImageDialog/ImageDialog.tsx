@@ -82,12 +82,14 @@ export default function ImageDialog(props: ILinkDialogProps) {
                     // debugger;
                     if (tempRange.length > 0) {
                         let [leaf, offset] = quill.getLeaf(tempRange !== null ? tempRange.index + tempRange.length : 0);
+                        const imgDomNode = leaf.domNode;
+                        debugger;
                         if (leaf?.domNode.tagName === "IMG") {
                             setImage({
-                                height: image.height,
-                                width: image.width,
+                                height: imgDomNode.scrollHeight,
+                                width: imgDomNode.scrollWidth,
                                 alt: image.alt === "" ? 'image' : image.alt,
-                                float: image.float,
+                                float: imgDomNode.style.float,
                                 title: leaf.domNode.textContent !== undefined && leaf.domNode.textContent !== "" ? leaf.domNode.textContent.trim() : 'image',
                                 src: leaf.domNode.src !== undefined ? leaf.domNode.src : "",
                                 range: tempRange

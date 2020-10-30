@@ -41,6 +41,14 @@
   font-size: 0.875em;
 }
 
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
 .ql-size-mediumplus {
   font-size: 0.938em;
 }
@@ -63,5 +71,5 @@
   font-size: 3em;
 }
 .ql-size-super {
-  font-size:3.5em;
+  font-size: 3.5em;
 }

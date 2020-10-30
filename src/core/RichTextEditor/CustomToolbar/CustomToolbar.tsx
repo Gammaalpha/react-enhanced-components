@@ -236,6 +236,9 @@ class ImageTag extends blockEmbed {
     static create(value: IImageLink) {
         let node: Element = super.create();
         if (value instanceof Object) {
+            debugger;
+            console.log(value);
+
             value.src !== undefined ? node.setAttribute('src', value.src) : node.setAttribute('src', "")
             node.setAttribute('alt', value.alt);
             node.setAttribute('title', value.title);
@@ -805,9 +808,9 @@ export default function CustomToolbar(props: IToolbar) {
             className: 'list',
             value: 'ordered',
             icon: 'format_list_numbered',
-            tooltip: 'ordered List',
+            tooltip: 'Ordered List',
             buttonText: '',
-            ariaLabel: 'ordered List',
+            ariaLabel: 'Ordered List',
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => CustomEditor._onListClick(ListFormatType.orderedList),
             position: 'top',
             buttonStyle: `${classes.cmdButton}`,
