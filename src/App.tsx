@@ -202,7 +202,7 @@ function App() {
 
   const richTextEditorExpansionPanel = () => {
     return (
-      <ExpansionPanel expanded={true}>
+      <ExpansionPanel>
         <ExpansionPanelSummary className={'LightGrayB'} expandIcon={<ExpandMoreIcon />}>
           <Typography>
             Rich Text Editor
