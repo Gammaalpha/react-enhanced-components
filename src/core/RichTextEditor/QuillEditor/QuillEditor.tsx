@@ -15,6 +15,9 @@ export default function QuillEditor(props: IQuillEditor) {
         props.contentCallback(_value)
     }
     const modules = {
+        clipboard: {
+            matchVisual: false
+        },
         toolbar: {
             container: `#${props.toolbarId}`,
             handlers: [
