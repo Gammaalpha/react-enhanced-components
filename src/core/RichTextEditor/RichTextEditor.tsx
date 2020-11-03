@@ -23,15 +23,16 @@ export function RichTextEditor(props: IRichText) {
     }
 
     const generateClassName = createGenerateClassName({
-        productionPrefix: id,
+        productionPrefix: 'rte',
+        seed:'rec-rte'
     });
     const render = () => {
         let value = props.value === undefined ? "" : props.value;
         return (
             <div id={id}>
                 {/* <StylesProvider generateClassName={generateClassName}> */}
-                <CustomToolbar editing={props.editing} editorRef={editorRefState} id={toolbarId} editorId={editorId} />
-                <QuillEditor value={value} callback={handleIncomingRef} contentCallback={handleIncomingContent} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
+                    <CustomToolbar editing={props.editing} editorRef={editorRefState} id={toolbarId} editorId={editorId} />
+                    <QuillEditor value={value} callback={handleIncomingRef} contentCallback={handleIncomingContent} editorId={editorId} toolbarId={toolbarId} editing={props.editing} />
                 {/* </StylesProvider> */}
             </div>
         )

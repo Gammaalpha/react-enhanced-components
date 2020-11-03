@@ -28,7 +28,7 @@ git add -A
 
 git commit -m "deploy"
 
-git push -f git@github.com:Gammaalpha/react-enhanced-components.git master:production
+git push -f git@github.com:Gammaalpha/react-enhanced-components.git main:production
 
 cd ..
 
