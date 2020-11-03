@@ -23,7 +23,7 @@ module.exports = {
         // Include ts, tsx, js, and jsx files.
         test: /\.(ts|js)x?$/,
         exclude: [/node_modules/],
-        loader: ["babel-loader","ts-loader?configFile=tsconfig.prod.json"],
+        loader: ["babel-loader", "ts-loader?configFile=tsconfig.prod.json"],
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
@@ -33,17 +33,52 @@ module.exports = {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          "style-loader",
+          { loader: "style-loader" },
           // Translates CSS into CommonJS
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                compileType: "module",
+                mode: "local",
+                auto: true,
+                exportGlobals: true,
+                localIdentName: "[path][name]__[local]--[hash:base64:5]",
+                localIdentContext: path.resolve(__dirname, "src"),
+                localIdentHashPrefix: "[sha1:hash:hex:4]",
+                namedExport: true,
+                exportLocalsConvention: "camelCase",
+                exportOnlyLocals: false,
+              },
+            },
+          },
           // Compiles Sass to CSS
-          "sass-loader",
+          { loader: "sass-loader" },
         ],
         include: /\.module\.scss$/,
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [
+          { loader: "style-loader" },
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                compileType: "module",
+                mode: "local",
+                auto: true,
+                exportGlobals: true,
+                localIdentName: "[path][name]__[local]--[hash:base64:5]",
+                localIdentContext: path.resolve(__dirname, "src"),
+                localIdentHashPrefix: "my-custom-hash",
+                namedExport: true,
+                exportLocalsConvention: "camelCase",
+                exportOnlyLocals: false,
+              },
+            },
+          },
+        ],
       },
     ],
   },
@@ -62,7 +97,7 @@ module.exports = {
         amd: "react-dom",
       },
     },
-    /@material-ui\/.*/,
+    /^@material-ui\/.+$/,
   ],
   plugins: [],
 };
