@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect } from 'react'
 import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink, IRange, IImageLink } from '../model/RichText';
-import { makeStyles, createStyles, Theme, AppBar } from '@material-ui/core';
+import { makeStyles, createStyles, Theme, AppBar, withStyles } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import { CreateStyleButton } from '../CreateStyleButton';
 import './CustomToolbar.css'
@@ -19,6 +19,7 @@ export interface IToolbar {
     editorId: string,
     editing?: boolean
 }
+
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -98,9 +99,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             height: 25,
             marginTop: 5
         }
-    },
-    appBar: {
-        backgroundColor: '#1e272c',
     },
     displayNone: {
         display: 'none'
@@ -611,8 +609,8 @@ export default function CustomToolbar(props: IToolbar) {
 
     const toolbarArray: IToolbarButton[] = [
         {
-            key: 'header',
-            className: 'ql-header',
+            key: 'headerType',
+            className: '',
             value: state.fontStyle,
             icon: '',
             tooltip: '',
@@ -980,11 +978,9 @@ export default function CustomToolbar(props: IToolbar) {
         // console.log('Editor Ref: ', getEditor());
         return (
             <div id={props.id} className={`${classes.flexGrow1} ${props.editing ? "" : classes.displayNone}`}>
-                <AppBar position="static" className={classes.appBar}>
                     <Toolbar className={`${props?.toolbarStyle ? props.toolbarStyle : classes.toolbar}`}>
                         {renderToolbarButtons()}
                     </Toolbar>
-                </AppBar>
             </div>
         )
     }

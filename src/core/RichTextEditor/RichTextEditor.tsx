@@ -24,7 +24,7 @@ export function RichTextEditor(props: IRichText) {
 
     const generateClassName = createGenerateClassName({
         productionPrefix: "rte",
-        seed: "rec",
+        // seed: "rec",
         // disableGlobal: true
     });
     const render = () => {
