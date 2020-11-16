@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react'
+import React, { useReducer, useEffect, useState } from 'react'
 import { IndentDir, TextStyle, TextStyleType, IToolbarButton, IndentDirType, TextAlignmentType, TextAlignment, ListFormat, ListFormatType, BlockFormat, BlockFormatType, IAbbr, ILink, IRange, IImageLink } from '../model/RichText';
 import { makeStyles, createStyles, Theme, AppBar, withStyles } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,7 +10,6 @@ import LinkDialog from '../LinkDialog/LinkDialog';
 import FontColorButton from '../FontColorButton/FontColorButton';
 import { FontColorButtonType } from '../model/ColorPicker';
 import ImageDialog from '../ImageDialog/ImageDialog';
-
 
 export interface IToolbar {
     id: string,
@@ -34,14 +33,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     toolbar: {
         minHeight: '50px',
-        paddingTop:'2px',
-        paddingBottom:'2px',
+        paddingTop: '2px',
+        paddingBottom: '2px',
         paddingLeft: '5px',
         paddingRight: '5px',
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap'
-        
+
     },
     cmdButton: {
         marginRight: theme.spacing(1),
@@ -185,8 +184,9 @@ Quill.register(Abbr);
 
 let Link = Quill.import('formats/link');
 class ATag extends Link {
-    static create(value: ILink) {
+    static create(value: any) {
         let node: Element = super.create();
+        debugger;
         if (value instanceof Object) {
             value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
             if (!!value?.target && value?.target !== "") {
@@ -208,12 +208,11 @@ class ATag extends Link {
         return node;
     }
 }
-ATag.blotName = "a";
+ATag.blotName = "link";
 ATag.className = "rec-a";
 ATag.tagName = "a";
-Quill.register(ATag);
-
-class TableTag extends blockEmbed {
+// Quill.register(ATag);
+class TableTag extends Inline {
     static create(value: any) {
         console.log('table:', value);
         let node: Element = super.create();
@@ -238,9 +237,6 @@ class ImageTag extends blockEmbed {
     static create(value: IImageLink) {
         let node: Element = super.create();
         if (value instanceof Object) {
-            debugger;
-            console.log(value);
-
             value.src !== undefined ? node.setAttribute('src', value.src) : node.setAttribute('src', "")
             node.setAttribute('alt', value.alt);
             node.setAttribute('title', value.title);
@@ -263,6 +259,7 @@ Quill.register(ImageTag);
 
 export default function CustomToolbar(props: IToolbar) {
     const classes = useStyles();
+    const [linkTagRegister, setLinkTagRegister] = useState(false);
     // let selectedRange = {};
     const [state, setState] = useReducer((state: any, newState: any) =>
         ({ ...state, ...newState }),
@@ -446,18 +443,24 @@ export default function CustomToolbar(props: IToolbar) {
             setCursorPosition(params.text.length, params.range);
         },
         _onLinkInsert(params: ILink) {
-            const quill = getEditor()
+            const quill = getEditor();
+            debugger;
+            if (linkTagRegister === false) {
+                Quill.register(ATag);
+                setLinkTagRegister(true);
+            }
             if (params.range) {
                 if (params.range.length > 0) {
                     quill.deleteText(params.range.index, params.range.length, 'api');
                 }
             }
-            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', {
+            quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'link', {
                 text: params.text,
                 href: params.href,
                 target: params.target,
                 title: params.title,
             }, 'api');
+            // quill.insertEmbed(params?.range?.index ? params.range.index : 0, 'a', `<a href="${params.href}" title="${params.title}">${params.text}</a>`, "user");
             setCursorPosition(params.text.length, params.range);
         },
         _onInsertImage(params: IImageLink, rangeOnly: boolean) {

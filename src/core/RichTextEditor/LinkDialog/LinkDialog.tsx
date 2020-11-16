@@ -91,13 +91,13 @@ export default function LinkDialog(props: ILinkDialogProps) {
                             range: range
                         })
                     }
-                    if (!(!!range)) {
+                    if ((!!range) && range.index > 0) {
                         setLink({
                             text: '',
                             href: '',
                             target: '',
                             title: '',
-                            range: { length: 0, index: 0 }
+                            range: range
 
                         })
                     }

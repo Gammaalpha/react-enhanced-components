@@ -215,7 +215,9 @@ function App() {
                 Edit mode {state.editor ? '(ON)' : "(OFF)"}: {renderEditorSwitch()}
               </div>
             </div>
-            <RichTextEditor editing={state.editor}></RichTextEditor>
+            <RichTextEditor editing={state.editor}
+              value={`<p>New Tab <a class="rec-a" href="https://www.google.ca/" rel="noopener noreferrer" title="Discussion Board">Content</a></p>`}
+            ></RichTextEditor>
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
