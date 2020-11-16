@@ -82,7 +82,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                     })
                 }
                 else {
-                    if (range.length > 0) {
+                    if (!!range && range.length > 0) {
                         let innerText = range?.length > 0 ? quill.getText(range.index, range.length) : "";
                         setLink({
                             text: innerText,
@@ -96,7 +96,16 @@ export default function LinkDialog(props: ILinkDialogProps) {
 
             }
         }
-
+        setLink({
+            text: '',
+            href: '',
+            target: '',
+            title: '',
+            range: {
+                index: 0,
+                length: 0
+            }
+        })
     }, [open, props, props.quillEditor])
 
     const handleSubmit = () => {
