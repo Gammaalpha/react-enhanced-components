@@ -34,12 +34,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     toolbar: {
         minHeight: '50px',
+        paddingTop:'2px',
+        paddingBottom:'2px',
         paddingLeft: '5px',
         paddingRight: '5px',
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap'
-
+        
     },
     cmdButton: {
         marginRight: theme.spacing(1),
@@ -187,11 +189,13 @@ class ATag extends Link {
         let node: Element = super.create();
         if (value instanceof Object) {
             value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
-            if (value?.target) {
+            if (!!value?.target && value?.target !== "") {
                 node.setAttribute('target', value.target);
-
                 node.setAttribute('rel', "noreferrer noopener");
                 node.setAttribute('data-interception', 'off');
+            }
+            else {
+                node.removeAttribute('target');
             }
             if (value.title !== "" && value.title !== undefined) {
                 node.setAttribute('title', value.title);
@@ -978,9 +982,9 @@ export default function CustomToolbar(props: IToolbar) {
         // console.log('Editor Ref: ', getEditor());
         return (
             <div id={props.id} className={`${classes.flexGrow1} ${props.editing ? "" : classes.displayNone}`}>
-                    <Toolbar className={`${props?.toolbarStyle ? props.toolbarStyle : classes.toolbar}`}>
-                        {renderToolbarButtons()}
-                    </Toolbar>
+                <div className={`${props?.toolbarStyle ? props.toolbarStyle : classes.toolbar}`}>
+                    {renderToolbarButtons()}
+                </div>
             </div>
         )
     }

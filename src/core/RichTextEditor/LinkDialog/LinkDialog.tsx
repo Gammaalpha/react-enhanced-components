@@ -71,13 +71,12 @@ export default function LinkDialog(props: ILinkDialogProps) {
                 const range = quill.getSelection();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 let [leaf, offset] = quill.getLeaf(range !== null ? range.index + 1 : 0)
-                const parentDomNode = leaf.parent.domNode;
-                if (parentDomNode.tagName === "A") {
+                if (leaf !== null && leaf.parent.domNode.tagName === "A") {
                     setLink({
-                        text: parentDomNode.innerText !== undefined ? parentDomNode.innerText.trim() : '',
-                        href: parentDomNode.href,
-                        target: parentDomNode.target,
-                        title: parentDomNode.title,
+                        text: leaf.parent.domNode.innerText !== undefined ? leaf.parent.domNode.innerText.trim() : '',
+                        href: leaf.parent.domNode.href,
+                        target: leaf.parent.domNode.target,
+                        title: leaf.parent.domNode.title,
                         range: range
                     })
                 }
@@ -92,20 +91,20 @@ export default function LinkDialog(props: ILinkDialogProps) {
                             range: range
                         })
                     }
-                }
+                    if (!(!!range)) {
+                        setLink({
+                            text: '',
+                            href: '',
+                            target: '',
+                            title: '',
+                            range: { length: 0, index: 0 }
 
+                        })
+                    }
+                }
             }
         }
-        setLink({
-            text: '',
-            href: '',
-            target: '',
-            title: '',
-            range: {
-                index: 0,
-                length: 0
-            }
-        })
+
     }, [open, props, props.quillEditor])
 
     const handleSubmit = () => {
@@ -184,7 +183,7 @@ export default function LinkDialog(props: ILinkDialogProps) {
                                 control={
                                     <Checkbox
                                         checked={link.target === "_blank" ? true : false}
-                                        onChange={handleCheckboxChange}
+                                        onChange={(e) => handleCheckboxChange(e)}
                                         name="target"
                                     />
                                 }
