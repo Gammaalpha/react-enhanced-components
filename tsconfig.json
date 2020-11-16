@@ -4,14 +4,14 @@
     "noEmit": true
   },
   "include": [
-    "src",
-    "src/**/*",
-    "src/**/*.scss",
-    "src/**/*.css"
+    "./src",
+    "./src/**/*",
+    "./src/**/*.scss",
+    "./src/**/*.css"
   ],
   "exclude": [
-    "node_modules",
-    "build",
+    "./node_modules",
+    "./build",
     "**/*.spec.ts",
   ]
 }
