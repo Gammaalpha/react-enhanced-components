@@ -184,9 +184,12 @@ Quill.register(Abbr);
 
 let Link = Quill.import('formats/link');
 class ATag extends Link {
-    static create(value: any) {
-        let node: Element = super.create();
+    static create(value: ILink | string) {
         debugger;
+        let node: Element = super.create();
+        if (typeof value === "string") {
+            node.setAttribute("href", value)
+        }
         if (value instanceof Object) {
             value.href !== undefined ? node.setAttribute('href', value.href) : node.setAttribute('href', "")
             if (!!value?.target && value?.target !== "") {
@@ -211,7 +214,7 @@ class ATag extends Link {
 ATag.blotName = "link";
 ATag.className = "rec-a";
 ATag.tagName = "a";
-// Quill.register(ATag);
+Quill.register(ATag);
 class TableTag extends Inline {
     static create(value: any) {
         console.log('table:', value);
@@ -444,9 +447,8 @@ export default function CustomToolbar(props: IToolbar) {
         },
         _onLinkInsert(params: ILink) {
             const quill = getEditor();
-            debugger;
             if (linkTagRegister === false) {
-                Quill.register(ATag);
+                // Quill.register(ATag);
                 setLinkTagRegister(true);
             }
             if (params.range) {

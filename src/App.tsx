@@ -202,7 +202,7 @@ function App() {
 
   const richTextEditorExpansionPanel = () => {
     return (
-      <ExpansionPanel expanded={process.env.NODE_ENV === "development"}>
+      <ExpansionPanel expanded>
         <ExpansionPanelSummary className={'LightGrayB'} expandIcon={<ExpandMoreIcon />}>
           <Typography>
             Rich Text Editor
