@@ -1,0 +1,35 @@
+.icon {
+  width: 30px;
+}
+
+.angle_up {
+  transform: rotate(180deg);
+  animation: rotationUp 0.3s linear;
+}
+
+.angle_down {
+  /* transform: rotate(0deg); */
+  animation: rotationDown 0.3s linear;
+}
+
+.dd_rec_list_header {
+  min-width: 24px;
+}
+
+@keyframes rotationUp {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(180deg);
+  }
+}
+
+@keyframes rotationDown {
+  from {
+    transform: rotateX(180deg);
+  }
+  to {
+    transform: rotateX(0deg);
+  }
+}
