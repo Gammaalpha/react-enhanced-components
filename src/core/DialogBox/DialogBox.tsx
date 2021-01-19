@@ -125,6 +125,11 @@ export function DialogBox(props: DialogProps) {
         setFade({ fadeType: "in" })
       }, 0);
     }
+    if (!props.open) {
+      setTimeout(() => {
+        setFade({ fadeType: "out" })
+      }, 0);
+    }
     return () => {
       window.removeEventListener("keydown", onEscKeyDown, false);
 
