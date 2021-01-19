@@ -1,4 +1,3 @@
-import { render } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { WindowClose } from "@styled-icons/boxicons-regular/WindowClose";
@@ -13,7 +12,6 @@ interface DialogProps {
   children?: any;
   width?: number;
   height?: number;
-  // modalContent: JSX.Element;
 }
 
 const Wrapper = styled.div`
