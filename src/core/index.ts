@@ -1,12 +1,18 @@
 import { IHeader } from "./DataTable/model/header";
+// export { BorderedButton } from "./Button/BorderedButton";
+// export * from "./Button/BorderedButton";
+
+export { BaseButton } from "./Button/BaseButton";
+export * from "./Button/BaseButton";
+
 export { BorderedButton } from "./Button/BorderedButton";
 export * from "./Button/BorderedButton";
 
 export { DataTable } from "./DataTable/DataTable";
 export * from "./DataTable/DataTable";
 
-export { Dialog } from "./Dialog/Dialog";
-export * from "./Dialog/Dialog";
+export { DialogBox } from "./DialogBox/DialogBox";
+export * from "./DialogBox/DialogBox";
 
 export { MarkdownEditor } from "./MarkdownEditor/MarkdownEditor";
 export * from "./MarkdownEditor/MarkdownEditor";

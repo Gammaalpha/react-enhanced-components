@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { BaseButton } from './BaseButton';
 
-export const BorderedButton = styled.button`
+export const BorderedButton = styled(BaseButton)`
  background-color:'gray';
     height:40px;
     min-width:40px;
