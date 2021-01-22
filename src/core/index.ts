@@ -8,13 +8,15 @@ export * from "./Button/BaseButton";
 export { BorderedButton } from "./Button/BorderedButton";
 export * from "./Button/BorderedButton";
 
+export { Checkbox } from "./Checkbox/Checkbox";
+export * from "./Checkbox/Checkbox";
+
 export { DataTable } from "./DataTable/DataTable";
 export * from "./DataTable/DataTable";
 
 export { DialogBox } from "./DialogBox/DialogBox";
 export * from "./DialogBox/DialogBox";
 
-// export { MarkdownEditor } from "./MarkdownEditor/MarkdownEditor";
 export { MarkdownEditor } from "./MarkdownEditor/MarkdownEditor";
 export * from "./MarkdownEditor/MarkdownEditor";
 

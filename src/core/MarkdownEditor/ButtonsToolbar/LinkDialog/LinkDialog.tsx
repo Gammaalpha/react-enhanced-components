@@ -4,7 +4,8 @@ import { Checkbox } from '../../../Checkbox/Checkbox';
 import { DialogBox } from '../../../DialogBox/DialogBox';
 import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
 import { isURLValid } from '../../../utils/util-is-url-valid';
-import { ButtonProps, ComboInsert } from '../../model/MarkdownEditorModel';
+import { ComboInsert } from "../../model/ComboInsert";
+import { ButtonProps } from "../../model/ButtonProps";
 interface UrlDialogProps {
     text: string;
     url: string;

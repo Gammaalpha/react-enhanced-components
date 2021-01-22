@@ -8,8 +8,9 @@ import { Row } from '../Styles/CommonStyles';
 // ---------------------------------
 
 
+const defaultText = "Add your content **here**."
 export function MarkdownEditor(props?: MarkdownProps) {
-    const [content, setContent] = useState({ text: !!props?.content ? props.content : '' })
+    const [content, setContent] = useState({ text: !!props?.content ? props.content : defaultText })
     let previewRefVal: any;
     const handleChange = (e: string) => {
         if (e !== content.text) {

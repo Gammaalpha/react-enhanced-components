@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRef } from 'react'
 import { Column, StyledTextarea } from '../../Styles/CommonStyles'
 import { ButtonsToolbar } from '../ButtonsToolbar/ButtonsToolbar'
-import { ComboInsert } from '../model/MarkdownEditorModel'
+import { ComboInsert } from "../model/ComboInsert"
 
 interface MarkdownInputAreaProps {
     content: string;

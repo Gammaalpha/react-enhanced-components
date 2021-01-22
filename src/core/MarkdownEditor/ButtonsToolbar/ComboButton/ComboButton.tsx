@@ -2,7 +2,7 @@
 import React from 'react'
 import { useState } from 'react';
 import { Menu, MenuDropdownItem } from '../../../Menu/Menu';
-import { ButtonProps } from '../../model/MarkdownEditorModel';
+import { ButtonProps } from "../../model/ButtonProps";
 
 interface ComboButtonProps {
     buttonData: ButtonProps

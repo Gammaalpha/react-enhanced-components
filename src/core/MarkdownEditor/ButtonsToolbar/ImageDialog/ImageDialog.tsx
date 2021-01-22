@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { BaseButton } from '../../Button/BaseButton';
-import { DialogBox } from "../../Dialog/DialogBox/DialogBox";
-import { ButtonProps, ComboInsert } from '../../models/MarkdownEditorModel';
-import { isURLValid } from '../../utils/util-is-url-valid';
-import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../Styles/CommonStyles';
+import { BaseButton } from '../../../Button/BaseButton';
+import { DialogBox } from "../../../DialogBox/DialogBox";
+import { ComboInsert } from "../../model/ComboInsert";
+import { ButtonProps } from "../../model/ButtonProps";
+import { isURLValid } from '../../../utils/util-is-url-valid';
+import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
 
 
 interface ImageDialogProps {
@@ -47,7 +48,7 @@ export default function ImageDialog(props: ButtonProps) {
 
         return {
             topInsert: '',
-            textInsert: data.height !== "" || data.width !== "" ? `<img alt="${data.text?.replaceAll(' ', '_')}" src="${data.url}" styles="width:${data.width}px; height:${data.height}px" />` : `![${data.text?.replaceAll(' ', '_')}](${data.url} "${data.title}")`
+            textInsert: data.height !== "" || data.width !== "" ? `<img alt="${data.text?.replace(/\s/gi, '_')}" src="${data.url}" width="${data.width}" height="${data.height}" />` : `![${data.text?.replace(/\s/gi, '_')}](${data.url} "${data.title}")`
         }
     }
 
