@@ -8,25 +8,13 @@ import { Row } from '../Styles/CommonStyles';
 // ---------------------------------
 
 
-const table = `*[html]:hypertext\n\n*[test]:testing\n\n[google]: https://www.google.ca "google"\n\n**test** [google] html\n\n## Heading
-
-| Column 1       | Column 2     | Column 3     |
-|:---------------|:------------:|-------------:|
-|  Cell Contents | More Stuff   | And Again    |
-| You Can Also   | Put Pipes In <br/>html| Like this  \\||
-
-**!!testing!!**
-`
-
-
-
-function MarkdownEditor(props?: MarkdownProps) {
-    const [content, setContent] = useState({ text: !!props?.content ? props.content : table })
+export function MarkdownEditor(props?: MarkdownProps) {
+    const [content, setContent] = useState({ text: !!props?.content ? props.content : '' })
     let previewRefVal: any;
     const handleChange = (e: string) => {
         if (e !== content.text) {
             setTimeout(() => {
-                console.log("change detected...");
+                // console.log("change detected...");
                 setContent({ text: e });
             }, 100);
         }
@@ -39,7 +27,11 @@ function MarkdownEditor(props?: MarkdownProps) {
 
     const handleInputScrollPosition = (e: any) => {
         if (previewRefVal.current !== undefined) {
-            previewRefVal.current.scrollTop = ((e / 100) * previewRefVal.current.scrollHeight) - previewRefVal.current.offsetHeight
+            let scrollTop = (((e) * previewRefVal.current.scrollHeight) / 100) - (previewRefVal.current.offsetHeight);
+            if (scrollTop <= 0) {
+                scrollTop = 0;
+            }
+            previewRefVal.current.scrollTop = scrollTop;
         }
     }
 
@@ -63,5 +55,3 @@ function MarkdownEditor(props?: MarkdownProps) {
     }
     return render();
 }
-
-export default MarkdownEditor

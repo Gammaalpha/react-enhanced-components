@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
-import { BaseButton } from '../../Button/BaseButton';
-import { Checkbox } from '../../Checkbox/Checkbox';
-import { DialogBox } from "../../Dialog/DialogBox/DialogBox";
-import { ButtonProps, ComboInsert } from '../../models/MarkdownEditorModel';
-import { isURLValid } from '../../utils/util-is-url-valid';
-import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../Styles/CommonStyles';
-
-
+import { BaseButton } from '../../../Button/BaseButton';
+import { Checkbox } from '../../../Checkbox/Checkbox';
+import { DialogBox } from '../../../DialogBox/DialogBox';
+import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
+import { isURLValid } from '../../../utils/util-is-url-valid';
+import { ButtonProps, ComboInsert } from '../../model/MarkdownEditorModel';
 interface UrlDialogProps {
     text: string;
     url: string;
@@ -68,7 +66,7 @@ export default function LinkDialog(props: ButtonProps) {
 
     const validate = (values: UrlDialogProps) => {
         if (values.text === "" || values.url === "") {
-            console.log(values);
+            // console.log(values);
 
             setErrors({
                 // ...linkData,

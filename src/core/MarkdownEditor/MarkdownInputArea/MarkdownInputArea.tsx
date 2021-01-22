@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useRef } from 'react'
+import { Column, StyledTextarea } from '../../Styles/CommonStyles'
 import { ButtonsToolbar } from '../ButtonsToolbar/ButtonsToolbar'
-import { ComboInsert } from "../models/MarkdownEditorModel";
-import { Column, StyledTextarea } from '../Styles/CommonStyles';
+import { ComboInsert } from '../model/MarkdownEditorModel'
 
 interface MarkdownInputAreaProps {
     content: string;
@@ -24,7 +24,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
 
     const getScrollPosition = (ref: any) => {
         const position = ((ref.target.scrollTop + ref.target.offsetHeight) / ref.target.scrollHeight) * 100;
-        console.log("Input: ", position);
+        // console.log("Input: ", position);
         props.scrollCallback(Math.floor(position))
         // props.scrollCallback(ref.target.scrollTop)
 
@@ -120,7 +120,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
         }
         else {
             index = selection.start;
-            console.log(index);
+            // console.log(index);
         }
         if (typeof insertVal !== "string") {
             if (type === 'abbr' || type === 'link') {
