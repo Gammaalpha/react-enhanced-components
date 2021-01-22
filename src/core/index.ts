@@ -1,6 +1,4 @@
 import { IHeader } from "./DataTable/model/header";
-// export { BorderedButton } from "./Button/BorderedButton";
-// export * from "./Button/BorderedButton";
 
 export { BaseButton } from "./Button/BaseButton";
 export * from "./Button/BaseButton";
