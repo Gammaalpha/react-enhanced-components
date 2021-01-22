@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components';
-import "./MarkdownPreviewArea.css"
+import React, { useEffect, useRef, useState } from 'react'
 import { RemarkAbbr } from "remark-abbr";
 import { RemarkUnderline } from "remark-underline";
-// import { RemarkUnderline } from "../utils/remarkUnderline";
-// import { RemarkAbbr } from "../utils/remark-abbr"
 // Markdown imports
 // ---------------------------------
 import rehype2react from 'rehype-react';
@@ -13,7 +9,7 @@ import remark2rehype from 'remark-rehype';
 import markdown from "remark-parse";
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeRaw from 'rehype-raw';
-// let remarkUnderline = require("remark-underline")
+import { Bordered, Column, MarkdownBody, PreviewTitle } from '../Styles/CommonStyles';
 let rehypePicture = require("rehype-picture");
 let rehypeUrls = require("rehype-urls");
 let slug = require('remark-slug');
@@ -22,38 +18,17 @@ let rehypeHighlight = require('rehype-highlight');
 let remarkGfm = require("remark-gfm")
 let remarkHeading = require('remark-heading-id')
 let remarkMidas = require('remark-midas');
-// let rehypeInline = require("rehype-inline");
-// let rehypeStringify = require("rehype-stringify")
-
-const MarkdownBody = styled.div`
--ms-text-size-adjust: 100%;
--webkit-text-size-adjust: 100%;
-margin: 1em 0;
-word-wrap: break-word;
-width:100%;
-height:100%;
-
-&:before{
-    content: "";
-    display: table;
-}
-&:after{
-    clear: both;
-    content: "";
-    display: table;
-}
-
-`;
-
 
 interface MarkdownPreviewAreaProps {
     content: string;
+    maxHeight?: string;
+    previewRefCallback?: any;
 }
 
 export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
 
     const [content, setContent] = useState(props.content)
-
+    const previewRef = useRef<HTMLDivElement>(null)
     useEffect(() => {
         setContent(props.content);
     }, [props])
@@ -100,27 +75,33 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
         }
         return markdown_processor
     }
-    const previewArea = () => {
-        return (<MarkdownBody >
-            <div>
-                <h2 className="centerAlign">
-                    Output Area
-        </h2>
-            </div>
-            <div id="rec-markdown-preview">
-                {
-                    processor(content)
-                }
-            </div>
-        </MarkdownBody>)
-    }
+    
+    useEffect(() => {
+        if (previewRef !== null && previewRef !== undefined) {
+            props.previewRefCallback(previewRef)
+        }
+    }, [props])
     const render = () => {
-        console.log("Preview render...");
         return (
-            <div>
-                {previewArea()}
-            </div>
-        )
+            <Column flex={1} width={"45%"}>
+                <Bordered>
+                    <PreviewTitle >
+                        <h2>
+                            PREVIEW AREA
+                    </h2>
+                    </PreviewTitle>
+                    <MarkdownBody
+                        ref={previewRef}
+                        maxHeight={props.maxHeight || "750px"}
+                        id="rec-markdown-preview"
+                    >
+                        {
+                            processor(content)
+                        }
+                    </MarkdownBody>
+                </Bordered>
+            </Column>
+        );
     }
 
     return render();

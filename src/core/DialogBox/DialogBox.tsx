@@ -157,7 +157,6 @@ export function DialogBox(props: DialogProps) {
             id={props.id}
             className={props.class}
             onTransitionEnd={transitionEnd}
-            onClick={handleClick}
             fadeType={fade.fadeType}
             width={!!props.width ? props.width : 800}
             height={!!props.height ? props.height : 400}

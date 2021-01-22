@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 
 import { Heading } from "@styled-icons/boxicons-regular/Heading";
@@ -20,53 +20,12 @@ import { utilWrapper } from '../utils/util-wrapper';
 import { utilGetSideChars } from '../utils';
 import { ButtonProps, ButtonToolbarProps, TextStyleType, Insert, TextStyle, ComboInsert, InsertType, HeadingType } from "../models/MarkdownEditorModel";
 import { ComboButton } from './ComboButton/ComboButton';
-
-const ToolbarButton = styled.button`
-    background-color:'gray';
-    height:40px;
-    min-width:40px;
-    margin-right:3px;
-    margin-bottom:3px;
-    border-color:#E0E0E0;
-    background-color:#E0E0E0;
-    margin-right:5px;
-    border-radius:5px;
-    &:hover{
-        background-color:lightgray
-    }
-    &:focus{
-        border:2px solid darkgray;
-        background-color:lightgray;
-
-        outline:none
-    }
-    
-`;
-
-// const ColorRect = styled.div`
-//     outline: ${props => props.theme.main === undefined ? '2px solid black' : '2px solid ' + props.theme.main};
-//     width: 14px;
-//     margin-left: 5px;
-//     transform: translate(0px,-4px);
-// `;
-
-const ToolbarRow = styled.div`
-    display:flex;
-    flex-direction:row;
-    justify-content:start;
-    align-items:center;
-    flex-wrap:wrap;
-    background-color:#1e272c;
-    padding:8px;
-    width:100%;
-    border-top-left-radius:3px;
-    border-top-right-radius:3px;
-`;
+import { ToolbarButton, ToolbarRow } from '../Styles/CommonStyles';
+import AbbrDialog from './AbbrDialog/AbbrDialog';
+import LinkDialog from './LinkDialog/LinkDialog';
+import ImageDialog from './ImageDialog/ImageDialog';
 
 export function ButtonsToolbar(props: ButtonToolbarProps) {
-
-    // const [fontColor, setFontColor] = useState('black');
-    // const [highlight, setHighlight] = useState('white');
 
     const buttonsArray: ButtonProps[] = [
         {
@@ -187,39 +146,43 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
         //     disabled: true,
         //     key: "highlight"
         // },
-        {
-            icon: <Image />,
-            ariaLabel: "Insert image button.",
-            tooltip: "Add Image",
-            key: "image",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(InsertType.image)
-        },
+
         {
             icon: <Table />,
             ariaLabel: "Insert table button.",
             tooltip: "Add Table",
             key: "table",
             callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(InsertType.table)
+        }
+    ]
+
+    const dialogButtons: any = {
+        image: {
+            icon: <Image />,
+            ariaLabel: "Insert image button.",
+            tooltip: "Add Image",
+            key: "image",
+            callback: (e: any) => toolbarActions._onInsertText(InsertType.image, e)
         },
-        {
+        link: {
             icon: <Link />,
             ariaLabel: "Insert link button",
             tooltip: "Insert Link",
             key: "link",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(InsertType.link)
+            callback: (e: any) => toolbarActions._onInsertText(InsertType.link, e)
         },
-        {
+        abbr: {
             icon: <strong>abbr</strong>,
             ariaLabel: "Insert abbreviation button",
             tooltip: "Insert Abbreviation",
             key: "abbr",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(InsertType.abbreviation)
-        },
-    ]
+            callback: (e: any) => toolbarActions._onInsertText(InsertType.abbreviation, e)
+        }
+    }
 
     const toolbarActions = {
-        _onInsertText(type: Insert) {
-            let val: string | ComboInsert = ""
+        _onInsertText(type: Insert, incomingData?: ComboInsert) {
+            let val: string | ComboInsert | undefined = undefined
             switch (type) {
                 case "heading_1":
                     val = "# ";
@@ -245,23 +208,26 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
                 case "uoList":
                     val = `- item 1\n- item 2\n- item 3\n`;
                     break;
-                case "img":
-                    val = "";
-                    break;
                 case "table":
                     val = `\n| Col 1 | Col 2 | Col 3 |\n|:------|:-----:|------:|\n| c1 r1 | c2 r1 | c3 r1 |\n| c1 r2 | c2 r2 | c3 r2 |\n| c1 r3 | c2 r3 | c3 r3 |`;
 
                     break;
                 case "link":
                     val = {
-                        topInsert: '',
-                        textInsert: ''
+                        topInsert: incomingData?.topInsert || '',
+                        textInsert: incomingData?.textInsert || ''
                     };
                     break;
                 case "abbr":
                     val = {
-                        topInsert: '',
-                        textInsert: ''
+                        topInsert: incomingData?.topInsert || '',
+                        textInsert: incomingData?.textInsert || ''
+                    };
+                    break;
+                case "img":
+                    val = {
+                        topInsert: incomingData?.topInsert || '',
+                        textInsert: incomingData?.textInsert || ''
                     };
                     break;
                 default:
@@ -349,23 +315,29 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
                     onClick={btn.callback}
                     className="ripple" key={`btn_${btn.key}`} aria-label={btn.ariaLabel}>{btn.icon}</ToolbarButton>) : ""
         })
+        buttonArr.push(
+            <AbbrDialog {...dialogButtons.abbr} ></AbbrDialog>
+        );
+        buttonArr.push(
+            <LinkDialog {...dialogButtons.link} ></LinkDialog>
+        )
+        buttonArr.push(
+            <ImageDialog {...dialogButtons.image} ></ImageDialog>
+        )
         return (
             <ToolbarRow>
                 {buttonArr}
-                <div>
-                    {currentSelection()}
-                </div>
             </ToolbarRow>
         )
     }
 
-    const currentSelection = () => {
-        return (
-            <div style={{ color: "white" }}>
-                Selection: {props.value || "none"}
-            </div>
-        )
-    }
+    // const currentSelection = () => {
+    //     return (
+    //         <div style={{ color: "white" }}>
+    //             Selection: {props.value || "none"}
+    //         </div>
+    //     )
+    // }
 
     const render = () => {
         return (

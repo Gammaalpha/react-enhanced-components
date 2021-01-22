@@ -1,7 +1,8 @@
+
 import React from 'react'
 import { useState } from 'react';
-import { ButtonProps } from '../../models/MarkdownEditorModel';
-import { RecDropdownMenu, RecMenuDropdownItem } from "../../Rec-Dropdown-Menu/RecDropdownMenu";
+import { Menu, MenuDropdownItem } from '../../../Menu/Menu';
+import { ButtonProps } from '../../model/MarkdownEditorModel';
 
 interface ComboButtonProps {
     buttonData: ButtonProps
@@ -13,14 +14,11 @@ export const ComboButton = (props: ComboButtonProps) => {
         setIsOpen(!isOpen)
     };
 
-    // const handleClose = () => {
-    //     setIsOpen(false)
-    // };
 
     const render = () => {
         return (
             <div>
-                <RecDropdownMenu
+                <Menu
                     onClick={handleClick}
                     open={isOpen}
                     leftIcon={props.buttonData.icon}
@@ -28,16 +26,16 @@ export const ComboButton = (props: ComboButtonProps) => {
                     title={""}
                 >
                     {props.buttonData.options && props.buttonData.options.map(item => (
-                        <RecMenuDropdownItem
+                        <MenuDropdownItem
                             ariaLabel={item.ariaLabel}
                             id={item.key}
                             onClick={item.callback}
                             key={item.key}
                         >
                             {item.label}
-                        </RecMenuDropdownItem>
+                        </MenuDropdownItem>
                     ))}
-                </RecDropdownMenu>
+                </Menu>
             </div>
         )
     }
