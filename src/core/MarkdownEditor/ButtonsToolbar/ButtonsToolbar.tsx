@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import styled from 'styled-components';
+import React from 'react'
 
 import { Heading } from "@styled-icons/boxicons-regular/Heading";
 import { Bold } from "@styled-icons/boxicons-regular/Bold";
@@ -10,17 +9,17 @@ import { Superscript } from "@styled-icons/material/Superscript";
 import { Subscript } from "@styled-icons/material/Subscript";
 import { ListUl } from "@styled-icons/boxicons-regular/ListUl";
 import { ListOl } from "@styled-icons/boxicons-regular/ListOl";
-// import { Highlight } from "@styled-icons/boxicons-regular/Highlight";
-// import { FontColor } from "@styled-icons/boxicons-regular/FontColor";
 import { Link } from "@styled-icons/boxicons-regular/Link";
 import { Table } from "@styled-icons/boxicons-regular/Table";
 import { Image } from "@styled-icons/boxicons-regular/Image";
 import "./ButtonToolbar.css";
-import { utilWrapper } from '../utils/util-wrapper';
-import { utilGetSideChars } from '../utils';
-import { ButtonProps, ButtonToolbarProps, TextStyleType, Insert, TextStyle, ComboInsert, InsertType, HeadingType } from "../models/MarkdownEditorModel";
+import { utilWrapper } from '../../utils/util-wrapper';
+import { utilGetSideChars } from '../../utils';
+import { TextStyleType, Insert, TextStyle, InsertType, HeadingType } from "../model/Types";
+import { ComboInsert } from "../model/ComboInsert";
+import { ButtonProps, ButtonToolbarProps } from "../model/ButtonToolbarProps";
 import { ComboButton } from './ComboButton/ComboButton';
-import { ToolbarButton, ToolbarRow } from '../Styles/CommonStyles';
+import { ToolbarButton, ToolbarRow } from '../../Styles/CommonStyles';
 import AbbrDialog from './AbbrDialog/AbbrDialog';
 import LinkDialog from './LinkDialog/LinkDialog';
 import ImageDialog from './ImageDialog/ImageDialog';
@@ -40,38 +39,38 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
                     ariaLabel: 'Heading 1 insert',
                     tooltip: "Add heading 1",
                     key: 'heading_1',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(HeadingType.h1)
+                    callback: () => toolbarActions._onInsertText(HeadingType.h1)
                 },
                 {
                     label: 'Heading 2',
                     ariaLabel: 'Heading 2 insert',
                     tooltip: "Add heading 2",
                     key: 'heading_2',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(HeadingType.h2)
+                    callback: () => toolbarActions._onInsertText(HeadingType.h2)
                 }, {
                     label: 'Heading 3',
                     ariaLabel: 'Heading 3 insert',
                     tooltip: "Add heading 3",
                     key: 'heading_3',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(HeadingType.h3)
+                    callback: () => toolbarActions._onInsertText(HeadingType.h3)
                 }, {
                     label: 'Heading 4',
                     ariaLabel: 'Heading 4 insert',
                     tooltip: "Add heading 4",
                     key: 'heading_4',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(HeadingType.h4)
+                    callback: () => toolbarActions._onInsertText(HeadingType.h4)
                 }, {
                     label: 'Heading 5',
                     ariaLabel: 'Heading 5 insert',
                     tooltip: "Add heading 5",
                     key: 'heading_5',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(HeadingType.h5)
+                    callback: () => toolbarActions._onInsertText(HeadingType.h5)
                 }, {
                     label: 'Heading 6',
                     ariaLabel: 'Heading 6 insert',
                     tooltip: "Add heading 6",
                     key: 'heading_6',
-                    callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(HeadingType.h6)
+                    callback: () => toolbarActions._onInsertText(HeadingType.h6)
                 },
             ]
         },
@@ -80,14 +79,14 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
             ariaLabel: "Bold selected text.",
             tooltip: "Bold",
             key: "bold",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onTextFormatClick(TextStyleType.bold)
+            callback: () => toolbarActions._onTextFormatClick(TextStyleType.bold)
         },
         {
             icon: <Italic />,
             ariaLabel: "Italicize selected text.",
             tooltip: "Italic",
             key: "italic",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onTextFormatClick(TextStyleType.italic)
+            callback: () => toolbarActions._onTextFormatClick(TextStyleType.italic)
         },
         {
             icon: <Underline />,
@@ -95,42 +94,42 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
             tooltip: "Underline",
             key: "underline",
             disabled: false,
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onTextFormatClick(TextStyleType.underline)
+            callback: () => toolbarActions._onTextFormatClick(TextStyleType.underline)
         },
         {
             icon: <Strikethrough />,
             ariaLabel: "Strike through selected text.",
             tooltip: "Strike through",
             key: "strikethrough",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onTextFormatClick(TextStyleType.strike)
+            callback: () => toolbarActions._onTextFormatClick(TextStyleType.strike)
         },
         {
             icon: <Superscript />,
             ariaLabel: "Turn selected text into super script.",
             tooltip: "Super Script",
             key: "superScript",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onTextFormatClick(TextStyleType.super)
+            callback: () => toolbarActions._onTextFormatClick(TextStyleType.super)
         },
         {
             icon: <Subscript />,
             ariaLabel: "Turn selected text into sub script.",
             tooltip: "Sub Script",
             key: "subScript",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onTextFormatClick(TextStyleType.sub)
+            callback: () => toolbarActions._onTextFormatClick(TextStyleType.sub)
         },
         {
             icon: <ListUl />,
             ariaLabel: "Add new unordered list.",
             tooltip: "Unordered List",
             key: "unorderedList",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(InsertType.unorderedList)
+            callback: () => toolbarActions._onInsertText(InsertType.unorderedList)
         },
         {
             icon: <ListOl />,
             ariaLabel: "Add new ordered list.",
             tooltip: "Ordered List",
             key: "orderedList",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(InsertType.orderedList)
+            callback: () => toolbarActions._onInsertText(InsertType.orderedList)
         },
         // {
         //     icon: <div><FontColor /><ColorRect theme={{ main: fontColor }} /></div>,
@@ -152,7 +151,7 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
             ariaLabel: "Insert table button.",
             tooltip: "Add Table",
             key: "table",
-            callback: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => toolbarActions._onInsertText(InsertType.table)
+            callback: () => toolbarActions._onInsertText(InsertType.table)
         }
     ]
 
@@ -203,7 +202,7 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
                     val = "####### ";
                     break;
                 case "oList":
-                    val = `1. item 1\n1. item 2\n1. item 3`;
+                    val = `1. item 1\n1. item 2\n1. item 3\n`;
                     break;
                 case "uoList":
                     val = `- item 1\n- item 2\n- item 3\n`;

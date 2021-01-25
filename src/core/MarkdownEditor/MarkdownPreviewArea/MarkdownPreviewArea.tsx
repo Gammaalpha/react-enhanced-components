@@ -9,7 +9,7 @@ import remark2rehype from 'remark-rehype';
 import markdown from "remark-parse";
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeRaw from 'rehype-raw';
-import { Bordered, Column, MarkdownBody, PreviewTitle } from '../Styles/CommonStyles';
+import { Bordered, Column, MarkdownBody, PreviewTitle } from '../../Styles/CommonStyles';
 let rehypePicture = require("rehype-picture");
 let rehypeUrls = require("rehype-urls");
 let slug = require('remark-slug');
@@ -23,6 +23,8 @@ interface MarkdownPreviewAreaProps {
     content: string;
     maxHeight?: string;
     previewRefCallback?: any;
+    editable: boolean;
+    borderedPreview?: boolean;
 }
 
 export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
@@ -54,8 +56,6 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
                 })
                 .use(rehypePicture)
                 .use(rehypeHighlight)
-                // .use(rehypeInline)
-                // .use(rehypeStringify)
                 .use(rehypeSanitize)
                 .use(rehype2react, {
                     createElement: React.createElement
@@ -75,7 +75,8 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
         }
         return markdown_processor
     }
-    
+
+
     useEffect(() => {
         if (previewRef !== null && previewRef !== undefined) {
             props.previewRefCallback(previewRef)
@@ -84,12 +85,16 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
     const render = () => {
         return (
             <Column flex={1} width={"45%"}>
-                <Bordered>
-                    <PreviewTitle >
-                        <h2>
-                            PREVIEW AREA
-                    </h2>
-                    </PreviewTitle>
+                <Bordered
+                    bordered={props.borderedPreview !== undefined ? props.borderedPreview : true}
+                >
+                    {
+                        props.editable && <PreviewTitle>
+                            <h2>
+                                PREVIEW AREA
+                            </h2>
+                        </PreviewTitle>
+                    }
                     <MarkdownBody
                         ref={previewRef}
                         maxHeight={props.maxHeight || "750px"}

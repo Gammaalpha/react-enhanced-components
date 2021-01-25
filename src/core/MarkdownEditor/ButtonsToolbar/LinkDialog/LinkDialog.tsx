@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { BaseButton } from '../../../Button/BaseButton';
 import { Checkbox } from '../../../Checkbox/Checkbox';
-import { DialogBox } from '../../../DialogBox/DialogBox';
-import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
-import { isURLValid } from '../../../utils/util-is-url-valid';
 import { ComboInsert } from "../../model/ComboInsert";
-import { ButtonProps } from "../../model/ButtonProps";
+import { isURLValid } from '../../../utils/util-is-url-valid';
+import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
+import { ButtonProps } from '../../model/ButtonToolbarProps';
+import { DialogBox } from '../../../DialogBox/DialogBox';
+
+
 interface UrlDialogProps {
     text: string;
     url: string;

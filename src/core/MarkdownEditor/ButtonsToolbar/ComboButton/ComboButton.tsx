@@ -2,8 +2,7 @@
 import React from 'react'
 import { useState } from 'react';
 import { Menu, MenuDropdownItem } from '../../../Menu/Menu';
-import { ButtonProps } from "../../model/ButtonProps";
-
+import { ButtonProps } from '../../model/ButtonToolbarProps';
 interface ComboButtonProps {
     buttonData: ButtonProps
 }

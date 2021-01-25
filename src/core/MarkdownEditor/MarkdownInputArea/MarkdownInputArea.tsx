@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useRef } from 'react'
-import { Column, StyledTextarea } from '../../Styles/CommonStyles'
 import { ButtonsToolbar } from '../ButtonsToolbar/ButtonsToolbar'
-import { ComboInsert } from "../model/ComboInsert"
+import { ComboInsert } from "../model/ComboInsert";
+import { Column, StyledTextarea } from '../../Styles/CommonStyles';
 
 interface MarkdownInputAreaProps {
     content: string;
     callback: any;
     maxHeight?: string;
     scrollCallback?: any;
+
 }
 
 export function MarkdownInputArea(props: MarkdownInputAreaProps) {
@@ -25,10 +26,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
     const getScrollPosition = (ref: any) => {
         const position = ((ref.target.scrollTop + ref.target.offsetHeight) / ref.target.scrollHeight) * 100;
         // console.log("Input: ", position);
-        props.scrollCallback(Math.floor(position))
-        // props.scrollCallback(ref.target.scrollTop)
-
-        // return position;
+        props.scrollCallback(position)
     }
 
     useEffect(() => {
@@ -132,6 +130,9 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
             if (type === 'img') {
                 updatedContent = insert(updatedContent, index, insertVal.textInsert);
             }
+        }
+        else {
+            updatedContent = insert(updatedContent, index, insertVal);
         }
         setInputContent(updatedContent)
     }

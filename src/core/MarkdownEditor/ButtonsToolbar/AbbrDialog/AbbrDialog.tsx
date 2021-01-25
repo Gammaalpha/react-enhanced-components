@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import styled from 'styled-components';
-import { BaseButton } from '../../Button/BaseButton';
-import { DialogBox } from "../../Dialog/DialogBox/DialogBox";
-import { ButtonProps, ComboInsert } from '../../models/MarkdownEditorModel';
-import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../Styles/CommonStyles';
+import { BaseButton } from '../../../Button/BaseButton';
+import { ComboInsert } from "../../model/ComboInsert";
+import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
+import { ButtonProps } from '../../model/ButtonToolbarProps';
+import { DialogBox } from '../../../DialogBox/DialogBox';
 
 
 interface AbbrDialogProps {

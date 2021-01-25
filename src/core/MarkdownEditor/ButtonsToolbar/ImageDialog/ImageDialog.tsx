@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { BaseButton } from '../../../Button/BaseButton';
-import { DialogBox } from "../../../DialogBox/DialogBox";
 import { ComboInsert } from "../../model/ComboInsert";
-import { ButtonProps } from "../../model/ButtonProps";
 import { isURLValid } from '../../../utils/util-is-url-valid';
 import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
+import { ButtonProps } from '../../model/ButtonToolbarProps';
+import { DialogBox } from '../../../DialogBox/DialogBox';
 
 
 interface ImageDialogProps {
@@ -48,7 +48,7 @@ export default function ImageDialog(props: ButtonProps) {
 
         return {
             topInsert: '',
-            textInsert: data.height !== "" || data.width !== "" ? `<img alt="${data.text?.replace(/\s/gi, '_')}" src="${data.url}" width="${data.width}" height="${data.height}" />` : `![${data.text?.replace(/\s/gi, '_')}](${data.url} "${data.title}")`
+            textInsert: data.height !== "" || data.width !== "" ? `<img title="${data.title}" alt="${data.text?.replace(/\s/gi, '_')}" src="${data.url}" width="${data.width}" height="${data.height}" />` : `![${data.text?.replace(/\s/gi, '_')}](${data.url} "${data.title}")`
         }
     }
 

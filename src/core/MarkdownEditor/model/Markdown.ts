@@ -7,10 +7,11 @@ export class Markdown {
 
 export interface MarkdownProps {
     content?: string;
-    editable?: string;
+    editable: boolean;
     callback?: any;
     buttonFunctions?: any[];
-    buttonStyles?: any
+    buttonStyles?: any;
+    borderedPreview?: boolean;
 }
 
 export interface CursorPositionProps {

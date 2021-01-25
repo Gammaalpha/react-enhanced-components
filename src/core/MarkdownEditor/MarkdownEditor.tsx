@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MarkdownProps } from './model/Markdown'
 import "./MarkdownEditor.css"
 import { MemorizedMarkdownPreviewArea } from './MarkdownPreviewArea/MarkdownPreviewArea';
@@ -8,19 +8,16 @@ import { Row } from '../Styles/CommonStyles';
 // ---------------------------------
 
 
-const defaultText = "Add your content **here**."
-export function MarkdownEditor(props?: MarkdownProps) {
-    const [content, setContent] = useState({ text: !!props?.content ? props.content : defaultText })
+export function MarkdownEditor(props: MarkdownProps) {
+    const [content, setContent] = useState({ text: !!props?.content ? props.content : 'Add your content **here**.' })
     let previewRefVal: any;
     const handleChange = (e: string) => {
         if (e !== content.text) {
             setTimeout(() => {
-                // console.log("change detected...");
                 setContent({ text: e });
             }, 100);
         }
     }
-
 
     const handlePreviewRef = (e: any) => {
         previewRefVal = e;
@@ -28,6 +25,7 @@ export function MarkdownEditor(props?: MarkdownProps) {
 
     const handleInputScrollPosition = (e: any) => {
         if (previewRefVal.current !== undefined) {
+
             let scrollTop = (((e) * previewRefVal.current.scrollHeight) / 100) - (previewRefVal.current.offsetHeight);
             if (scrollTop <= 0) {
                 scrollTop = 0;
@@ -36,15 +34,25 @@ export function MarkdownEditor(props?: MarkdownProps) {
         }
     }
 
+    useEffect(() => {
+        if (props.callback !== undefined) {
+            props.callback(content);
+        }
+    }, [content, props, props.editable])
+
     const addEditZone = () => {
         return (
             <Row gap={15} flex={1}>
-                <MemorizedMarkdownInputArea
-                    callback={handleChange}
-                    scrollCallback={handleInputScrollPosition}
-                    content={content.text}
-                ></MemorizedMarkdownInputArea>
+                {
+                    props.editable && <MemorizedMarkdownInputArea
+                        callback={handleChange}
+                        scrollCallback={handleInputScrollPosition}
+                        content={content.text}
+                    ></MemorizedMarkdownInputArea>
+                }
                 <MemorizedMarkdownPreviewArea content={content.text}
+                    borderedPreview={props.borderedPreview !== undefined ? props.borderedPreview : true}
+                    editable={props.editable}
                     previewRefCallback={handlePreviewRef}
                 ></MemorizedMarkdownPreviewArea>
             </Row>
