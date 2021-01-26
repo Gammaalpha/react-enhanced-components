@@ -114,11 +114,9 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
                 start: updatedSelectionLoc,
                 end: updatedSelectionLoc
             })
-            updatedContent = insert(updatedContent, index, insertContent)
         }
         else {
             index = selection.start;
-            // console.log(index);
         }
         if (typeof insertVal !== "string") {
             if (type === 'abbr' || type === 'link') {
@@ -140,13 +138,13 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
 
     const inputArea = () => {
         return (
-            <Column width={"45%"}>
+            <Column width={"45%"} maxHeight={props.maxHeight || 'fit-content'}>
                 <ButtonsToolbar
                     insertCmd={handleInsertCmd}
                     callback={handleIncomingChange}
                     value={selectedText}></ButtonsToolbar>
                 <StyledTextarea
-                    maxHeight={props.maxHeight || '750px'}
+                    maxHeight={props.maxHeight || 'fit-content'}
                     ref={editorRef}
                     onSelect={(e: any) => {
                         setSelection({

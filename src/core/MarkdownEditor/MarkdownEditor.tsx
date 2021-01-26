@@ -42,15 +42,18 @@ export function MarkdownEditor(props: MarkdownProps) {
 
     const addEditZone = () => {
         return (
-            <Row gap={15} flex={1}>
+            <Row gap={15} flex={1} maxHeight={'calc(85% - 10px)'}>
                 {
                     props.editable && <MemorizedMarkdownInputArea
+                        // maxHeight={'calc(100% - 10px)'}
                         callback={handleChange}
                         scrollCallback={handleInputScrollPosition}
                         content={content.text}
                     ></MemorizedMarkdownInputArea>
                 }
-                <MemorizedMarkdownPreviewArea content={content.text}
+                <MemorizedMarkdownPreviewArea
+                    content={content.text}
+                    maxHeight={'calc(100% - 5px)'}
                     borderedPreview={props.borderedPreview !== undefined ? props.borderedPreview : true}
                     editable={props.editable}
                     previewRefCallback={handlePreviewRef}

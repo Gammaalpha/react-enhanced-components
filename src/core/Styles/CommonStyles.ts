@@ -52,6 +52,7 @@ export const StyledInput = styled.input`
 type RowProps = {
     flex?: string | number;
     gap?: number;
+    maxHeight?: string;
 }
 
 export const Row = styled.div<RowProps>`
@@ -62,6 +63,7 @@ export const Row = styled.div<RowProps>`
     width:100%;
     gap:${(props: any) => props.gap || 0}px;
     flex:${(props: any) => props.flex || 0};
+    max-height:${(props: any) => props.maxHeight || 'fit-content'};
 `;
 
 export const ErrorMessage = styled.span`
@@ -74,6 +76,7 @@ type ColumnProps = {
     width?: string;
     color?: string;
     flex?: string | number;
+    maxHeight?: string;
 }
 
 export const Column = styled.div<ColumnProps>`
@@ -84,6 +87,7 @@ export const Column = styled.div<ColumnProps>`
     background-color:${(props: any) => props.color};
     flex:${(props: any) => props.flex || 0};
     min-width:${(props: any) => props.width || 'auto'};
+    max-height:${(props: any) => props.maxHeight || 'fit-content'};
 `;
 
 type StyledTextareaProps = {
@@ -104,7 +108,7 @@ export const StyledTextarea = styled.textarea<StyledTextareaProps>`
     align-items: stretch;
     overflow: auto;
     margin-top: -1px;
-    max-height:${(props: any) => props.maxHeight || "auto"};
+    max-height:${(props: any) => props.maxHeight || "fit-content"};
     background-color: hsl(0, 0%, 97.5%);
     border: 1px solid hsl(214, 13%, 90%);
     padding: calc(0.5 * (1em + 1ex));
@@ -129,7 +133,8 @@ export const Container = styled.div`
 `;
 
 type MarkdownBodyProps = {
-    maxHeight: string;
+    maxHeight?: string;
+    overflowY: string;
 }
 export const MarkdownBody = styled.div<MarkdownBodyProps>`
     -ms-text-size-adjust: 100%;
@@ -137,9 +142,9 @@ export const MarkdownBody = styled.div<MarkdownBodyProps>`
     font-size: 1.125em;
     word-wrap: break-word;
     width:auto;
-    max-height:${(props: any) => props.maxHeight || 'auto'};
+    overflow-y:${(props: any) => props.overflowY};
+    max-height:${(props: any) => props.maxHeight || 'fit-content'};
     flex:1;
-    overflow-y: auto;
     &:before{
         content: "";
         display: table;
@@ -181,8 +186,17 @@ export const PreviewTitle = styled.div<PreviewTitleProps>`
     
 `;
 
-export const Bordered = styled.div`
+type BorderedProps = {
+    bordered: boolean;
+    maxHeight: string;
+}
+
+export const Bordered = styled.div<BorderedProps>`
     /* display:flex; */
-    border: 2px solid lightgray;
-    /* flex:1; */
+    border: ${(props: any) => props.bordered ? '2px solid lightgray' : 'none'};
+    max-height:${(props: any) => props.maxHeight || "fit-content"};
+    display:flex;
+    flex-direction:column;
+    flex:1;
+
 `;

@@ -84,8 +84,11 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
     }, [props])
     const render = () => {
         return (
-            <Column flex={1} width={"45%"}>
+            <Column flex={1} width={"45%"} maxHeight={props.maxHeight || 'fit-content'}
+            >
                 <Bordered
+                    maxHeight={props.editable ? 'calc(100% - 10px)' : 'fit-content'}
+                    // maxHeight={props.maxHeight || "fit-content"}
                     bordered={props.borderedPreview !== undefined ? props.borderedPreview : true}
                 >
                     {
@@ -97,8 +100,8 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
                     }
                     <MarkdownBody
                         ref={previewRef}
-                        maxHeight={props.maxHeight || "750px"}
                         id="rec-markdown-preview"
+                        overflowY={props.editable ? 'scroll' : 'hidden'}
                     >
                         {
                             processor(content)
