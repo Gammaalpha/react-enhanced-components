@@ -84,7 +84,9 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
     }, [props])
     const render = () => {
         return (
-            <Column flex={1} width={"45%"} maxHeight={props.maxHeight || 'fit-content'}
+            <Column flex={1} width={"45%"}
+                id="markdownPreviewAreaColumn"
+                maxHeight={props.maxHeight || 'fit-content'}
             >
                 <Bordered
                     maxHeight={props.editable ? 'calc(100% - 10px)' : 'fit-content'}

@@ -138,7 +138,9 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
 
     const inputArea = () => {
         return (
-            <Column width={"45%"} maxHeight={props.maxHeight || 'fit-content'}>
+            <Column
+                id="markdownInputAreaColumn"
+                width={"45%"} maxHeight={props.maxHeight || 'fit-content'}>
                 <ButtonsToolbar
                     insertCmd={handleInsertCmd}
                     callback={handleIncomingChange}
