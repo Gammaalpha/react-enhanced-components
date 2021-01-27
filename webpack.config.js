@@ -1,5 +1,6 @@
 var path = require("path");
 // var webpack = require("webpack");
+const multi = require("multi-loader");
 
 module.exports = {
   entry: "./src/core/index.ts",
@@ -24,7 +25,10 @@ module.exports = {
         test: /\.(ts|js)x?$/,
         exclude: [/node_modules/],
         use: {
-          loader: ["babel-loader", "ts-loader?configFile=tsconfig.prod.json"],
+          loader: multi(
+            "babel-loader",
+            "ts-loader?configFile=tsconfig.prod.json"
+          ),
           options: {
             sourceType: "unambiguous",
             presets: ["@babel/preset-env"],
