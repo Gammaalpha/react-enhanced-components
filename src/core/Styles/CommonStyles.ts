@@ -115,8 +115,12 @@ export const StyledTextarea = styled.textarea<StyledTextareaProps>`
     border-radius: 3px;
 `;
 
-export const MainContainer = styled.div`
-    min-height: 100vh;
+type MainContainerProps = {
+    minHeight?: string;
+}
+
+export const MainContainer = styled.div<MainContainerProps>`
+    min-height: ${(props: any) => props.minHeight || "100%"};
     flex:1;
     display: flex;
     flex-direction: column;

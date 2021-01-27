@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 import styled from 'styled-components';
-import "./menu.css";
+import "./Menu.css";
 
 import { BorderedButton } from "../Button/BorderedButton";
 

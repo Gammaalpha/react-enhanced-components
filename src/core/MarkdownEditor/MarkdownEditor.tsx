@@ -44,10 +44,10 @@ export function MarkdownEditor(props: MarkdownProps) {
 
     const addEditZone = () => {
         return (
-            <Row gap={15} flex={1} maxHeight={props.maxEditorHeight !== undefined ? props.maxEditorHeight : 'calc(84% - 25px)'}>
+            <Row gap={15} flex={1} maxHeight={props.maxEditorHeight !== undefined ? props.maxEditorHeight : '800px'}>
                 {
                     props.editable && <MemorizedMarkdownInputArea
-                        maxHeight={'calc(98% - 10px)'}
+                        maxHeight={props.maxEditorInputHeight !== undefined ? props.maxEditorInputHeight : 'calc(98% - 10px)'}
                         callback={handleChange}
                         scrollCallback={handleInputScrollPosition}
                         content={content.text}
@@ -55,7 +55,7 @@ export function MarkdownEditor(props: MarkdownProps) {
                 }
                 <MemorizedMarkdownPreviewArea
                     content={content.text}
-                    maxHeight={'calc(98% - 5px)'}
+                    maxHeight={props.maxEditorPreviewHeight !== undefined ? props.maxEditorPreviewHeight : 'calc(98% - 5px)'}
                     borderedPreview={props.borderedPreview !== undefined ? props.borderedPreview : true}
                     editable={props.editable}
                     previewRefCallback={handlePreviewRef}

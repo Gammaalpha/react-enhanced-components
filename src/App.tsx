@@ -3,7 +3,7 @@ import './App.css';
 import { DataTable, IHeaderProps, MarkdownEditor, RichTextEditor } from "./core/index";
 import { Switch, makeStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Label, MainContainer } from './core/Styles/CommonStyles';
+import { Column, Label, MainContainer, Row } from './core/Styles/CommonStyles';
 
 export interface IItem {
   id: number,
@@ -270,11 +270,14 @@ function App() {
                   <input type="checkbox" name="border_preview" id="border_preview" checked={borderPreview} onChange={toggleBorderPreview} />
                 </div>
 
-                <MarkdownEditor
-                  borderedPreview={borderPreview}
-                  content={content}
-                  editable={edit}
-                ></MarkdownEditor>
+                <Row flex={0} maxHeight={"800px"}>
+                  <MarkdownEditor
+                    maxEditorHeight={"700px"}
+                    borderedPreview={borderPreview}
+                    content={content}
+                    editable={edit}
+                  ></MarkdownEditor>
+                </Row>
               </MainContainer>
             </div>
           </div>
@@ -288,6 +291,7 @@ function App() {
     <div className={'Padding25px'}>
       {dataTableExpansionPanel()}
       {richTextEditorExpansionPanel()}
+      {markdownEditorExpansionPanel()}
     </div>
 
   );
