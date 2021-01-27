@@ -44,7 +44,7 @@ export function MarkdownEditor(props: MarkdownProps) {
 
     const addEditZone = () => {
         return (
-            <Row gap={15} flex={1} maxHeight={'calc(84% - 25px)'}>
+            <Row gap={15} flex={1} maxHeight={props.maxEditorHeight !== undefined ? props.maxEditorHeight : 'calc(84% - 25px)'}>
                 {
                     props.editable && <MemorizedMarkdownInputArea
                         maxHeight={'calc(98% - 10px)'}

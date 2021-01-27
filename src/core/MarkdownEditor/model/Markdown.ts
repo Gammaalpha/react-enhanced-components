@@ -12,6 +12,7 @@ export interface MarkdownProps {
     buttonFunctions?: any[];
     buttonStyles?: any;
     borderedPreview?: boolean;
+    maxEditorHeight?: string;
 }
 
 export interface CursorPositionProps {
