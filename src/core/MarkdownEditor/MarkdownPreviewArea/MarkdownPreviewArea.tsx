@@ -25,6 +25,7 @@ interface MarkdownPreviewAreaProps {
     previewRefCallback?: any;
     editable: boolean;
     borderedPreview?: boolean;
+    id?: string;
 }
 
 export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
@@ -102,7 +103,7 @@ export function MarkdownPreviewArea(props: MarkdownPreviewAreaProps) {
                     }
                     <MarkdownBody
                         ref={previewRef}
-                        id="rec-markdown-preview"
+                        id={props.id !== undefined ? props.id + "_preview_area" : "markdown-preview_area"}
                         overflowY={props.editable ? 'scroll' : 'hidden'}
                     >
                         {

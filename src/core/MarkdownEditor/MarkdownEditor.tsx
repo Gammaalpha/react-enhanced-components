@@ -47,6 +47,7 @@ export function MarkdownEditor(props: MarkdownProps) {
             <Row gap={15} flex={1} maxHeight={props.maxEditorHeight !== undefined ? props.maxEditorHeight : '800px'}>
                 {
                     props.editable && <MemorizedMarkdownInputArea
+                        id={props.id}
                         maxHeight={props.maxEditorInputHeight !== undefined ? props.maxEditorInputHeight : 'calc(98% - 10px)'}
                         callback={handleChange}
                         scrollCallback={handleInputScrollPosition}
@@ -55,6 +56,7 @@ export function MarkdownEditor(props: MarkdownProps) {
                 }
                 <MemorizedMarkdownPreviewArea
                     content={content.text}
+                    id={props.id}
                     maxHeight={props.maxEditorPreviewHeight !== undefined ? props.maxEditorPreviewHeight : 'calc(98% - 5px)'}
                     borderedPreview={props.borderedPreview !== undefined ? props.borderedPreview : true}
                     editable={props.editable}

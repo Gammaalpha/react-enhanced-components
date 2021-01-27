@@ -138,18 +138,55 @@ After including the repository into your project, you can import the component a
 
 ### RichTextEditor props
 
-| Prop    | Require Status | type    | Description                                                                            |
-| ------- | -------------- | ------- | -------------------------------------------------------------------------------------- |
-| editing | required       | boolean | Enable or disable input area for editing. This also hides or shows the editor toolbar. |
+| Prop     | Require Status | type    | Description                                                                            |
+| -------- | -------------- | ------- | -------------------------------------------------------------------------------------- |
+| id       | optional       | string  | Sets the id for the Rich Text Editor section                                           |
+| editing  | required       | boolean | Enable or disable input area for editing. This also hides or shows the editor toolbar. |
+| value    | optional       | string  | Passes in default value to the rich text editor.                                       |
+| callback | optional       | any     | Takes in a function to return data back up to the parent component.                    |
 
-To render the rich text editor simply put it in as follows:
+To render the rich text editor simply put it in as below:
 
-```
+```javascript
     <RichTextEditor editing={booleanValue}></RichTextEditor>
 
 ```
 
+### Markdown Editor
+
+A fully AODA compliant markdown editor based on [Remarkjs](https://github.com/remarkjs/remark) and its [plugins](https://github.com/remarkjs/remark/blob/main/doc/plugins.md) along with [rehype plugins](https://github.com/rehypejs/rehype/blob/main/doc/plugins.md).
+
+### Usage
+
+After including the repository into your project, you can import the component as follows:
+
+`import { MarkdownEditor } from "react-enhanced-components/core/MarkdownEditor";`
+
+### MarkdownEditor props
+
+| Prop                   | Require Status | type    | Description                                                                            |
+| ---------------------- | -------------- | ------- | -------------------------------------------------------------------------------------- |
+| id                     | optional       | string  | Sets the id for the Rich Text Editor section                                           |
+| content                | optional       | string  | Passes in default value to the rich text editor.                                       |
+| editing                | required       | boolean | Enable or disable input area for editing. This also hides or shows the editor toolbar. |
+| callback               | optional       | any     | Takes in a function to return data back up to the parent component.                    |
+| borderedPreview        | optional       | boolean | Surrounds the preview area in a border.                                                |
+| maxEditorHeight        | optional       | string  | Sets the height for the max height limit for the component.                            |
+| maxEditorInputHeight   | optional       | string  | Sets the input area max height limit while editing.                                    |
+| maxEditorPreviewHeight | optional       | string  | Sets the preview area max height limit while editing.                                  |
+
+To render the rich text editor simply put it in as below:
+
+```javascript
+     <MarkdownEditor editable={edit}></MarkdownEditor>
+
+```
+
 ## Upcoming features
+
+### Markdown Editor
+
+Optimized rendering for faster responses.
 
 ### DataTable Component
 
@@ -160,6 +197,10 @@ To render the rich text editor simply put it in as follows:
 Note: (Dependent on base Quill for future releases and enhancements.)
 
 - None
+
+### Markdown Editor Component
+
+- None reported.
 
 ## Completed features
 

@@ -9,7 +9,7 @@ interface MarkdownInputAreaProps {
     callback: any;
     maxHeight?: string;
     scrollCallback?: any;
-
+    id?: string;
 }
 
 export function MarkdownInputArea(props: MarkdownInputAreaProps) {
@@ -155,7 +155,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
                         })
                     }}
                     onScroll={getScrollPosition}
-                    id="textarea_1" className="markdown_textarea"
+                    id={props.id !== undefined ? props.id + "_input_area" : "markdown_editor_input_area"} className="markdown_textarea"
                     value={inputContent}
                     onChange={handleChange}>
                 </StyledTextarea>

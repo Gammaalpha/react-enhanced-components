@@ -6,6 +6,7 @@ export class Markdown {
 
 
 export interface MarkdownProps {
+    id?: string;
     content?: string;
     editable: boolean;
     callback?: any;
