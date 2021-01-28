@@ -9,12 +9,12 @@ import { Row } from '../Styles/CommonStyles';
 
 
 export function MarkdownEditor(props: MarkdownProps) {
-    const [content, setContent] = useState({ text: !!props?.content ? props.content : 'Add your content **here**.' })
+    const [content, setContent] = useState(!!props?.content ? props.content : 'Add your content **here**.')
     let previewRefVal: any;
     const handleChange = (e: string) => {
-        if (e !== content.text) {
+        if (e !== content) {
             setTimeout(() => {
-                setContent({ text: e });
+                setContent(e);
             }, 100);
         }
     }
@@ -55,11 +55,11 @@ export function MarkdownEditor(props: MarkdownProps) {
                         maxHeight={props.maxEditorInputHeight !== undefined ? props.maxEditorInputHeight : 'calc(98% - 10px)'}
                         callback={handleChange}
                         scrollCallback={handleInputScrollPosition}
-                        content={content.text}
+                        content={content}
                     ></MemorizedMarkdownInputArea>
                 }
                 <MemorizedMarkdownPreviewArea
-                    content={content.text}
+                    content={content}
                     id={props.id}
                     maxHeight={props.maxEditorPreviewHeight !== undefined ? props.maxEditorPreviewHeight : 'calc(98% - 5px)'}
                     borderedPreview={props.borderedPreview !== undefined ? props.borderedPreview : true}

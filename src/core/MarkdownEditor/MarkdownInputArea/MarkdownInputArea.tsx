@@ -16,7 +16,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
     const [selectedText, setSelectedText] = useState('')
     const [selection, setSelection] = useState({ start: 0, end: 0 })
     const editorRef = useRef<HTMLTextAreaElement>(null)
-    const [inputContent, setInputContent] = useState(props.content)
+    const [inputContent, setInputContent] = useState(props.content || '')
     const [scrollPosition, setScrollPosition] = useState(0);
 
     const handleChange = (e: any) => {
@@ -53,8 +53,13 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
 
     useEffect(() => {
         const getSelectedText = () => {
-            let text = inputContent.substring(selection.start, selection.end)
-            return text
+            if (inputContent !== undefined && typeof inputContent === "string") {
+                let text = inputContent.substring(selection.start, selection.end)
+                return text
+            }
+            else {
+                return ""
+            }
         }
         setSelectedText(getSelectedText())
     }, [selection, inputContent])
