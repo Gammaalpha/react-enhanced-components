@@ -14,6 +14,7 @@
     "./src/index.css",
     "./src/index.tsx",
     "./src/serviceWorker.ts",
-    "./src/setupTests.ts"
+    "./src/setupTests.ts",
+    "./webpack.config.js"
   ]
 }

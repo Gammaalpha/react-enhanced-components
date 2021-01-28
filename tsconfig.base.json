@@ -1,24 +1,53 @@
+// {
+//   "compilerOptions": {
+//     "target": "es5",
+//     "lib": [
+//       "dom",
+//       "dom.iterable",
+//       "esnext"
+//     ],
+//     "allowJs": true,
+//     "skipLibCheck": true,
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "strict": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "noFallthroughCasesInSwitch": true,
+//     "module": "esnext",
+//     "declaration": true,
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "noEmit": true,
+//     "jsx": "react-jsx",
+//     "sourceMap": true,
+//   }
+// }
+
 {
   "compilerOptions": {
     "target": "es5",
     "lib": [
+      "es2015",
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "outDir": "build",
+    "outDir": "./build", /* Redirect output structure to the directory. */
+    "rootDir": "./src",
     "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
-  }
+    "jsx": "react",
+    "strict": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "skipLibCheck": true, /* Skip type checking of declaration files. */
+    "esModuleInterop": true, /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+  },
 }
