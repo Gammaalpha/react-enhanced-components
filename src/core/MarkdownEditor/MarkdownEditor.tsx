@@ -9,7 +9,7 @@ import { Row } from '../Styles/CommonStyles';
 
 
 export function MarkdownEditor(props: MarkdownProps) {
-    const [content, setContent] = useState(!!props?.content ? props.content : 'Add your content **here**.')
+    const [content, setContent] = useState(props.content !== undefined ? props.content : 'Add your content **here**.')
     let previewRefVal: any;
     const handleChange = (e: string) => {
         if (e !== content) {
@@ -27,8 +27,6 @@ export function MarkdownEditor(props: MarkdownProps) {
         if (previewRefVal.current !== undefined) {
 
             let scrollTop = (((e) * previewRefVal.current.scrollHeight) / 100) - (previewRefVal.current.offsetHeight);
-            console.log(scrollTop);
-
             if (scrollTop <= 0) {
                 scrollTop = 0;
             }
