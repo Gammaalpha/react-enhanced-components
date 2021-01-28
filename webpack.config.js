@@ -23,11 +23,25 @@ module.exports = {
         // Include ts, tsx, js, and jsx files.
         test: /\.(ts|js)x?$/,
         exclude: [/node_modules/],
-        loader: ["babel-loader", "ts-loader?configFile=tsconfig.prod.json"],
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: path.resolve(__dirname, "tsconfig.prod.json"),
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
-        loader: "url-loader?limit=10000",
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              limit: "10000",
+            },
+          },
+        ],
       },
       {
         test: /\.s[ac]ss$/i,
@@ -37,20 +51,20 @@ module.exports = {
           // Translates CSS into CommonJS
           {
             loader: "css-loader",
-            options: {
-              modules: {
-                compileType: "module",
-                mode: "local",
-                auto: true,
-                exportGlobals: true,
-                localIdentName: "[path][name]__[local]--[hash:base64:5]",
-                localIdentContext: path.resolve(__dirname, "src"),
-                localIdentHashPrefix: "[sha1:hash:hex:4]",
-                namedExport: true,
-                exportLocalsConvention: "camelCase",
-                exportOnlyLocals: false,
-              },
-            },
+            // options: {
+            //   modules: {
+            //     compileType: "module",
+            //     mode: "local",
+            //     auto: true,
+            //     exportGlobals: true,
+            //     localIdentName: "[path][name]__[local]--[hash:base64:5]",
+            //     localIdentContext: path.resolve(__dirname, "src"),
+            //     localIdentHashPrefix: "[sha1:hash:hex:4]",
+            //     namedExport: true,
+            //     exportLocalsConvention: "camelCase",
+            //     exportOnlyLocals: false,
+            //   },
+            // },
           },
           // Compiles Sass to CSS
           { loader: "sass-loader" },
@@ -63,20 +77,20 @@ module.exports = {
           { loader: "style-loader" },
           {
             loader: "css-loader",
-            options: {
-              modules: {
-                compileType: "module",
-                mode: "local",
-                auto: true,
-                exportGlobals: true,
-                localIdentName: "[path][name]__[local]--[hash:base64:5]",
-                localIdentContext: path.resolve(__dirname, "src"),
-                localIdentHashPrefix: "my-custom-hash",
-                namedExport: true,
-                exportLocalsConvention: "camelCase",
-                exportOnlyLocals: false,
-              },
-            },
+            // options: {
+            //   modules: {
+            //     compileType: "module",
+            //     mode: "local",
+            //     auto: true,
+            //     exportGlobals: true,
+            //     localIdentName: "[path][name]__[local]--[hash:base64:5]",
+            //     localIdentContext: path.resolve(__dirname, "src"),
+            //     localIdentHashPrefix: "my-custom-hash",
+            //     namedExport: true,
+            //     exportLocalsConvention: "camelCase",
+            //     exportOnlyLocals: false,
+            //   },
+            // },
           },
         ],
       },

@@ -58,20 +58,27 @@ export default function AbbrDialog(props: IAbbrDialogProps) {
                 const range = quill.getSelection();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 let [leaf, offset] = quill.getLeaf(range !== null ? range.index + 1 : 0)
-                const parentDomNode = leaf.parent.domNode;
-                if (parentDomNode.tagName === "ABBR") {
+                // const parentDomNode = leaf.parent.domNode;
+                if (leaf !== null && leaf.parent.domNode.tagName === "ABBR") {
                     setAbbr({
-                        text: parentDomNode.textContent !== undefined ? parentDomNode.textContent.trim() : "",
-                        title: parentDomNode.title,
+                        text: leaf.parent.domNode.textContent !== undefined ? leaf.parent.domNode.textContent.trim() : "",
+                        title: leaf.parent.domNode.title,
                         range: range
                     })
                 }
                 else {
 
-                    if (range?.length > 0) {
+                    if (!!range && range.length > 0) {
                         let innerText = quill.getText(range.index, range.length);
                         setAbbr({
                             text: innerText,
+                            title: '',
+                            range: range
+                        })
+                    }
+                    if ((!!range) && range.index > 0) {
+                        setAbbr({
+                            text: '',
                             title: '',
                             range: range
                         })

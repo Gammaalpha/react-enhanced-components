@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
-import { DataTable, IHeaderProps, RichTextEditor } from "./core/index";
+import { DataTable, IHeaderProps, MarkdownEditor, RichTextEditor } from "./core/index";
 import { Switch, makeStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Column, Label, MainContainer, Row } from './core/Styles/CommonStyles';
 
 export interface IItem {
   id: number,
@@ -202,7 +203,7 @@ function App() {
 
   const richTextEditorExpansionPanel = () => {
     return (
-      <ExpansionPanel expanded={process.env.NODE_ENV === "development"}>
+      <ExpansionPanel>
         <ExpansionPanelSummary className={'LightGrayB'} expandIcon={<ExpandMoreIcon />}>
           <Typography>
             Rich Text Editor
@@ -215,17 +216,82 @@ function App() {
                 Edit mode {state.editor ? '(ON)' : "(OFF)"}: {renderEditorSwitch()}
               </div>
             </div>
-            <RichTextEditor editing={state.editor}></RichTextEditor>
+            <RichTextEditor editing={state.editor}
+              value={`<p>New Tab <a class="rec-a" href="https://www.google.ca/" rel="noopener noreferrer" title="Discussion Board">Content</a></p>`}
+            ></RichTextEditor>
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     )
   }
+
+
+  const [edit, setEdit] = useState(true);
+  const [borderPreview, setBorderPreview] = useState(true);
+  const toggleEditMode = () => {
+    setEdit(!edit)
+  }
+
+  const toggleBorderPreview = () => {
+    setBorderPreview(!borderPreview)
+  }
+  const content = `*[html]:hypertext\n\n*[test]:testing\n\n[google]: https://www.google.ca "google"\n\n**test** [google] html\n\n## Heading
+
+| Column 1       | Column 2     | Column 3     |
+|:---------------|:------------:|-------------:|
+|  Cell Contents | More Stuff   | And Again    |
+| You Can Also   | Put Pipes In <br/>html| Like this  \\||
+
+**!!testing!!**
+`
+
+  const markdownEditorExpansionPanel = () => {
+    return (
+      <ExpansionPanel>
+        <ExpansionPanelSummary className={'LightGrayB'} expandIcon={<ExpandMoreIcon />}>
+          <Typography>
+            Markdown Editor
+      </Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <div className={'FullWidth'}>
+            <div className={'Spacing'}>
+              <MainContainer>
+                <div className="centerAlign">
+                  <h1>Markdown editor with Abbreviation plugin</h1>
+                </div>
+                <div>
+                  <Label htmlFor="edit_mode">Editable:</Label>
+                  <input type="checkbox" name="edit_mode" id="edit_mode" checked={edit} onChange={toggleEditMode} />
+                </div>
+
+                <div>
+                  <Label htmlFor="border_preview">Border on Preview:</Label>
+                  <input type="checkbox" name="border_preview" id="border_preview" checked={borderPreview} onChange={toggleBorderPreview} />
+                </div>
+
+                <Row flex={0} maxHeight={"800px"}>
+                  <MarkdownEditor
+                    maxEditorHeight={"700px"}
+                    borderedPreview={borderPreview}
+                    content={content}
+                    editable={edit}
+                  ></MarkdownEditor>
+                </Row>
+              </MainContainer>
+            </div>
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    )
+  };
+
   return (
 
     <div className={'Padding25px'}>
       {dataTableExpansionPanel()}
       {richTextEditorExpansionPanel()}
+      {markdownEditorExpansionPanel()}
     </div>
 
   );

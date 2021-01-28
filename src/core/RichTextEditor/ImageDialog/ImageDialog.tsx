@@ -83,7 +83,6 @@ export default function ImageDialog(props: ILinkDialogProps) {
                     if (tempRange.length > 0) {
                         let [leaf, offset] = quill.getLeaf(tempRange !== null ? tempRange.index + tempRange.length : 0);
                         const imgDomNode = leaf.domNode;
-                        debugger;
                         if (leaf?.domNode.tagName === "IMG") {
                             setImage({
                                 height: imgDomNode.scrollHeight,
