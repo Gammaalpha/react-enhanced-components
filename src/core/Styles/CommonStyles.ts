@@ -53,6 +53,8 @@ type RowProps = {
     flex?: string | number;
     gap?: number;
     maxHeight?: string;
+    minHeight?: string;
+
 }
 
 export const Row = styled.div<RowProps>`
@@ -64,6 +66,7 @@ export const Row = styled.div<RowProps>`
     gap:${(props: any) => props.gap || 0}px;
     flex:${(props: any) => props.flex || 0};
     max-height:${(props: any) => props.maxHeight || 'fit-content'};
+    min-height:${(props: any) => props.minHeight || 'fit-content'};
 `;
 
 export const ErrorMessage = styled.span`

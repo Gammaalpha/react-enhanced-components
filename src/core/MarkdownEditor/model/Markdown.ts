@@ -14,6 +14,7 @@ export interface MarkdownProps {
     buttonStyles?: any;
     borderedPreview?: boolean;
     maxEditorHeight?: string;
+    minEditorHeight?: string;
     maxEditorInputHeight?: string;
     maxEditorPreviewHeight?: string;
 }

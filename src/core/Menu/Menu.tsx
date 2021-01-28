@@ -87,7 +87,7 @@ export function Menu(props: MenuProps) {
     let className = 'icon'
 
     const render = () => {
-        console.log("render...");
+        // console.log("render...");
 
         if (isListOpen) {
             className += ' angle_up'

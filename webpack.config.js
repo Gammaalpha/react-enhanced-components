@@ -3,7 +3,10 @@ var path = require("path");
 
 module.exports = {
   entry: "./src/core/index.ts",
-  target: "node",
+  target: "web",
+  node: {
+    fs: "empty",
+  },
   mode: "production",
   output: {
     path: path.resolve(__dirname, "build"),
