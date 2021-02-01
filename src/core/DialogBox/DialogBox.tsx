@@ -37,7 +37,7 @@ const Backdrop = styled.div`
 type StyledModalProps = {
   fadeType: string;
   width: number;
-  height: number;
+  height: number | string;
 }
 
 const StyledModal = styled.div<StyledModalProps>`
@@ -47,7 +47,7 @@ const StyledModal = styled.div<StyledModalProps>`
   margin: auto;
   border-radius: 8px;
   width: ${(props: StyledModalProps) => props.width}px;
-  height: ${(props: StyledModalProps) => props.height}px;
+  height: ${(props: StyledModalProps) => props.height || 'fit-content'};
   opacity: ${(props: StyledModalProps) => {
     switch (props.fadeType) {
       case "in":

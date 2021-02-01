@@ -146,6 +146,7 @@ type MarkdownBodyProps = {
 export const MarkdownBody = styled.div<MarkdownBodyProps>`
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
+    font-family:${fontStyle};
     font-size: 1.125em;
     word-wrap: break-word;
     width:auto;
@@ -186,6 +187,7 @@ type PreviewTitleProps = {
 }
 export const PreviewTitle = styled.div<PreviewTitleProps>`
     display:flex;
+    font-family:${fontStyle};
     font-size:21px;
     padding:${(props: any) => props.padding || '0'};
     align-items:center;

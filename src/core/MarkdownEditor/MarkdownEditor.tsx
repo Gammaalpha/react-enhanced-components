@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { MarkdownProps } from './model/Markdown'
 import "./MarkdownEditor.css"
-import { MemorizedMarkdownPreviewArea } from './MarkdownPreviewArea/MarkdownPreviewArea';
-import { MemorizedMarkdownInputArea } from './MarkdownInputArea/MarkdownInputArea';
+import { MemorizedMarkdownPreviewArea, MarkdownPreviewArea } from './MarkdownPreviewArea/MarkdownPreviewArea';
+import { MemorizedMarkdownInputArea, MarkdownInputArea } from './MarkdownInputArea/MarkdownInputArea';
 import { Row } from '../Styles/CommonStyles';
 
 // ---------------------------------
 
 
 export function MarkdownEditor(props: MarkdownProps) {
-    const [content, setContent] = useState(props.content !== undefined ? props.content : 'Add your content **here**.')
+    const [content, setContent] = useState(props.content !== undefined ? props.content : 'Add content')
     let previewRefVal: any;
     const handleChange = (e: string) => {
         if (e !== content) {
@@ -48,22 +48,22 @@ export function MarkdownEditor(props: MarkdownProps) {
                 maxHeight={props.maxEditorHeight !== undefined ? props.maxEditorHeight : '800px'}
                 minHeight={props.minEditorHeight !== undefined ? props.maxEditorHeight : '800px'}>
                 {
-                    props.editable && <MemorizedMarkdownInputArea
+                    props.editable && <MarkdownInputArea
                         id={props.id}
                         maxHeight={props.maxEditorInputHeight !== undefined ? props.maxEditorInputHeight : 'calc(98% - 10px)'}
                         callback={handleChange}
                         scrollCallback={handleInputScrollPosition}
                         content={content}
-                    ></MemorizedMarkdownInputArea>
+                    ></MarkdownInputArea>
                 }
-                <MemorizedMarkdownPreviewArea
+                <MarkdownPreviewArea
                     content={content}
                     id={props.id}
                     maxHeight={props.maxEditorPreviewHeight !== undefined ? props.maxEditorPreviewHeight : 'calc(98% - 5px)'}
                     borderedPreview={props.borderedPreview !== undefined ? props.borderedPreview : true}
                     editable={props.editable}
                     previewRefCallback={handlePreviewRef}
-                ></MemorizedMarkdownPreviewArea>
+                ></MarkdownPreviewArea>
             </Row>
         )
     }

@@ -80,7 +80,6 @@ export default function ImageDialog(props: ButtonProps) {
                 open={open}
                 onClose={handleClose}
                 width={280}
-                height={300}
             >
                 <form onSubmit={handleSubmit} noValidate>
                     <Row>

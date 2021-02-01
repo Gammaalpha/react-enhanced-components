@@ -72,7 +72,6 @@ export default function AbbrDialog(props: ButtonProps) {
                 open={open}
                 onClose={handleClose}
                 width={380}
-                height={300}
             >
                 <form onSubmit={handleSubmit} noValidate>
                     <Row>

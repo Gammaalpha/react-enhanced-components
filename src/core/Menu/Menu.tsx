@@ -32,6 +32,7 @@ const MenuDropdownList = styled.div`
     transform:translateX(1%);
     /* padding:1rem; */
     overflow:hidden;
+    z-index:999999;
 `;
 
 const MenuItem = styled.button`

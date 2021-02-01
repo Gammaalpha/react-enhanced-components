@@ -16,7 +16,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
     const [selectedText, setSelectedText] = useState('')
     const [selection, setSelection] = useState({ start: 0, end: 0 })
     const editorRef = useRef<HTMLTextAreaElement>(null)
-    const [inputContent, setInputContent] = useState(props.content || '')
+    const [inputContent, setInputContent] = useState<string>(props.content)
     const [scrollPosition, setScrollPosition] = useState(0);
 
     const handleChange = (e: any) => {
@@ -53,13 +53,10 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
 
     useEffect(() => {
         const getSelectedText = () => {
-            if (inputContent !== undefined && typeof inputContent === "string") {
-                let text = inputContent.substring(selection.start, selection.end)
-                return text
-            }
-            else {
-                return ""
-            }
+            // if (inputContent !== undefined && typeof inputContent === "string") {
+            let text = inputContent.substring(selection.start, selection.end)
+            return text
+            // }
         }
         setSelectedText(getSelectedText())
     }, [selection, inputContent])
@@ -106,7 +103,13 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
         let insertContent = insertVal;
         let index = 0;
         if (type.includes('heading')) {
-            index = updatedContent.slice(0, selection.start + 1).lastIndexOf("\n\n") + 2;
+            debugger;
+            if (updatedContent.includes('\n\n')) {
+                index = updatedContent.slice(0, selection.start + 1).lastIndexOf("\n\n") + 2;
+
+            } else {
+                index = 0;
+            }
             const firstHalf = updatedContent.slice(0, index);
             const headingSection = updatedContent.slice(index, selection.end).split(/(#{1,})(.*)/gi).filter(x => x !== "" && !x.includes("#"));
             let heading = headingSection[0].trim();
