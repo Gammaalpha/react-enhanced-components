@@ -142,7 +142,9 @@ export default function ImageDialog(props: ButtonProps) {
                             }}
                         />
                     </Row>
-                    <Row>
+                    <Row
+                        padding={5}
+                    >
                         <BaseButton
                             type="submit"
                         >

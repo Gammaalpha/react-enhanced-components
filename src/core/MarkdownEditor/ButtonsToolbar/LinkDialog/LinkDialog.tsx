@@ -131,7 +131,10 @@ export default function LinkDialog(props: ButtonProps) {
                                 </ErrorMessage>
                             )}
                     </Row>
-                    <Row>
+                    <Row
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                    >
                         <Label>Is globally available?</Label>
                         <Checkbox
                             id="global-link"
@@ -140,7 +143,11 @@ export default function LinkDialog(props: ButtonProps) {
                             onChange={handleCheckboxChange}
                         />
                     </Row>
-                    <Row>
+                    <Row
+                        justifyContent={"flex-start"}
+                        alignItems={"start"}
+                        padding={5}
+                    >
                         <BaseButton
                             type="submit"
                         >

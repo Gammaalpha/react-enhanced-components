@@ -94,7 +94,9 @@ export default function AbbrDialog(props: ButtonProps) {
                             </ErrorMessage>
                         )}
                     </Row>
-                    <Row>
+                    <Row
+                        padding={5}
+                    >
                         <BaseButton
                             type="submit"
                         >

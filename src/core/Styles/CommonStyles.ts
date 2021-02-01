@@ -54,6 +54,9 @@ type RowProps = {
     gap?: number;
     maxHeight?: string;
     minHeight?: string;
+    justifyContent?: string;
+    alignItems?: string;
+    padding?: string | number;
 
 }
 
@@ -61,12 +64,14 @@ export const Row = styled.div<RowProps>`
     display:flex;
     flex-direction:row;
     flex-wrap:wrap;
-    justify-content:flex-start;
+    justify-content:${(props: any) => props.justifyContent || 'normal'};
+    align-items:${(props: any) => props.alignItems || 'normal'};
     width:100%;
     gap:${(props: any) => props.gap || 0}px;
     flex:${(props: any) => props.flex || 0};
     max-height:${(props: any) => props.maxHeight || 'fit-content'};
     min-height:${(props: any) => props.minHeight || 'fit-content'};
+    padding:${(props: any) => typeof props.padding === 'number' ? props.padding + 'px' : props.padding || 0}
 `;
 
 export const ErrorMessage = styled.span`
