@@ -103,7 +103,6 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
         let insertContent = insertVal;
         let index = 0;
         if (type.includes('heading')) {
-            debugger;
             if (updatedContent.includes('\n\n')) {
                 index = updatedContent.slice(0, selection.start + 1).lastIndexOf("\n\n") + 2;
 
@@ -141,6 +140,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
             updatedContent = insert(updatedContent, index, insertVal);
         }
         setInputContent(updatedContent)
+        editorRef.current?.focus();
     }
 
 

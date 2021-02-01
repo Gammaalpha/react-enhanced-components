@@ -245,37 +245,31 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
             let regexSplit: RegExp;
             switch (type) {
                 case "bold":
-                    console.log("Bold was called..");
                     char = "**";
                     regexSplit = new RegExp(/(\*+)/, "gi")
                     break;
                 case "italic":
-                    console.log("Italic was called..");
                     char = "_";
                     regexSplit = /(-)/
 
                     break;
                 case "strike":
-                    console.log("Strike was called..");
                     char = "~";
                     regexSplit = new RegExp(/(~)/, "gi")
 
                     break;
                 case "underline":
-                    console.log("Underline was called...");
                     char = "!!";
                     regexSplit = new RegExp(/(!!)/, "gi")
 
                     break;
                 case "sub":
-                    console.log("Sub script was called...");
                     char = "<sub>";
                     endChar = "</sub>";
                     regexSplit = new RegExp(/(<\/?sub>)/, "gi")
 
                     break;
                 case "super":
-                    console.log("Super script was called...");
                     char = "<sup>";
                     endChar = "</sup>";
                     regexSplit = new RegExp(/(<\/?sup>)/, "gi")
