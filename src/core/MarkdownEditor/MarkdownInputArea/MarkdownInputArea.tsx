@@ -53,18 +53,25 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
 
     useEffect(() => {
         const getSelectedText = () => {
-            // if (inputContent !== undefined && typeof inputContent === "string") {
+
             let text = inputContent.substring(selection.start, selection.end)
             return text
-            // }
         }
         setSelectedText(getSelectedText());
-        if (!!editorRef && !!editorRef.current && !!editorRef.current?.setSelectionRange) {
-            // debugger;
-            editorRef.current.setSelectionRange(selection.start, selection.end);
-            editorRef.current.focus();
-        }
+
     }, [selection, inputContent])
+
+    const selectionFocusAfterEffect = (startPos: number = selection.start, endPos: number = selection.end) => {
+        if (!!editorRef && !!editorRef.current && !!editorRef.current?.setSelectionRange) {
+            editorRef.current.focus();
+            editorRef.current.setSelectionRange(startPos, endPos);
+        }
+    }
+
+    useEffect(() => {
+        selectionFocusAfterEffect();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.content])
 
     const handleIncomingChange = (newVal: string) => {
         const tempSel = selection;
@@ -75,16 +82,11 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
             start: tempSel.start,
             end: tempSel.end + lenChange,
         })
-        const selectionFocusAfterEffect = () => {
-            if (editorRef.current !== null) {
-                editorRef.current.selectionStart = tempSel.start;
-                editorRef.current.selectionEnd = tempSel.end + lenChange;
-            }
-        }
+
         setTimeout(() => {
             editorRef.current?.blur();
             editorRef.current?.focus();
-            selectionFocusAfterEffect();
+            selectionFocusAfterEffect(tempSel.start, tempSel.end + lenChange);
             if (editorRef.current !== null) {
                 editorRef.current.scrollTop = scrollPosition
             }
@@ -163,8 +165,6 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
                     maxHeight={props.maxHeight || 'fit-content'}
                     ref={editorRef}
                     onSelect={(e: any) => {
-                        console.log(e.target.selectionStart, e.target.selectionEnd);
-
                         setSelection({
                             start: e.target.selectionStart,
                             end: e.target.selectionEnd

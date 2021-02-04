@@ -57,6 +57,9 @@ export default function LinkDialog(props: ButtonProps) {
         if (linkData.text.trim() !== "" && linkData.url.trim() !== "") {
             props.callback(packageLink(linkData));
             handleClose();
+            setTimeout(() => {
+                setLinkData({ text: '', title: '', url: '', global: false })
+            }, 200);
         }
     }
 

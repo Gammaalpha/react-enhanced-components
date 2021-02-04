@@ -56,6 +56,9 @@ export default function ImageDialog(props: ButtonProps) {
         if (linkData.text.trim() !== "" && linkData.url.trim() !== "") {
             props.callback(packageImage(linkData));
             handleClose();
+            setTimeout(() => {
+                setLinkData({ text: '', title: '', url: '', width: '', height: '' })
+            }, 200);
         }
     }
 
