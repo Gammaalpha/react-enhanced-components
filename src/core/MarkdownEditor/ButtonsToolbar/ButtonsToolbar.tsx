@@ -199,7 +199,7 @@ export function ButtonsToolbar(props: ButtonToolbarProps) {
                     val = "##### ";
                     break;
                 case "heading_6":
-                    val = "####### ";
+                    val = "###### ";
                     break;
                 case "oList":
                     val = `1. item 1\n1. item 2\n1. item 3\n`;

@@ -15,8 +15,6 @@ interface ImageDialogProps {
     height?: string;
 }
 
-
-
 export default function ImageDialog(props: ButtonProps) {
 
     const [open, setOpen] = useState(false);
@@ -157,7 +155,6 @@ export default function ImageDialog(props: ButtonProps) {
                         </CloseButton>
                     </Row>
                 </form>
-
             </DialogBox>
         </div>
     )

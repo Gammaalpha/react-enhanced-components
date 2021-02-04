@@ -58,7 +58,12 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
             return text
             // }
         }
-        setSelectedText(getSelectedText())
+        setSelectedText(getSelectedText());
+        if (!!editorRef && !!editorRef.current && !!editorRef.current?.setSelectionRange) {
+            // debugger;
+            editorRef.current.setSelectionRange(selection.start, selection.end);
+            editorRef.current.focus();
+        }
     }, [selection, inputContent])
 
     const handleIncomingChange = (newVal: string) => {
@@ -102,6 +107,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
         let updatedContent = inputContent;
         let insertContent = insertVal;
         let index = 0;
+        let updatedSelectionLoc = 0;
         if (type.includes('heading')) {
             if (updatedContent.includes('\n\n')) {
                 index = updatedContent.slice(0, selection.start + 1).lastIndexOf("\n\n") + 2;
@@ -115,7 +121,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
             const secondHalf = updatedContent.slice(selection.end)
             updatedContent = firstHalf + heading + secondHalf;
 
-            const updatedSelectionLoc = index + heading.length + (typeof insertContent === 'string' ? String(insertContent).length : 1)
+            updatedSelectionLoc = index + heading.length + (typeof insertContent === 'string' ? String(insertContent).length : 1)
 
             setSelection({
                 start: updatedSelectionLoc,
@@ -140,7 +146,7 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
             updatedContent = insert(updatedContent, index, insertVal);
         }
         setInputContent(updatedContent)
-        editorRef.current?.focus();
+
     }
 
 
@@ -157,6 +163,8 @@ export function MarkdownInputArea(props: MarkdownInputAreaProps) {
                     maxHeight={props.maxHeight || 'fit-content'}
                     ref={editorRef}
                     onSelect={(e: any) => {
+                        console.log(e.target.selectionStart, e.target.selectionEnd);
+
                         setSelection({
                             start: e.target.selectionStart,
                             end: e.target.selectionEnd
