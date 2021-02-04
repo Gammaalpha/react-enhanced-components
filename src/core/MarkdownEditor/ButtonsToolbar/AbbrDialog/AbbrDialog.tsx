@@ -29,7 +29,10 @@ export default function AbbrDialog(props: ButtonProps) {
     })
 
     const handleClose = () => {
-        setOpen(false)
+        setOpen(false);
+        setTimeout(() => {
+            setAbbrData({ text: '', title: '' })
+        }, 200);
     }
 
     const toggleDialog = () => {
@@ -49,9 +52,7 @@ export default function AbbrDialog(props: ButtonProps) {
         if (abbrData.text.trim() !== "" && abbrData.title.trim() !== "") {
             props.callback(packageAbbr(abbrData));
             handleClose();
-            setTimeout(() => {
-                setAbbrData({ text: '', title: '' })
-            }, 200);
+
         }
     }
 

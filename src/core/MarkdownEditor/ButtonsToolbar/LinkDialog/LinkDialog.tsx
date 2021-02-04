@@ -35,7 +35,10 @@ export default function LinkDialog(props: ButtonProps) {
     })
 
     const handleClose = () => {
-        setOpen(false)
+        setOpen(false);
+        setTimeout(() => {
+            setLinkData({ text: '', title: '', url: '', global: false })
+        }, 200);
     }
 
     const toggleDialog = () => {
@@ -57,9 +60,7 @@ export default function LinkDialog(props: ButtonProps) {
         if (linkData.text.trim() !== "" && linkData.url.trim() !== "") {
             props.callback(packageLink(linkData));
             handleClose();
-            setTimeout(() => {
-                setLinkData({ text: '', title: '', url: '', global: false })
-            }, 200);
+
         }
     }
 

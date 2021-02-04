@@ -35,7 +35,10 @@ export default function ImageDialog(props: ButtonProps) {
     })
 
     const handleClose = () => {
-        setOpen(false)
+        setOpen(false);
+        setTimeout(() => {
+            setLinkData({ text: '', title: '', url: '', width: '', height: '' })
+        }, 200);
     }
 
     const toggleDialog = () => {
@@ -56,9 +59,7 @@ export default function ImageDialog(props: ButtonProps) {
         if (linkData.text.trim() !== "" && linkData.url.trim() !== "") {
             props.callback(packageImage(linkData));
             handleClose();
-            setTimeout(() => {
-                setLinkData({ text: '', title: '', url: '', width: '', height: '' })
-            }, 200);
+
         }
     }
 
