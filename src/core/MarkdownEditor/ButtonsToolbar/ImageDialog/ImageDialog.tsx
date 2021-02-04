@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { BaseButton } from '../../../Button/BaseButton';
 import { ComboInsert } from "../../model/ComboInsert";
 import { isURLValid } from '../../../utils/util-is-url-valid';
-import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
+import { CloseButton, ErrorMessage, Label, RedSup, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
 import { ButtonProps } from '../../model/ButtonToolbarProps';
 import { DialogBox } from '../../../DialogBox/DialogBox';
 
@@ -85,7 +85,7 @@ export default function ImageDialog(props: ButtonProps) {
             >
                 <form onSubmit={handleSubmit} noValidate>
                     <Row>
-                        <Label htmlFor="text">Text</Label>
+                        <Label htmlFor="text">Text<RedSup>*</RedSup></Label>
                         <StyledInput type="text" name="text" id="text" onChange={(e: any) => {
                             setLinkData({ ...linkData, text: e.target.value })
                         }} />
@@ -97,7 +97,7 @@ export default function ImageDialog(props: ButtonProps) {
                         }} />
                     </Row>
                     <Row>
-                        <Label htmlFor="url">URL</Label>
+                        <Label htmlFor="url">URL<RedSup>*</RedSup></Label>
                         <StyledInput type="text" name="url" id="url" onChange={(e: any) => {
                             setUrlError(!isURLValid(e.target.value));
                             setLinkData({ ...linkData, url: e.target.value })
@@ -157,6 +157,9 @@ export default function ImageDialog(props: ButtonProps) {
                         >
                             Close
                         </CloseButton>
+                    </Row>
+                    <Row>
+                        <p><strong>Note</strong>: Fields with <RedSup>*</RedSup> are required.</p>
                     </Row>
                 </form>
             </DialogBox>

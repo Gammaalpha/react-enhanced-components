@@ -71,7 +71,7 @@ export const Row = styled.div<RowProps>`
     flex:${(props: any) => props.flex || 0};
     max-height:${(props: any) => props.maxHeight || 'fit-content'};
     min-height:${(props: any) => props.minHeight || 'fit-content'};
-    padding:${(props: any) => typeof props.padding === 'number' ? props.padding + 'px' : props.padding || 0}
+    padding:${(props: any) => typeof props.padding === 'number' ? props.padding + 'px' : props.padding || 0};
 `;
 
 export const ErrorMessage = styled.span`
@@ -213,4 +213,9 @@ export const Bordered = styled.div<BorderedProps>`
     flex-direction:column;
     flex:1;
 
+`;
+
+
+export const RedSup = styled.sup`
+    color: red;
 `;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { BaseButton } from '../../../Button/BaseButton';
 import { ComboInsert } from "../../model/ComboInsert";
-import { CloseButton, ErrorMessage, Label, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
+import { CloseButton, ErrorMessage, Label, RedSup, Row, StyledInput, ToolbarButton } from '../../../Styles/CommonStyles';
 import { ButtonProps } from '../../model/ButtonToolbarProps';
 import { DialogBox } from '../../../DialogBox/DialogBox';
 
@@ -79,7 +79,7 @@ export default function AbbrDialog(props: ButtonProps) {
             >
                 <form onSubmit={handleSubmit} noValidate>
                     <Row>
-                        <Label htmlFor="text">Text</Label>
+                        <Label htmlFor="text">Text<RedSup>*</RedSup></Label>
                         <StyledInput type="text" name="text" id="text" onChange={(e: any) => {
                             setAbbrData({ ...abbrData, text: e.target.value })
                         }} />
@@ -90,7 +90,7 @@ export default function AbbrDialog(props: ButtonProps) {
                         )}
                     </Row>
                     <Row>
-                        <Label htmlFor="title">Title</Label>
+                        <Label htmlFor="title">Title<RedSup>*</RedSup></Label>
                         <StyledInput type="text" name="title" id="title" onChange={(e: any) => { setAbbrData({ ...abbrData, title: e.target.value }) }} />
                         {errors.title && (
                             <ErrorMessage>
@@ -111,6 +111,9 @@ export default function AbbrDialog(props: ButtonProps) {
                         >
                             Close
                         </CloseButton>
+                    </Row>
+                    <Row>
+                        <p><strong>Note</strong>: Fields with <RedSup>*</RedSup> are required.</p>
                     </Row>
                 </form>
             </DialogBox>
